@@ -135,9 +135,9 @@
 </ul>
 <p>######（2）、那么如何在项目中适用<code>App Thinning</code>呢？</p>
 <h6 id="2-1-、-Slicing的使用"><a href="#2-1-、-Slicing的使用" class="headerlink" title="(2.1) 、 Slicing的使用"></a>(2.1) 、 <code>Slicing</code>的使用</h6><p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;在使用<code>App Slicing</code>的时候，大部分工作是由<code>Xcode</code>和<code>App Store</code>来完成的，开发者本身不需要做任何事情。在开发中只需要创建<code>xcassets</code>目录，然后将图片加入其中即可。在创建一个工程的时候<code>Xcode</code>会默认为开发者创建一个名为<code>Assets.xcassets</code>的目录，在开发过程中只要把图片资源加入其中即可。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-2d55bcb91235bdd5.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Asssts.xcassets"></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Image/001.png?raw=true" alt="Asssts.xcassets"></p>
 <p>当然也可以自己新建，选中工程目录<code>New File</code>—&gt;<code>Resources</code>—&gt;<code>Asset Catalog</code>即可新建一个。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-73f6427da5db8cba.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="create xcassets "></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Image/002.png?raw=true" alt="create xcassets "></p>
 <p> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp; 我们在使用<code>xcassets</code>时，添加对应的2x分辨率和3x分辨率的图片，会在上传到<code>App Store</code>后被创建成不同安装包以减少<code>App</code>安装包的大小。同时苹果会自动根据的设备不同，在创建的安装包中自动加入当前设备需要的芯片指令集架构文件。</p>
 <h6 id="2-2-、Bitcode使用"><a href="#2-2-、Bitcode使用" class="headerlink" title="(2.2) 、Bitcode使用"></a>(2.2) 、<code>Bitcode</code>使用</h6><p><a target="_blank" rel="noopener" href="https://help.apple.com/xcode/mac/current/#/devbbdc5ce4f">Apple Bitcode官方文档</a></p>
 <p>什么是bitcode？<br> &ensp;&ensp;&ensp;&ensp;&ensp;&ensp; 一般情况下，在iOS9之后，新建一个工程，Xcode会默认设置，bitcode。介于源码和机器码之间，在LLVM中的IR（Intermediate Representation)这层，由编译器前端clang生成，交给LLVM优化器优化后交给后端生成CPU相应指令。</p>
@@ -172,7 +172,7 @@
 <p>3、图片资源压缩处理</p>
 </blockquote>
 <p>试想，如果设计师给的图片非常大，一张图片达到了几十<code>KB</code>,甚至是几<code>MB</code>,如果这样的资源很多，那么最终打包下来的安装包自然就很大，如在我们的项目中设计师给出的一张全屏背景图仅1x的图片就达到了53KB，这样对图片的压缩处理就显得刻不容缓了。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-f062e1ca842fb263.png" alt="压缩前"></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Image/003.png?raw=true" alt="压缩前"></p>
 <p>我们要的目的是为了在不损失图片质量的情况下尽可能大的对图片做压缩处理，这样就能节省一些空间，减少安装包的大小。此处推荐<code>Google</code>的方案将图片转成<a target="_blank" rel="noopener" href="https://developers.google.com/speed/webp/">WebP</a>(这里需要梯子才能打开)。</p>
 <p>######(1)、为什么要使用<code>WebP</code></p>
 <ul>
@@ -185,7 +185,7 @@
 <p>如我要把<code>all_background.png</code>这张图片采用无损压缩方式转成<code>WebP</code>可使用命令:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cwebp -lossless all_background.png -o all_background.webp</span><br></pre></td></tr></table></figure>
 <p>压缩完成之后，只占了3K内存，优化效果非常明显。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-eff7a42c78adaafa.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="压缩后"></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Image/004.png?raw=true" alt="压缩后"></p>
 <h6 id="3-、WebP的使用"><a href="#3-、WebP的使用" class="headerlink" title="(3)、WebP的使用"></a>(3)、<code>WebP</code>的使用</h6><p><code>WebP</code>图片的加载可参考:<a href="%5Bhttps://www.jianshu.com/p/f33422951795%5D(https://www.jianshu.com/p/f33422951795)">WebP解码支持（Objc &amp; Swift）</a></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let path : String &#x3D; Bundle.main.path(forResource: &quot;all_background&quot;, ofType: &quot;webp&quot;)!;</span><br><span class="line">self.backgroundImg.image &#x3D; UIImage.init(webPPath: path);</span><br></pre></td></tr></table></figure>
 <p>关于<code>WebP</code>的更多使用方式可参考<a target="_blank" rel="noopener" href="https://developers.google.com/speed/webp/docs/using">WebP官方网站</a>。</p>
@@ -195,20 +195,20 @@
 <p>在产品的不断更新和迭代中，代码中不可避免的会删除或废止一些功能，但是作为开发者有时候并没有及时的删除这些废止的代码。这样随着代码量的增加，APP中的冗余或无效代码就越来越多，我们对代码瘦身的目的就是找出这些代码并删除。那么可以通过哪些方法来达到目的呢？</p>
 <p>（1）、使用Xcode的Analyze静态分析</p>
 <p>打开Xcode，Product –&gt; Analyze,也可以使用快捷键 command ⌘ + ⇧ + B打开，</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-b8a396ede92a7b11.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Analyze"></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Image/005.png?raw=true" alt="Analyze"></p>
 <p>Xcode的Analyze静态分析，不仅能找到没有调用的代码，同时还可以找到：</p>
 <ul>
 <li>代码中的野指针或未初始化的变量</li>
 <li>内存泄漏的代码</li>
 <li>没有使用过的库或框架</li>
 </ul>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-1539ffed479e69d2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="静态分析结果"></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Image/006.png?raw=true" alt="静态分析结果"></p>
 <p>我在使用Xcode静态分析时，发现还是有很多问题的，如废止的文件或类检查的效果并不是很理想，所以推荐AppCode做静态分析。</p>
 <p>（2）、使用AppCode做静态分析</p>
 <p> 可以直接使用<a target="_blank" rel="noopener" href="https://www.jetbrains.com/objc/download/">AppCode</a>来做静态分析，操作也很简单，打开 AppCode —&gt;code—&gt;Inspect Code；</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-9fed250771fdc114.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="AppCode Inspect Code"></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Image/007.png?raw=true" alt="AppCode Inspect Code"></p>
 <p>在静态分析完成之后，可以在<code>Unused code</code>中看到废弃的代码，如下图所示：</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-ec5208465bf01a2c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Unused code"></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Image/008.png?raw=true" alt="Unused code"></p>
 <ul>
 <li><code>Unused class</code>是废弃类</li>
 <li><code>Unused import statement</code>是无用类引用申明</li>
