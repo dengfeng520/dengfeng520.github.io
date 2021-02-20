@@ -1,0 +1,313 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>iOS 多线程概览 - Hexo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="小时光
+
+
+
+1、为什么所有的UI操作都在主线程中
+
+不仅是iOS系统，包括Android等，所有的UI渲染、操作都在主线程中来完成。那为什么不采用多线程的方式呢？使用多线程渲染UI更快，操作更流畅,"> 
+    <meta name="author" content="John Doe"> 
+    <link rel="alternative" href="atom.xml" title="Hexo" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">Hexo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://example.com"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">iOS 多线程概览</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">iOS 多线程概览</h1>
+        <div class="stuff">
+            <span>二月 06, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h6 align='right'>小时光</h6>
+
+
+<blockquote>
+<h3>1、为什么所有的UI操作都在主线程中</h3>
+</blockquote>
+<p>不仅是iOS系统，包括Android等，所有的UI渲染、操作都在主线程中来完成。那为什么不采用多线程的方式呢？<br>使用多线程渲染UI更快，操作更流畅。但是系统设计者和开发者来说，需要解决线程问题的成本就更高了，也就是说成本远大于收益了。所以工程师们把所有的UI渲染和操作全都放在了主线程中。参考<a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903763011076110">为什么必须在主线程操作UI</a>。</p>
+<blockquote>
+<h3>2、为什么要使用多线程</h3>
+</blockquote>
+<p>即然所有的UI操作都是单线程的，那么为何还需要多线程呢？在App开发中，所遇到不仅有UI操作，还有一些其他的费时操作，如网络请求、文件读取操作、AR模型下载等。此时就需要开发者把费时的操作放到子线程中去，完成后再返回住线程执行一些UI操作。<br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/351466fe66794aff8ca268aae1cc9fdc~tplv-k3u1fbpfcp-watermark.image"><br>如上图所示，当进入这个Controller时开始下载图片，由于下载的图片较多需要几秒甚至十几秒，在下载时我同步滑动底部的<code>UISlider</code>,此时<code>UISlider</code>并没有滑动，直到所有的图片全部下载完成后才滑动。</p>
+<p>试想如果我们的使用的每个App在费时操作时都需要等待很长时间用户才能操作，这样势必会给用户很不好的体验。此时的解决方案是创建一个新的线程来下载图片，这样既不影响用户的UI操作也不影响图片下载。</p>
+<blockquote>
+<h3>3、多线程的实现方式</h3>
+</blockquote>
+<p> Apple为开发者提供的三种多线程实现方式:</p>
+<p>(1)、 Thread</p>
+<ul>
+<li>轻量级</li>
+<li>需要开发者手动管理线程生命周期和线程同步</li>
+</ul>
+<p>(2)、 GCD（Grand Central Dispatch）</p>
+<ul>
+<li>相对<code>Thread</code>而言，不需要管理线程生命周期，操作更简单</li>
+<li>本身维护了一个线程池，会自动根据当前手机系统的情况来动态管理线程，不需要开发者来管理线程池和线程并发情况</li>
+<li>底层源码是开源的，点击<a target="_blank" rel="noopener" href="https://opensource.apple.com/tarballs/libdispatch/">Apple Open Spurce</a>查看源码</li>
+</ul>
+<p>(3)、 Cocoa Operation</p>
+<ul>
+<li>面向对象的API</li>
+<li>可以取消、依赖、任务优先级、可以子类化</li>
+</ul>
+<blockquote>
+<h3>4、多线程常用队列</h3>
+</blockquote>
+<p>多线程可以根据任务执行的队列方式分为三种队列：</p>
+<ul>
+<li>主队列: 在主线程中执行的任务</li>
+<li>串行队列（Serial Queue）: 任务按照先后顺序执行，同一时刻只会执行一个任务</li>
+<li>并行队列（Concurrent Queue）: 多个任务同时执行，完成的顺序不一定</li>
+</ul>
+<p>参考 <a target="_blank" rel="noopener" href="https://developer.apple.com/library/archive/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html#//apple_ref/doc/uid/TP40008091-CH102-SW2">Apple Developer About Dispatch Queues</a></p>
+<blockquote>
+<h3>5、Serial Queue</h3>
+</blockquote>
+<ul>
+<li>（1）、串行队列处理并发任务</li>
+</ul>
+<p>前面说过，对于一些耗时操作，一般将其放到一个子线程中执行，待完成后再返回主线程中刷新UI。核心代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 图片下载管理类&#96;DownloaderManager&#96;</span><br><span class="line">public class DownloaderManager: NSObject &#123;</span><br><span class="line">    public class func downloadImageWithURL(_ url: String) -&gt; UIImage? &#123;</span><br><span class="line">        guard let data &#x3D; try? Data(contentsOf: URL(string: url)!) else &#123; return nil &#125;</span><br><span class="line">        return UIImage(data: data)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 创建一个队列</span><br><span class="line">let serialQueue &#x3D; DispatchQueue(label: &quot;TSN.RPChat.io&quot;)</span><br><span class="line">for (index, imgurl) in DownloaderManager.imageArray.enumerated() &#123;</span><br><span class="line">   &#x2F;&#x2F; 把下载任务加载到队列中</span><br><span class="line">   serialQueue.async &#123; </span><br><span class="line">      let image &#x3D; DownloaderManager.downloadImageWithURL(imgurl)</span><br><span class="line">      DispatchQueue.main.async &#123;</span><br><span class="line">         girlsImg.image &#x3D; image</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此时再次运行代码，发现在下载图片的同时也能滑动<code>UISlider</code>，同时发现图片的加载顺序是按照从上到下的顺序加载的。默认情况下，系统会创建一个串行队列，也就是下载完成第一张图片之后再去下载第二张。此时对我来说，我的目的是下载并把图片全部显示出来，我并不关心图片的下载和加载顺序。这样我就需要在创建队列时设置这个队列为一个并行队列。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0ff481b519e44cf1ab3c1442c628bbbd~tplv-k3u1fbpfcp-watermark.image" alt="串行队列"></p>
+<blockquote>
+<h3>6、Concurrent Queue</h3>
+</blockquote>
+<p>作为队列，<code>concurrent queue</code>中的任务虽然是按照进入队列的顺序启动，但不用等待之前的任务完成，iOS会根据当前系统情况启动多个线程并行执行队列中的任务。</p>
+<p>在创建队列时设置<code>attributes</code>属性为<code>concurrent</code>就创建了一个并行队列。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let concurrentQueue &#x3D; DispatchQueue(label: &quot;TSN.RPChat.io&quot;, attributes: .concurrent)</span><br></pre></td></tr></table></figure>
+<p>此时运行工程，可以看到图片并不是按照先后顺序加载的，说明同一个<code>concurrent queue</code>中的所有任务在并行执行。<br><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/12d73fba49ea4e6992822fc67e3279a1~tplv-k3u1fbpfcp-watermark.image" alt="Concurrent Queue"></p>
+<blockquote>
+<h3>7、面向对象的Cocoa Operation</h3>
+</blockquote>
+<p>上面创建的队列我使用的是GCD（Grand Central Dispatch）方式，尽管GCD对线程管理进行了封装并加入了面向对象管理模式。但是如果我要对一个队列中的任务做更多的操作，如（查看状态、取消任务，控制任务的执行顺序等）仍然不太方便。考虑到这些问题，苹果为开发这提供了一个面向对象方式的多任务执行机制<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/operation">Operation</a>。<code>Operation</code>是基于<code>GCD</code>的对象封装。</p>
+<p>(1)、**<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/operation">Operation概览</a>**</p>
+<p> Operation的一些使用状态：</p>
+<ul>
+<li><p>**<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/operation/1412992-isready">isReady</a>**是否可执行，一般用于异步的情况下 </p>
+</li>
+<li><p>**<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/operation/1415621-isexecuting">isExexuting</a>**标记<code>Operation</code>是否正在执行中</p>
+</li>
+<li><p>**<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/operation/1413540-isfinished">isFinished</a>**标记<code>Operation</code>是否已经执行完成了，一般用于异步</p>
+</li>
+<li><p>**<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/operation#1661262">isCancelled</a>**标记<code>Operation</code>是否已经<code>cancel</code>了</p>
+<p>更多状态请参考<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/operation#1661262">Apple Developer: Maintaining Operation Object States</a></p>
+<p>(2)、**<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/operationqueue">OperationQueue</a>**</p>
+</li>
+<li><p><strong>OperationQueue</strong>可以加入多个<code>Operation</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">let ope1 &#x3D; Operation()</span><br><span class="line">let ope2 &#x3D; Operation()</span><br><span class="line">       </span><br><span class="line">let que &#x3D; OperationQueue()</span><br><span class="line">que.addOperation(ope1)</span><br><span class="line">que.addOperation(ope2)</span><br></pre></td></tr></table></figure></li>
+<li><p><code>maxConcurrentOperationCount</code>可设置最大并发数当前,默认情况下，系统会根据当前情况动态确定最大并发数</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">que.maxConcurrentOperationCount &#x3D; 5</span><br></pre></td></tr></table></figure>
+<p>此处需要注意的是最大并发数并不是线程数，最大并发数表示的是当前队列最多可同时执行的的任务（或线程）数量。</p>
+<ul>
+<li>可取消所有<code>Operation</code>，但当前正在执行的<code>Operation</code>不会取消</li>
+<li>所有的<code>Operation</code>执行完毕后退出销毁</li>
+</ul>
+<p>(3)、**<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/blockoperation">BlockOperation</a>**</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">let queblock &#x3D; BlockOperation.init(block: &#123; [weak self] in</span><br><span class="line">            </span><br><span class="line">&#125;)</span><br><span class="line">let que &#x3D; OperationQueue.init()</span><br><span class="line">que.maxConcurrentOperationCount &#x3D; 3</span><br><span class="line">que.addOperation(queblock)</span><br></pre></td></tr></table></figure>
+<p>(4)、**<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/operation/1408085-completionblock">completionBlock</a>**</p>
+<p>当执行完一个任务时的回调.<br>我们可以通过创建Operation的方法，首先创建一个<code>Operation</code>对象，然后将其添加到队列中，这样做就可以通过设置<code>completionBlock</code>，在任务完成时得到通知。</p>
+<p>(5)、默认优先级</p>
+<p>苹果为<strong>Operation</strong>提供了优先级，<strong>Operation</strong>通过**<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/operation/1413553-qualityofservice">qualityOfService</a>**属性来控制其优先级,来看源码：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public enum QualityOfService : Int &#123;</span><br><span class="line">    </span><br><span class="line">    case userInteractive &#x3D; 33</span><br><span class="line"></span><br><span class="line">    case userInitiated &#x3D; 25</span><br><span class="line"></span><br><span class="line">    case utility &#x3D; 17</span><br><span class="line"></span><br><span class="line">    case background &#x3D; 9</span><br><span class="line"></span><br><span class="line">    case &#96;default&#96; &#x3D; -1</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>userInteractive</strong>: 最高优先级，用于用户交互事件</li>
+<li><strong>userInitiated</strong>:次高优先级，用于用户需要马上执行的事件</li>
+<li><strong>utility</strong>:普通优先级，用于普通任务</li>
+<li><strong>background</strong>:最低优先级，用于不重要的任务</li>
+<li><strong>default</strong>:默认优先级，主线程和没有设置优先级的线程都默认为这个优先级</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">operation.qualityOfService &#x3D; .default</span><br></pre></td></tr></table></figure>
+<p>通过**<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/operation/1411204-queuepriority">queuePriority</a>**属性来控制在<code>OperationQueue</code>中的优先级：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">public enum QueuePriority : Int &#123;</span><br><span class="line"></span><br><span class="line">        case veryLow &#x3D; -8</span><br><span class="line"></span><br><span class="line">        case low &#x3D; -4</span><br><span class="line"></span><br><span class="line">        case normal &#x3D; 0</span><br><span class="line"></span><br><span class="line">        case high &#x3D; 4</span><br><span class="line"></span><br><span class="line">        case veryHigh &#x3D; 8</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">operation.queuePriority &#x3D; .high</span><br></pre></td></tr></table></figure>
+<p>(6)、使用<strong>OperationQueue</strong>下载图片</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 创建一个队列</span><br><span class="line">let queue &#x3D; OperationQueue()</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F; 创建一个Operation</span><br><span class="line">queue.addOperation &#123;</span><br><span class="line">et image &#x3D; DownloaderManager.downloadImageWithURL(imgurl)</span><br><span class="line">OperationQueue.main.addOperation &#123;</span><br><span class="line">     girlsImg.image &#x3D; image </span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这里需要注意的是：更新UI的代码要放到主线程中完成。使用<code>OperationQueue.main</code>获取主线程队列，然后添加<code>addOperation</code>把更新UI的任务放到主线程。<br>如果需要在下载完成时做一些相关操作，可以使用<code>completionBlock</code>,</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">let operation &#x3D; BlockOperation(block: &#123;</span><br><span class="line">     &#x2F;&#x2F; 要执行的任务，如下载图片等</span><br><span class="line">     let image &#x3D; DownloaderManager.downloadImageWithURL(imgurl)</span><br><span class="line">     &#x2F;&#x2F; 下载完成后，返回主线程渲染图片</span><br><span class="line">     OperationQueue.main.addOperation &#123;</span><br><span class="line">         girlsImg.image &#x3D; image</span><br><span class="line">     &#125;</span><br><span class="line">&#125;)</span><br><span class="line">operation.completionBlock &#x3D; &#123;</span><br><span class="line">     &#x2F;&#x2F; 执行完成后</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; 设置最大并发数 不设置时系统回根据当前情况动态设置最大并发数 设置为1时为串行队列</span><br><span class="line">queue.maxConcurrentOperationCount &#x3D; 5</span><br><span class="line">&#x2F;&#x2F; 将Operation添加到queue队列中</span><br><span class="line">queue.addOperation(operation)</span><br></pre></td></tr></table></figure>
+
+<p>(7)、设置任务之间的关联性</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fdaa9343667a42e4bf9562740fe05738~tplv-k3u1fbpfcp-watermark.image" alt="设置任务之间的关联性"><br>如图所示,当点击download按钮的时候开始下载图片，但是客户要求按照432的顺序加载，但是图片1不影响，此处需要用到<code>addDependency</code>方法，让图片按照432的顺序下载，图片1并行下载，核心代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">let queue &#x3D; OperationQueue()</span><br><span class="line"></span><br><span class="line">let operation1 &#x3D; BlockOperation(block: &#123;</span><br><span class="line">       let image &#x3D; DownloaderManager.downloadImageWithURL(imgArray[0])</span><br><span class="line">       OperationQueue.main.addOperation &#123;</span><br><span class="line">           self.girlsImg1.image &#x3D; image</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line">operation1.completionBlock &#x3D; &#123;</span><br><span class="line">    print(&quot;-------operation1&quot;)</span><br><span class="line"> &#125;</span><br><span class="line">        </span><br><span class="line">let operation2 &#x3D; BlockOperation(block: &#123;</span><br><span class="line">        let image &#x3D; DownloaderManager.downloadImageWithURL(imgArray[1])</span><br><span class="line">        OperationQueue.main.addOperation &#123;</span><br><span class="line">           self.girlsImg2.image &#x3D; image</span><br><span class="line">     &#125;</span><br><span class="line">&#125;)</span><br><span class="line">operation2.completionBlock &#x3D; &#123;</span><br><span class="line">     print(&quot;-------operation2&quot;)</span><br><span class="line">&#125;</span><br><span class="line">        </span><br><span class="line">let operation3 &#x3D; BlockOperation(block: &#123;</span><br><span class="line">    let image &#x3D; DownloaderManager.downloadImageWithURL(imgArray[2])</span><br><span class="line">        OperationQueue.main.addOperation &#123;</span><br><span class="line">          self.girlsImg3.image &#x3D; image</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line">operation3.completionBlock &#x3D; &#123;</span><br><span class="line">   print(&quot;-------operation3&quot;)</span><br><span class="line">&#125;</span><br><span class="line">        </span><br><span class="line">let operation4 &#x3D; BlockOperation(block: &#123;</span><br><span class="line">    let image &#x3D; DownloaderManager.downloadImageWithURL(imgArray[7])</span><br><span class="line">    OperationQueue.main.addOperation &#123;</span><br><span class="line">         self.girlsImg4.image &#x3D; image</span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line">operation4.completionBlock &#x3D; &#123;</span><br><span class="line">    print(&quot;-------operation4&quot;)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">operation3.addDependency(operation4)</span><br><span class="line">operation2.addDependency(operation3)</span><br><span class="line">        </span><br><span class="line">queue.addOperation(operation1)</span><br><span class="line">queue.addOperation(operation4)</span><br><span class="line">queue.addOperation(operation3)</span><br><span class="line">queue.addOperation(operation2)</span><br></pre></td></tr></table></figure>
+<p>此处把添加<code>Operation</code>到<code>Queue</code>的操作，放到了<code>addDependency</code>之后，确保执行前有正确的依赖关系。多次运行代码可以看到，图片的下载顺序依然是4-&gt;3-&gt;2的顺序。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-------operation1</span><br><span class="line">-------operation4</span><br><span class="line">-------operation3</span><br><span class="line">-------operation2</span><br></pre></td></tr></table></figure>
+<p>(8)、取消执行的任务</p>
+<p>除了设置一个队列中任务关联性之外，还可以控制取消队列中的任务，但是取消的结果会根据任务的状态而不同：</p>
+<ul>
+<li><p>已经完成的任务，取消不影响其结果</p>
+</li>
+<li><p>当一个任务被取消时所有与其关联的任务也会被取消</p>
+</li>
+<li><p>任务被取消后，<code>completionBlock</code>依旧会执行</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d7b15b84bc8a490396eefb6115858fdc~tplv-k3u1fbpfcp-watermark.image" alt="取消图片下载"></p>
+<p>如图所示，当我点击<code>download</code>按钮后快速点击<code>cancel</code>按钮，可以看到图片一的下载任务被<code>cancel</code>了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let cancelItem &#x3D; UIBarButtonItem()</span><br><span class="line">cancelItem.title &#x3D; &quot;cancel&quot;</span><br><span class="line">cancelItem.rx.tap.subscribe(onNext: &#123;</span><br><span class="line">    self.queue.cancelAllOperations()</span><br><span class="line">&#125;).disposed(by: disposeBag)</span><br></pre></td></tr></table></figure>
+<p>此处可以通过<code>Operation</code>的<code>isCancelled</code>属性来判断任务是否被<code>cancel</code>。当<code>isCancelled</code>返回<code>true</code>表示该任务被<code>cancel</code>了。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">-------operation4,false</span><br><span class="line">-------operation3,false</span><br><span class="line">-------operation2,false</span><br><span class="line">-------operation1,true</span><br></pre></td></tr></table></figure>
+
+<p>本文主要简单介绍了Operation的一些简单应用，正确的理解和应用这些多线程技术是构建复杂App的基础，关于更多多线程的应用可参考官方多线程的文档：</p>
+<p><strong><a target="_blank" rel="noopener" href="https://developer.apple.com/library/archive/documentation/Cocoa/Conceptual/Multithreading/Introduction/Introduction.html">Apple Developer Threading Programming Guide</a></strong></p>
+<p><strong><a target="_blank" rel="noopener" href="https://developer.apple.com/library/archive/documentation/General/Conceptual/ConcurrencyProgrammingGuide/OperationQueues/OperationQueues.html#//apple_ref/doc/uid/TP40008091-CH102-SW2">Apple Developer About Dispatch Queues</a></strong></p>
+<p><strong><a target="_blank" rel="noopener" href="https://github.com/dengfeng520/RPDemo/tree/main/OperationDemo">本文demo</a></strong></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

@@ -1,0 +1,243 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>优雅的利用Lottie实现炫酷的动画效果 - Hexo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="小时光
+
+
+&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;&amp;ensp;APP中的交互动画对整个APP来说是十分重要的。对用户来说，使用一款APP可能并不是这个APP界面做的绚丽，动画做,"> 
+    <meta name="author" content="John Doe"> 
+    <link rel="alternative" href="atom.xml" title="Hexo" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">Hexo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://example.com"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">优雅的利用Lottie实现炫酷的动画效果</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">优雅的利用Lottie实现炫酷的动画效果</h1>
+        <div class="stuff">
+            <span>四月 28, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h6 align='right'>小时光</h6>
+
+
+<p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<code>APP</code>中的交互动画对整个<code>APP</code>来说是十分重要的。对用户来说，使用一款<code>APP</code>可能并不是这个<code>APP</code>界面做的绚丽，动画做的美之类的原因。纵然如此，一款<code>APP</code>只有动画优美，界面上做好了，才会吸引到用户，用户才会来使用这个<code>APP</code>。</p>
+<blockquote>
+<p>1、为什么用<code>Lottie</code></p>
+</blockquote>
+<p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;对于一些简单的动画我们开发者可以使用系统提供的一些方法来实现，但是在实际开发中设计师给出的动画都是很炫酷复杂的，如果采用手写代码的方式，就要面对很对问题：</p>
+<ul>
+<li>（1）、<code>Android</code>和 <code>iOS</code>要针对系统来编写代码动画</li>
+<li>（2）、同时由于不同系统之间的差异，比如<code>Android</code>能够实现的动画<code>iOS</code>不能实现，即使实现也要花费得不偿失的时间，这就造成在开发中一些动画被去掉或者简单化，最终还是没有达到设计师满意的效果</li>
+<li>（3）、即使开发者通过代码实现了设计师的效果，可能会和设计师给出的效果有一些出入，这样就造成了沟通和修改的成本</li>
+<li>（4）、 越是复杂的代码，编写的代码就会越多这样势必会对后期的维护造成很大的成本</li>
+<li>（5）、 考虑到不断的版本迭代中需求的变更，修改代码也会有很大的成本</li>
+</ul>
+<p>所以综上所述的一些问题，此处给诸位推荐一个第三方动画库<a target="_blank" rel="noopener" href="http://airbnb.io/lottie/">Lottie</a>。</p>
+<p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;下面几个gif动画都是用<a target="_blank" rel="noopener" href="http://airbnb.io/lottie/">Lottie</a>实现的。</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Gif/LaunchScreen.gif?raw=true" alt="LaunchScreen.gif"></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Gif/refreshAnimationView.gif?raw=true" alt="refreshAnimationView.gif"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-a014d4394034a502.gif?imageMogr2/auto-orient/strip" alt="background.gif"></p>
+<ul>
+<li>（1）、<code>Lottie</code>是专门为移动开发设计的一个第三方库，目前支持<code>Android、iOS  、Web、React Native</code>等平台；</li>
+<li>（2）、Lottie同时支持页面切换的过场动画(UIViewController Transitions)</li>
+<li>（3）、<code>Lottie</code>的使用非常简单，直接读取资源文件或者读取服务器资源链接即可；</li>
+<li>（4）、开发者可以轻松控制动画（播放进度、播放帧数、背景颜色等）；</li>
+<li>（5）、<code>Lottie</code>是设计师通过<code>After Effects</code>将动画导出JSON文件，然后由<code>Lottie</code>加载和渲染这个文件并转成相应的代码，由于是JSON文件，文件也会很小，可以减少App包的大小</li>
+<li>（6）、把动画制作和APP开发的工作分开，由设计师来完成动画的制作</li>
+</ul>
+<blockquote>
+<p>2、Lottie 的实现原理</p>
+</blockquote>
+<p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;实际上，<code>Lottie</code>在iOS上的实现是：</p>
+<p>**  将<code>After Effects</code>编辑的动画内容，通过JSON作为媒介一一映射到iOS的 <code>LayerModel</code>、<code>Keyframe</code>、<code>ShapeItem</code>、<code>DashElement</code>、<code>Marker</code>、<code>Mask</code>、<code>Transfrom</code>这些类的属性中并保存了下来，然后 再通过<code>CoreAnimation</code>进行渲染。**</p>
+<blockquote>
+<p>3、Lottie 的简单使用</p>
+</blockquote>
+<p>######1、 导入工程</p>
+<p>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;<code>Lottie</code>的使用非常简单，只要集成了<code>Lottie</code>框架，然后在程序中通过<code>Loattie</code>的接口控制设计通过AE生成的JSON就行了。<br>&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;官方推荐<code>iOS</code>开发者使用<code>Pod</code>来管理,其他平台开发者可参考<a target="_blank" rel="noopener" href="http://airbnb.io/lottie/">Lottie官网</a>给出的方案。<br>在<code>Podfile</code>文件中导入：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod &#39;lottie-ios&#39;</span><br></pre></td></tr></table></figure>
+<p><code>cd</code>到工程目录下执行安装命令即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod install</span><br></pre></td></tr></table></figure>
+<p>######2、 初始化一个动画<br>在需要的<code>Lottie</code>动画的类引入头文件，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import Lottie</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 加载本地资源</span><br><span class="line"> let path : String &#x3D; Bundle.main.path(forResource: &quot;Refresh&quot;, ofType: &quot;json&quot;)!</span><br><span class="line"> let lottieAnimationView &#x3D; AnimationView.init(filePath: path)</span><br><span class="line"> let lottieAnimationView &#x3D; AnimationView.init(name: &quot;Refresh&quot;)</span><br><span class="line">&#x2F;&#x2F; load from URL</span><br><span class="line"> let animationView &#x3D; LOTAnimationView(contentsOf: WebURL)</span><br><span class="line"> let lottieAnimationView &#x3D; AnimationView.init(url: WebURL, closure:&#123;</span><br><span class="line">           down in</span><br><span class="line">  &#125;)</span><br></pre></td></tr></table></figure>
+<p>######3、动画的播放和控制<br>运行代码，此时动画只停在第一帧，因为并没有让动画执行，执行播放：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lottieAnimationView.play()</span><br></pre></td></tr></table></figure>
+<p>如果在动画执行完 还有其他的逻辑，可使用:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lottieAnimationView.play &#123; (animationFinished) in</span><br><span class="line">   print(&quot;其他相关业务&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果需要这个动画循环播放：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">lottieAnimationView.loopMode &#x3D; .loop</span><br></pre></td></tr></table></figure>
+<p>同时可以控制帧数和播放进度来实现顺序播放或者逆序播放：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 播放进度</span><br><span class="line">lottieAnimationView.play(fromProgress: 0.25, toProgress: 0.5, loopMode: .loop) &#123; (animationFinished) in</span><br><span class="line">            </span><br><span class="line"> &#125;</span><br><span class="line">&#x2F;&#x2F; 播放帧数</span><br><span class="line">lottieAnimationView.play(fromFrame: 0, toFrame: 5, loopMode: .loop) &#123; (animationFinished) in</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果需要逆序播放，只需将帧数或进度的顺序调整即可，如顺序是0 –&gt; 5帧，逆序则是5 –&gt; 0:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">lottieAnimationView.play(fromProgress: 0.5, toProgress: 0.25, loopMode: .loop) &#123; (animationFinished) in</span><br><span class="line">            </span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line">lottieAnimationView.play(fromFrame: 5, toFrame: 0, loopMode: .loop) &#123; (animationFinished) in</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在使用<code>Lottie</code>动画时，由于程序业务关系，我们需要在这段动画没有执行完之前就执行下一段动画，此时可直接从某一帧执行：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">lottieAnimationView.play(fromFrame: 20, toFrame: 50, loopMode: .loop) &#123; (animationFinished) in</span><br><span class="line">           loadingAnimationView.play()</span><br><span class="line">       &#125;</span><br></pre></td></tr></table></figure>
+<p>如果要停止动画并保持当前帧数，可使用<code>pause()</code>,<br>如果要停止动画并回到初始帧，可使用<code>top()</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">lottieAnimationView.pause()</span><br><span class="line">lottieAnimationView.stop()</span><br></pre></td></tr></table></figure>
+<p>更多使用，如修改关键帧数的参数颜色等可参考<a target="_blank" rel="noopener" href="http://airbnb.io/lottie/#/ios?id=ios-sample-app">Lottie官网</a></p>
+<blockquote>
+<p>4、总结</p>
+</blockquote>
+<p>对于程序中比较复杂的动画用<code>iOS</code>系统为开发者提供的<code>API</code>无法实现的，建议使用<code>Lottie</code>动画，对于一些简单的动画，建议使用系统提供的<code>API</code>来实现，可以参考<a target="_blank" rel="noopener" href="https://zsisme.gitbooks.io/ios-/content/index.html">iOS核心动画技巧</a>。</p>
+<p>以上是我在使用<code>Lottie</code>时的一些总结，更多使用请参考<a target="_blank" rel="noopener" href="http://airbnb.io/lottie/ios.html#swift-examples">Github</a>。</p>
+<hr>
+<p><a target="_blank" rel="noopener" href="https://github.com/dengfeng520/One-Swift.git">本文demo</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/airbnb/lottie-ios">Lottie官方demo</a></p>
+<p><a target="_blank" rel="noopener" href="http://svga.io/">友情链接:SVGA</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
