@@ -172,7 +172,7 @@
 <p>3、图片资源压缩处理</p>
 </blockquote>
 <p>试想，如果设计师给的图片非常大，一张图片达到了几十<code>KB</code>,甚至是几<code>MB</code>,如果这样的资源很多，那么最终打包下来的安装包自然就很大，如在我们的项目中设计师给出的一张全屏背景图仅1x的图片就达到了53KB，这样对图片的压缩处理就显得刻不容缓了。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-f062e1ca842fb263.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="压缩前"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-f062e1ca842fb263.png" alt="压缩前"></p>
 <p>我们要的目的是为了在不损失图片质量的情况下尽可能大的对图片做压缩处理，这样就能节省一些空间，减少安装包的大小。此处推荐<code>Google</code>的方案将图片转成<a target="_blank" rel="noopener" href="https://developers.google.com/speed/webp/">WebP</a>(这里需要梯子才能打开)。</p>
 <p>######(1)、为什么要使用<code>WebP</code></p>
 <ul>
