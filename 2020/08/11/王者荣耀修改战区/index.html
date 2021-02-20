@@ -1,0 +1,231 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>王者荣耀 苹果手机通过模拟定位修改战区 - Hexo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="来说说王者荣耀战区机制，王者荣耀每周一5点到6点这段时间会对上一周所有玩家的所有英雄战力做一个统计，然后根据会刷新出上周的英雄排行。所以每周一6点之后上号，如果玩家有上榜英雄，王者荣耀会给玩家想对应,"> 
+    <meta name="author" content="John Doe"> 
+    <link rel="alternative" href="atom.xml" title="Hexo" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">Hexo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://example.com"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">王者荣耀 苹果手机通过模拟定位修改战区</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">王者荣耀 苹果手机通过模拟定位修改战区</h1>
+        <div class="stuff">
+            <span>八月 11, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <p>来说说王者荣耀战区机制，王者荣耀每周一5点到6点这段时间会对上一周所有玩家的所有英雄战力做一个统计，然后根据会刷新出上周的英雄排行。所以每周一6点之后上号，如果玩家有上榜英雄，王者荣耀会给玩家想对应的牌子（就是省50强，100强，国服最强这些）。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-4539f0db429c999e.jpg"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-02ce443f5d116c13.jpg"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-c81d3671c40d6ce6.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="IMG_3937.PNG"></p>
+<p>那么就有一个很明显的问题，玩家多的城市，玩家就需要很高的英雄积分才能上榜但是玩家少的城市可能就随便打打就能上榜了。如广东的马超，玩家即使把分数肝到10000分以上也只能拿个省100强，但是东北或者内蒙等地区就能轻松拿到省前几名的牌子。</p>
+<p>综上所述我们可以通过修改定位的方式来修改王者着荣耀的战区。Android手机由于其源码开源的原因，在网上有很多模拟定位的工具。本文主要介绍苹果手机如何通过模拟定位的方式来修改战区。</p>
+<h3 id="1、准备工作"><a href="#1、准备工作" class="headerlink" title="1、准备工作"></a>1、准备工作</h3><ul>
+<li>苹果手机（越狱没越狱都可以）</li>
+<li>苹果电脑一台 </li>
+<li>苹果数据线</li>
+</ul>
+<h3 id="2、开始模拟定位"><a href="#2、开始模拟定位" class="headerlink" title="2、开始模拟定位"></a>2、开始模拟定位</h3><ul>
+<li>1、打开浏览器百度搜索 <a target="_blank" rel="noopener" href="https://lbs.amap.com/console/show/picker">高德地图坐标获取</a></li>
+<li>2、输入<strong>墨脱县</strong>，定位成功后可以看到经纬度为 <strong>95.332241,29.325734</strong></li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-62ecc438a7c61d88.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="motuo.png"></p>
+<h3 id="3、新建工程"><a href="#3、新建工程" class="headerlink" title="3、新建工程"></a>3、新建工程</h3><ul>
+<li>1、打开电脑上的工具<strong>Xcode</strong>，如果没有去<strong>App Store</strong>上下载一个，新建一个工程，命名为<strong>LocationDemo</strong></li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-ed4bd755b08d661c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="新建工程1"></p>
+<p> <img src="https://upload-images.jianshu.io/upload_images/1214383-afedc32e7419577f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="新建工程2"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-962fe73184785547.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="新建工程3"></p>
+<ul>
+<li>2、新建工程完成后，工程整体结构如下图，</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-b20ed8f912e02199.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="整体结构"></p>
+<ul>
+<li>3、新建一个GPX文件，右键点击LocationDemo文件夹，选择<strong>New File –&gt; 搜索gpx –&gt; 选择默认命名“Location”</strong></li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-d6ff021b83bb5c15.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="B1.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-461c3791b16babf8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="B2.png"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-6fcbcaeea43e374e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="B3.png"></p>
+<ul>
+<li>4、打开<strong>Location.gpx文件，修改前面搜到的经纬度</strong></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version&#x3D;&quot;1.0&quot;?&gt;</span><br><span class="line">&lt;gpx version&#x3D;&quot;1.1&quot; creator&#x3D;&quot;Xcode&quot;&gt;</span><br><span class="line">    </span><br><span class="line">    &lt;wpt lat&#x3D;&quot;29.325734&quot; lon&#x3D;&quot;95.332241&quot;&gt;</span><br><span class="line">        &lt;name&gt;Cupertino&lt;&#x2F;name&gt;</span><br><span class="line">        </span><br><span class="line">        &lt;time&gt;2014-09-24T14:55:37Z&lt;&#x2F;time&gt;</span><br><span class="line">    &lt;&#x2F;wpt&gt;</span><br><span class="line">    </span><br><span class="line">&lt;&#x2F;gpx&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="4、开始模拟定位"><a href="#4、开始模拟定位" class="headerlink" title="4、开始模拟定位"></a>4、开始模拟定位</h3><p>插上数据线把手机连接电脑，连接成功后，在Xcode上选择连接的手机。</p>
+<ul>
+<li>1、同时摁住 Command + R 键盘在手机上运行工程，看到<strong>Build Succeeded</strong>提示后表示运行成功。</li>
+</ul>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-4de0e77bab92b63f.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="键盘.jpg"></p>
+<p>运行成功后，发现手机桌面上多了一个名为<strong>LocationDemo</strong>的App,打开就一个白色界面什么都没有，</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-37bb95e553c33534.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="IMG_5DC9BB12D1E4-1.jpeg"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-e297feb282b47c30.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="IMG_5DC9BB12D1E4-2.jpeg"></p>
+<ul>
+<li>2、模拟定位</li>
+</ul>
+<p>选择<strong>Debug –&gt; Simulate Location –&gt; Location</strong></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-f2e1358f2688f5ef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="C4.png"></p>
+<p>打开手机上的地图，此时如果定位是<strong>墨脱县</strong>说明模拟定位成功了，如果没有请按前面的教程再仔细的走一遍。</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-d613b9e67c974cc1.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="模拟定位成功"></p>
+<p>既然定位成功了</p>
+<ul>
+<li>3、修改战区</li>
+</ul>
+<p>前面已经说了，玩家可以在每周一6点之后当天第一次上线时通过模拟定位的方式修改战区，所以我们可在周一时通过上述方法把战区修改到荣耀战力较低的地方。我们已经成功模拟了位置，打开王者荣耀修改战区即可。此处要注意，要保持上面所建的工程在运行的状态下打开王者荣耀，不能断开手机和电脑连接，不能关闭LocationDemo App。修改战区方法如下：<br> （1）、进入游戏后点击排位赛<br> （2）、点击荣耀战区<br> （3）、点击右上角齿轮按钮<br><img src="https://upload-images.jianshu.io/upload_images/1214383-733370d7e44097b0.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="修改位置"><br>（4）、退出查询修改后的战区情况</p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-2e690d4fae82213d.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="荣耀榜"></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/1214383-7d84da6873a6670f.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="查询战力"></p>
+<p>完成这一切，只用等下周就可以看到切换后战区牌子了，就这样，希望能帮到你。</p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

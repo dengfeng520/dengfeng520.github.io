@@ -1,0 +1,276 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>基于MVVM构建聊天App （一）从新建工程开始 - Hexo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="小时光
+北京体适能体育科技有限公司 
+
+
+在开发一个新的App时不仅要考虑当前版本的需求，更要考虑到后期的版本迭代和维护工作 《Clean Code》一书中也提出代码大部分时候是用来维护的，而不是用,"> 
+    <meta name="author" content="John Doe"> 
+    <link rel="alternative" href="atom.xml" title="Hexo" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">Hexo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://example.com"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">基于MVVM构建聊天App （一）从新建工程开始</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">基于MVVM构建聊天App （一）从新建工程开始</h1>
+        <div class="stuff">
+            <span>六月 16, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h6 align='right'>小时光</h6>
+<h6  align='right'>北京体适能体育科技有限公司</h6> 
+
+
+<p><strong>在开发一个新的App时不仅要考虑当前版本的需求，更要考虑到后期的版本迭代和维护工作 《Clean Code》一书中也提出<code>代码大部分时候是用来维护的，而不是用来实现功能的</code>。所以在前期的框架设计，技术调查上应该慎之又慎。本次我将从个人开发者角度围绕着代码的可维护性、可测试性、可复用性来实现一个简单的聊天App。</strong></p>
+<h3 id="1、基本设置"><a href="#1、基本设置" class="headerlink" title="1、基本设置"></a>1、基本设置</h3><p>新建一个工程，命名为<code>RPChat</code>,此处开发语言选择<code>Swift</code>:</p>
+<p>(1)、在工程中设置<strong>Info.plist</strong>中设置<strong>Allow Arbitrary Loads</strong>为YES，参考:<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/31254725/transport-security-has-blocked-a-cleartext-http">stackoverflow Transport security has blocked a cleartext HTTP</a></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/https%E9%85%8D%E7%BD%AE.png?raw=true" alt="https配置"></p>
+<p>(2)、打开<code>Assets.xcassets</code>按照指定的图片大小添加App的Logo图片。</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/Logo.png?raw=true" alt="Logo"></p>
+<h3 id="2、工程结构"><a href="#2、工程结构" class="headerlink" title="2、工程结构"></a>2、工程结构</h3><p>添加三个<code>framework</code>分别命名为<strong>RPChat_iOS、RPChatUIKit、RPChatDataKit</strong></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/addframework1.png?raw=true" alt="添加framework"></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/addframework2.png?raw=true" alt="添加framework"></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/addframework3.png?raw=true" alt="工程目录"></p>
+<ul>
+<li><strong>RPChat_iOS</strong>是和UI的显示以及交互相关的代码</li>
+<li><strong>RPChatUIKit</strong>是整个项目中会用到的对UIKit的公共扩展</li>
+<li><strong>RPChatDataKit</strong>是整个项目的数据存储以及访问接口，也可以理解为是App的View Model以及Model</li>
+</ul>
+<h3 id="3、使用carthage管理第三方开源库"><a href="#3、使用carthage管理第三方开源库" class="headerlink" title="3、使用carthage管理第三方开源库"></a>3、使用carthage管理第三方开源库</h3><h5 id="1、carthage使用"><a href="#1、carthage使用" class="headerlink" title="1、carthage使用"></a>1、carthage使用</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">carthage version</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cd &#x2F;Users&#x2F;****&#x2F;Desktop&#x2F;GitHub&#x2F;RPChat</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">touch Cartfile</span><br></pre></td></tr></table></figure>
+<p>使用VSCode打开<code>Cartfile</code>文件，输入用到的第三方开源库：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">github &quot;Alamofire&#x2F;Alamofire&quot; &#x2F;&#x2F; Http请求封装</span><br><span class="line">github &quot;ReactiveX&#x2F;RxSwift&quot; &#x2F;&#x2F; 用于管理App中的事件</span><br><span class="line">github &quot;onevcat&#x2F;Kingfisher&quot; &#x2F;&#x2F; 用于App中的缓存和下载图片</span><br><span class="line">github &quot;SwiftyJSON&#x2F;SwiftyJSON&quot; &#x2F;&#x2F; 生成Model</span><br><span class="line">gitHub &quot;CoderMJLee&#x2F;MJRefresh&quot; &#x2F;&#x2F; UItableView下拉组件</span><br><span class="line">github &quot;robbiehanson&#x2F;CocoaAsyncSocket&quot; </span><br></pre></td></tr></table></figure>
+<p>执行更新命令： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">carthage update --platform iOS --no-use-binaries</span><br></pre></td></tr></table></figure>
+<h5 id="2、Using-Carthage-with-Xcode-12"><a href="#2、Using-Carthage-with-Xcode-12" class="headerlink" title="2、Using Carthage with Xcode 12"></a>2、Using Carthage with Xcode 12</h5><p>升级Xcode 12后，执行上面的命令可能会报错，解决方法可参考：<br><a target="_blank" rel="noopener" href="https://github.com/Carthage/Carthage/blob/master/Documentation/Xcode12Workaround.md">Using Carthage with Xcode 12</a></p>
+<p>然后使用以下命令执行<code>carthage</code>更新：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">carthage.sh bootstrap --platform iOS --cache-builds</span><br></pre></td></tr></table></figure>
+<p>更新完成后，打开工程，选择<strong>TARGETS</strong> –&gt;<strong>Build Phases</strong>–&gt; <strong>Link Binary With Libries</strong> 点击加号，选择 <strong>Add File</strong> –&gt; <strong>Carthage</strong> –&gt; <strong>Build</strong> –&gt; <strong>iOS</strong> 添加所需的<code>FrameWork</code>,</p>
+<p>下面的gif演示了如何添加第三方的<code>FrameWork</code>；</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/addgif.gif?raw=true" alt="gif"></p>
+<p>接下来，点击+，选择<code>New Run Script Phase</code>，此时新建了<code>Run Script</code>,在执行命令中添加:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;usr&#x2F;local&#x2F;bin&#x2F;Carthage copy-frameworks</span><br></pre></td></tr></table></figure>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/NewRunScript.png?raw=true" alt="New Run Script"></p>
+<h5 id="3、解决the-file-couldn’t-be-saved-报错问题"><a href="#3、解决the-file-couldn’t-be-saved-报错问题" class="headerlink" title="3、解决the file couldn’t be saved.报错问题"></a>3、解决<code>the file couldn’t be saved.</code>报错问题</h5><p>添加完后再次build可能会报错：<code>the file couldn’t be saved. command phasescriptexecution failed with a nonzero exit code</code></p>
+<p>解决方案参考：<a target="_blank" rel="noopener" href="https://github.com/Carthage/Carthage/issues/3056">carthage copy-frameworks produces “The file couldn’t be saved.” error #3056</a></p>
+<p>Add to <code>run scripts</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">rm -rf $&#123;TMPDIR&#125;&#x2F;TemporaryItems&#x2F;*carthage*</span><br><span class="line">&#x2F;usr&#x2F;local&#x2F;bin&#x2F;carthage copy-frameworks</span><br></pre></td></tr></table></figure>
+<p>再次build成功。</p>
+<p>在<code>Input Files</code>中引入我们要用到的库的路径:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(SRCROOT)&#x2F;Carthage&#x2F;Build&#x2F;iOS&#x2F;Alamofire.framework</span><br></pre></td></tr></table></figure>
+<p>其作用是把<code>Carthage</code>引入的第三方库在打包的时候，拷贝到特定目录。</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/Carthage.png?raw=true" alt="Carthage"></p>
+<p>在上传到git仓库时，不需要传<code>Carthage</code>下的文件，所以选择忽略，在<code>.gitignore</code>文件中添加</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/gitignore.png?raw=true" alt=".gitignore"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">*.DS_Store</span><br><span class="line">Carthage&#x2F;</span><br><span class="line">xcuserdata&#x2F;</span><br><span class="line">.idea&#x2F;</span><br></pre></td></tr></table></figure>
+<h3 id="4、兼容iOS-13之前的老版本"><a href="#4、兼容iOS-13之前的老版本" class="headerlink" title="4、兼容iOS 13之前的老版本"></a>4、兼容iOS 13之前的老版本</h3><p>修改最低支持版本为<code>iOS 11</code></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/iOSVer.png?raw=true" alt="iOS 最低版本"></p>
+<p>此时发现再Build工程，发现已经有很多<code>Error</code>，这是版本兼容的问题，由于<code>Xcode 11</code>新建的工程默认为当前最高版本，Xcode新增了一个<code>SceneDelegate</code>文件，具体作用请参考官方文档：<a target="_blank" rel="noopener" href="https://developer.apple.com/videos/play/wwdc2019/423/">Optimizing App Launch</a>。现在要在<code>AppDelegate</code>和中<code>SceneDelegate</code>做兼容老版本处理。 方法就是对当前系统做一个判断，然后再根据不同系统版本分开处理。</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/vererror.png?raw=true" alt="版本报错"></p>
+<p>在<code>SceneDelegate</code>直接加上<code>@available(iOS 13.0, *)</code>即可,<br>在<code>AppDelegate</code>做扩展处理：</p>
+<p>代码如下： </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@available(iOS 13.0, *)</span><br><span class="line">class SceneDelegate: UIResponder, UIWindowSceneDelegate &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@available(iOS 13.0, *)</span><br><span class="line">extension AppDelegate &#123;</span><br><span class="line">    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -&gt; UISceneConfiguration &#123;</span><br><span class="line">         return UISceneConfiguration(name: &quot;Default Configuration&quot;, sessionRole: connectingSceneSession.role)</span><br><span class="line">    &#125;</span><br><span class="line">    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set&lt;UISceneSession&gt;) &#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="5、国际化"><a href="#5、国际化" class="headerlink" title="5、国际化"></a>5、国际化</h3><h5 id="1、常用文案国际化"><a href="#1、常用文案国际化" class="headerlink" title="1、常用文案国际化"></a>1、常用文案国际化</h5><ul>
+<li>1、如下图所示： 创建所需国际化的语言，此处我创建了英语、繁体汉语、简体汉语：</li>
+</ul>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/Localizable1.png?raw=true" alt="Localizable1"></p>
+<ul>
+<li>2、在工程中新建一个<code>String File</code>文件，命名为<code>Localizable</code></li>
+</ul>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/Localizable2.png?raw=true" alt="国际化2"></p>
+<p> 点击到Localizable.strings文件，点击右侧Localize…按钮添加需要国际化的语言。</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/Localizable3.png?raw=true" alt="国际化3"></p>
+<p>此时来做个测试，在<code>ViewController</code>新建一个名为<code>testLab</code>的<code>UILabel</code>;</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">@IBOutlet weak var testLab: UILabel!</span><br></pre></td></tr></table></figure>
+<p>展开<code>Localize.strings</code>文件，在英文中添加<code>test;</code>,在简体中文中添加:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&quot;test&quot; &#x3D; &quot;测试&quot;;</span><br></pre></td></tr></table></figure>
+<p>在<code>ViewController</code>中调用，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">testLab.text &#x3D; NSLocalizedString(&quot;test&quot;, comment: &quot;&quot;)</span><br></pre></td></tr></table></figure>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/test1.png?raw=true" alt="test"></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/test2.png?raw=true" alt="测试"></p>
+<p>此时点击Run可以看到<code>testLab</code>显示内容为<code>test</code>;</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/test3.png?raw=true" alt="English"></p>
+<p>修改模拟器语言为简体汉语，再次运行：</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/test4.png?raw=true" alt="简体汉语"></p>
+<h5 id="2、App名称国际化"><a href="#2、App名称国际化" class="headerlink" title="2、App名称国际化"></a>2、App名称国际化</h5><ul>
+<li><p>（1）、同样的方法新建一个名为<code>InfoPlist</code>的<code>String</code>文件。</p>
+</li>
+<li><p>(2)、在<code>InfoPlist.strings(English)</code>文件中添加:</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CFBundleName &#x3D; &quot;CatchU&quot;;</span><br></pre></td></tr></table></figure></li>
+<li><p>(3)、在 <code>InfoPlist.strings(Chinese,Simplified)</code>中添加</p>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">CFBundleName &#x3D; &quot;畅聊吧&quot;;</span><br></pre></td></tr></table></figure></li>
+<li><p>(4)、 打开<code>Info.Plist</code>设置<code>Bundle name</code>属性为<code>$CFBundleName</code></p>
+</li>
+</ul>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/test5.png?raw=true" alt="Bundle name"></p>
+<ul>
+<li>(5)、再次运行代码，可以看到，App的名称已经修改成功了。</li>
+</ul>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/icon.png?raw=true" alt="App Name"></p>
+<p>本篇主要讲了App的新建和相关配置，包括：</p>
+<ul>
+<li> 新建工程，基本配置</li>
+<li>通过三个<code>frameworks</code>去实现App不同层次的功能</li>
+<li>通过<code>Carthage</code>管理工程中用的第三方开源库</li>
+<li>对iOS 13之前的系统做一个兼容处理</li>
+<li>国际化相关</li>
+</ul>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

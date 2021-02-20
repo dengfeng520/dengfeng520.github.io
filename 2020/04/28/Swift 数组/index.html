@@ -1,0 +1,322 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Swift的方式来使用数组 - Hexo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="小时光
+
+Array是在开发中最常用的数据类型之一，官方文档对Array的定义是：An ordered, random-access collection.。通常表示一个有序的集合，这里所说的有序并,"> 
+    <meta name="author" content="John Doe"> 
+    <link rel="alternative" href="atom.xml" title="Hexo" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">Hexo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://example.com"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Swift的方式来使用数组</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Swift的方式来使用数组</h1>
+        <div class="stuff">
+            <span>四月 28, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h6 align='right'>小时光</h6>
+
+<p>Array是在开发中最常用的数据类型之一，<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/swift/array">官方文档</a>对Array的定义是：<code>An ordered, random-access collection.</code>。通常表示一个有序的集合，这里所说的有序并不是大小有序，而是指<code>Array</code>中元素的先后位置关系。</p>
+<h3 id="1、Swift的方式来操作数组"><a href="#1、Swift的方式来操作数组" class="headerlink" title="1、Swift的方式来操作数组"></a>1、Swift的方式来操作数组</h3><ul>
+<li>创建Array的N种方法</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> testArray1: <span class="type">Array</span>&lt;<span class="type">Int</span>&gt; <span class="operator">=</span> <span class="type">Array</span>&lt;<span class="type">Int</span>&gt;()</span><br><span class="line"><span class="keyword">var</span> testArray2: [<span class="type">Int</span>] <span class="operator">=</span> []</span><br><span class="line"><span class="keyword">var</span> testArray3 <span class="operator">=</span> [<span class="type">Int</span>]()</span><br><span class="line"><span class="keyword">var</span> testArray4 <span class="operator">=</span> testArray3</span><br></pre></td></tr></table></figure>
+<p>在上面的代码块中，<code>Array&lt;Int&gt;</code>和<code>[Int]()</code>没有本质区别，随便使用哪种方式都可以初始化一个<code>Array</code>。而最后一种直接使用了一个空的<code>Array</code>生成了一个新的<code>Array</code>对象。</p>
+<ul>
+<li>定义数组时同时指定初始值的方法</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var testInts &#x3D; [Int](repeating: 6, count: 3) &#x2F;&#x2F; [6, 6, 6]</span><br><span class="line">var sixInts &#x3D; testInts + testInts &#x2F;&#x2F; [6, 6, 6, 6, 6, 6]</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p><strong>count</strong>和<strong>isEmtpy</strong>属性</p>
+<p><code>count</code>返回数组集合中元素的个数，类型是<code>Int</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let testArray &#x3D; [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;]</span><br><span class="line">let countInts &#x3D; testArray.count &#x2F;&#x2F; 6</span><br></pre></td></tr></table></figure>
+
+<p><code>isEmpty</code>表示数组是否为空，类型是<code>Bool</code>再对数组操作前我们可以先判断数组是否为空再下一步操作</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">let testArray &#x3D; [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;]</span><br><span class="line">if testArray.isEmpty &#x3D;&#x3D; false &#123;</span><br><span class="line">    let mapArray &#x3D; testArray.map(&#123; (mapString) -&gt; String in</span><br><span class="line">         return mapString</span><br><span class="line">    &#125;)</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    print(&quot;数组为空&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<li><p>访问<strong>Array</strong>中的元素</p>
+<ul>
+<li>通过索引访问数组的某个元素</li>
+</ul>
+<p>在几乎所有的开发语言中都惯用索引（或下标）的方式访问数组数组中的元素，因为我们在使用索引访问数组的元素时没法保证索引的安全性，所以这种方式存在数组越界的风险，稍不注意就会导致整个程序直接<code>Crash</code>，从而给用户造成不好的体验。<br>当然<code>Swift</code>也支持这种方式，但苹果却不推荐开发者使用这种方式访问数组元素。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let testArray &#x3D; [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;]</span><br><span class="line">let sevenStr &#x3D; testArray[7]</span><br></pre></td></tr></table></figure>
+<p>如上面的代码，使用这种方式访问数组元素，如果直接访问不做处理会导致程序直接<code>crash</code>，在调试时，可以看到编译器直接报错：<code>Thread 1: Fatal error: Index out of range</code>, 所以在使用索引访问数组元素时应该慎重在慎重。那么在<code>Swift</code>中如何优雅的访问数组元素呢？事实上，Swift的设计者是不推荐开发者使用这种下标取值的方式。</p>
+<p>使用type方法可以看到，这种方式返回的值为<code>String</code>类型，这说明在使用下标取值时需要确认，取到的值为String类型，而不是<code>Optionals&lt;String&gt;</code>类型，我们在使用这种方式取值时没有<code>Optionals</code>保护数组越界的情况，在使用下标取值的方法时我们就要承担<strong>crash</strong>的风险。</p>
+</li>
+</ul>
+<ul>
+<li><p>访问数组中某个范围内的元素</p>
+<p>在<code>Swift</code>中我们可以通过使用<code>range operator</code>访问数组的一个范围,通过<code>range operator</code>方式得到的并不是一个<code>Array</code>,而是一个<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/swift/arrayslice">ArraySlice</a>,<a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/swift/arrayslice">官方文档</a>对<code>ArraySlice</code>的定义是<code>A slice of an </code>Array<code>, </code>ContiguousArray<code>, or </code>ArraySlice<code> instance.</code>通俗来说，就是<code>Array</code>某一段内容的<code>View</code>,不保存数组的内容，只保存这个<code>view</code>引用的数组的范围。我们可以通过这个<code>view</code>创建一个新的<code>Array</code>。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let testArray &#x3D; [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;]</span><br><span class="line">let rangeArray &#x3D; Array(testArray[0...2])</span><br></pre></td></tr></table></figure></li>
+<li><p>向数组中添加或删除元素</p>
+<p>向数组的末尾添加元素，可以使用<code>append</code>方法, 或者使用<code>+=</code>的方式:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var testArray &#x3D; [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;]</span><br><span class="line">testArray.append(&quot;seven&quot;) &#x2F;&#x2F; [&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;, &quot;five&quot;, &quot;six&quot;, &quot;seven&quot;]</span><br><span class="line">testArray +&#x3D; [&quot;eight&quot;,&quot;nine&quot;] &#x2F;&#x2F; [&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;, &quot;five&quot;, &quot;six&quot;, &quot;seven&quot;, &quot;eight&quot;, &quot;nine&quot;]</span><br></pre></td></tr></table></figure>
+<p>如果要在<code>Array</code>中间位置添加元素，可使用<code>insert</code>方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var testArray &#x3D; [&quot;one&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;]</span><br><span class="line">testArray.insert(&quot;two&quot;, at: 1) &#x2F;&#x2F; [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;]</span><br><span class="line">testArray.insert(&quot;seven&quot;, at: 7) &#x2F;&#x2F; Thread 1: Fatal error: Array index is out of range&#96;</span><br></pre></td></tr></table></figure>
+<p><code>insert</code>方法的第一个参数表示要插入的值，第二个参数表示要插入的位置索引，此处要注意的是：<strong>这个位置必须是一个合法的范围，即<code>0...array1.endIndex</code>,如果超出这个范围就会导致程序<code>Crash</code></strong></p>
+</li>
+</ul>
+<p>删除数组中的元素:</p>
+<p>删除数组中的最后一个元素可以使用<code>removeLast()</code>方法，删除数组中的第一个元素可以使用<code>removeFirst()</code>方法，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var testArray &#x3D; [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;,&quot;seven&quot;]</span><br><span class="line">testArray.removeLast() &#x2F;&#x2F; [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;]</span><br><span class="line">testArray.removeFirst() &#x2F;&#x2F; [&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;]</span><br><span class="line">testArray.remove(at: 7) &#x2F;&#x2F; Fatal error: Index out of range</span><br><span class="line">var secondTestArray &#x3D; [String]()</span><br><span class="line">secondTestArray.removeFirst() &#x2F;&#x2F; Fatal error: Can&#39;t remove first element from an empty collection</span><br><span class="line">secondTestArray.removeLast() &#x2F;&#x2F; Fatal error: Can&#39;t remove last element from an empty collection</span><br><span class="line">secondTestArray.popLast() &#x2F;&#x2F; nil </span><br></pre></td></tr></table></figure>
+<p><strong>当我们删除数组中的某个元素时，首先要确保数组不能为空，然后还要保证删除的索引在合法的范围内，然后在进行删除操作</strong></p>
+<p>查找元素在数组中的位置:</p>
+<p>如我要查找元素5在数组中的位置，可以使用<code>firstIndex</code>,返回的是一个<code>Optional&lt;Int&gt;</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let testList &#x3D; [1,2,3,4,5,6]</span><br><span class="line">let oneIndex &#x3D; testList.firstIndex &#123; $0 &#x3D;&#x3D; 5 &#125;</span><br><span class="line">print(&quot;ondexIndex&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;\(oneIndex ?? 0)&quot;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>数组遍历</p>
+<p>在开发中对<code>Array</code>每个元素的遍历也是常用操作:</p>
+<ul>
+<li>(1)、最简单的方式</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let testArray &#x3D; [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;]</span><br><span class="line">for vaule in testArray &#123;</span><br><span class="line">    print(vaule)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>(2)、遍历的时候，同时获得索引和值</p>
+<p>使用数组对象的<code>enumerated()</code>方法，它会返回一个<code>Sequence</code>对象，包含了每个成员的索引和值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let testArray &#x3D; [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;]</span><br><span class="line">for (index, value) in testArray.enumerated() &#123;</span><br><span class="line">   print(&quot;\(index): \(value)&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ul>
+</li>
+<li><p>(3)、通过闭包<code>closure</code>遍历</p>
+<p> 通过闭包<code>closure</code>，我们可以使用<code>Array</code>的<code>forEach</code>方法来遍历数组:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let testArray &#x3D; [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;]</span><br><span class="line">    testArray.forEach &#123; (vaule) in</span><br><span class="line">        print(vaule)</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><code>for in</code>和 <code>forEach</code>遍历的效果是一样的，但是如果使用<code>forEach</code>方法遍历数组就不能通过<code>break</code>或<code>continue</code>来退出循环，如果要退出遍历就只能使用<code>for in</code>方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">testArray.forEach &#123; (testChar) in</span><br><span class="line"> if testChar &#x3D;&#x3D; &quot;three&quot; &#123;</span><br><span class="line">        continue &#x2F;&#x2F; &#39;continue&#39; is only allowed inside a loop</span><br><span class="line">    &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>(4)、map 、 compactMap 、 filter 遍历数组</li>
+</ul>
+<p>事实上，Swift的设计者并不推荐开发者使用传统的C语言风格的for循环。Swift为开发者提供了更高级的方法，当我们需要循环一个数组时，可以根据自己的需求，使用Map 和 Filter来实现。</p>
+<p>举例一：老师现在已经得到了学生的试卷成绩，再为每个学生加上平时成绩30分，这样可以得出学生的最终成绩,如果使用传统的C语言循环来实现：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">let fractionArray: [Int] &#x3D; [40,53,59,43,56,54,33,55,66,70,22,69]</span><br><span class="line">var finallyList &#x3D; [Int]()</span><br><span class="line">for num in fractionArray &#123;</span><br><span class="line">     finallyList.append(num + 30)</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; [70, 83, 89, 73, 86, 84, 63, 85, 96, 100, 52, 99]</span><br></pre></td></tr></table></figure>
+<p>再看看Swift为开发者提供的<strong>map</strong>方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let fractionArray: [Int] &#x3D; [40,53,59,43,56,54,33,55,66,70,22,69]</span><br><span class="line">let finallyArray: [Int] &#x3D; fractionArray.map &#123;</span><br><span class="line">    return $0 + 30</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; [70, 83, 89, 73, 86, 84, 63, 85, 96, 100, 52, 99]</span><br></pre></td></tr></table></figure>
+<p><code>map</code>用于把数组中的所有元素按照指定规则操作变换并返回一个新的数组，这样比使用for循环更具表现力。</p>
+<p><strong>使用<code>map</code>来完成这类操作，大大提高了代码的可读性；<br>同时使用<code>map</code>直接返回了一个常量数组；</strong></p>
+<p>当然<code>Swift</code>的设计者只是对<code>map</code>封装了<code>for</code>循环的代码，其核心代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">extension Array &#123;</span><br><span class="line"> public func myselfMap&lt;T&gt;(_ transform: (Element) -&gt; T) -&gt; [T] &#123;</span><br><span class="line">      var tmp: [T] &#x3D; []</span><br><span class="line">      tmp.reserveCapacity(count)</span><br><span class="line">     </span><br><span class="line">      for value in self &#123;</span><br><span class="line">          tmp.append(transform(value))</span><br><span class="line">      &#125;</span><br><span class="line">      return tmp</span><br><span class="line">   &#125;</span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<p><strong>compactMap</strong>方法是<strong>map</strong>的升级版,在遍历数组的同时，去除其中的nil值。</p>
+<figure class="highlight plain"><figcaption><span>testList </span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">let lsArray: [Int] &#x3D; testList.compactMap &#123; (num) -&gt; Int? in</span><br><span class="line"> return num</span><br><span class="line">&#125; &#x2F;&#x2F; [1, 2, 2, 3, 3, 4, 5, 6]</span><br></pre></td></tr></table></figure>
+<p>举例二： 老师在算出学生成绩后要查看那些人的成绩是优秀，此时我们可以使用<code>filter</code></p>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let excellentArray &#x3D; finallyArray.filter &#123;</span><br><span class="line">   $0 &gt;&#x3D; 85</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; [89, 86, 85, 96, 100, 99]</span><br></pre></td></tr></table></figure>
+</code></pre>
+<p>   <strong>map在遍历数组的同时可以对每个参数做指定规则的操作，同时返回一个新的数组；<br>   filter只按指定规则遍历数组，同时返回一个新的数组</strong></p>
+<p>   <code>filter</code>是怎么实现的呢，我们可以根据<code>map</code>的实现方法来实现,其核心代码如下：</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">   extension Array &#123;</span><br><span class="line">    func myfilter(_ predicate: (Element) -&gt; Bool) -&gt; [Element] &#123;</span><br><span class="line">        var tmp: [Element] &#x3D; []</span><br><span class="line">        for value in self where predicate(value) &#123;</span><br><span class="line">            tmp.append(value)</span><br><span class="line">        &#125;</span><br><span class="line">        return tmp</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>(5)、min 、 max</p>
+<p>同样老师如果需要计算本次考试的最高分和最低分，只要数组中的元素实现了<code>Equatable protocol</code>协议，开发者不用对数组进行任何操作，可直接调用<code>min 、 max</code>即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">finallyArray.min() &#x2F;&#x2F; 52</span><br><span class="line">finallyArray.max() &#x2F;&#x2F; 100</span><br></pre></td></tr></table></figure></li>
+<li><p><code>sorted</code>和<code>partition</code>对数组进行排序</p>
+</li>
+</ul>
+<p>接上面，如果老师要对本班成绩按从大到小或者从小到大的顺序排列，这样可以更直观的看到本班的成绩：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let mixArray &#x3D; finallyArray.sorted() &#x2F;&#x2F; [52, 63, 70, 73, 83, 84, 85, 86, 89, 96, 99, 100]</span><br><span class="line">let maxArray &#x3D; finallyArray.sorted(by: &gt;) &#x2F;&#x2F; [100, 99, 96, 89, 86, 85, 84, 83, 73, 70, 63, 52]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>判断两个数组是否相等</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">finallyArray.elementsEqual(mixArray, by: &#123;</span><br><span class="line">    $0 &#x3D;&#x3D; $1</span><br><span class="line">&#125;) &#x2F;&#x2F; false</span><br></pre></td></tr></table></figure>
+<ul>
+<li>数组是否是以特定的排序开头</li>
+</ul>
+<p>如老师要计算出本次考试成绩，是否有满分的:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mixArray.starts(with: [100], by: &#123;</span><br><span class="line">    $0 &#x3D;&#x3D; $1</span><br><span class="line">&#125;) &#x2F;&#x2F; true</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>计算数组中元素和</p>
+<p>例如老师要计算本次考试的总成绩，然后计算出本次考试的平均成绩：</p>
+<p>如果使用C语言风格，我们首先要对成绩做一个遍历，然后累加最终得到全班成绩总和：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var allNum &#x3D; Int()</span><br><span class="line">for num in finallyList &#123;</span><br><span class="line">   allNum &#x3D; allNum + num</span><br><span class="line">&#125;</span><br><span class="line">allNum &#x2F; (finallyList.count)</span><br></pre></td></tr></table></figure>
+<p><code>Swift</code>为开发者提供了更简单有效的方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">finallyList.reduce(0, +) &#x2F; (finallyList.count) &#x2F;&#x2F; 81</span><br></pre></td></tr></table></figure></li>
+<li><p>按条件把数组中的元素分类</p>
+</li>
+</ul>
+<p>例如老师要分别统计出及格和没及格的成绩,我们认为60分为及格：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">let pass &#x3D; mixArray.partition(by: &#123;</span><br><span class="line">   $0 &gt; 60</span><br><span class="line">  &#125;)</span><br><span class="line"> let failedArray &#x3D; mixArray[0 ..&lt; pass] &#x2F;&#x2F; 不及格的 [52]</span><br><span class="line"> let passArray &#x3D; mixArray[pass ..&lt; mixArray.endIndex] &#x2F;&#x2F; 及格的 [63, 70, 73, 83, 84, 85, 86, 89, 96, 99, 100]</span><br></pre></td></tr></table></figure>
+
+<h3 id="2、Array和NSArray"><a href="#2、Array和NSArray" class="headerlink" title="2、Array和NSArray"></a>2、Array和NSArray</h3><ul>
+<li><p><code>Array</code> 是结构体，属于值类型, <code>NSArray</code> 是类，属于引用类型。</p>
+</li>
+<li><p><code>Array</code>是否可以被修改完全是通过<code>var</code>和<code>let</code>关键字来决定的，<code>Array</code>类型自身并不解决它是否可以被修改。</p>
+</li>
+<li><p><code>Array</code>如何转换为<code>NSArray</code></p>
+<p> 参考： <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/35811482/swift-how-to-convert-a-swift-array-to-nsarray">stackoverflow Swift - How to convert a swift array to NSArray?</a></p>
+</li>
+<li><p>赋值时内存</p>
+<p>看下面两段代码</p>
+<p>(1) 、 <code>Array</code>的<code>copy</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var testArray &#x3D; [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;]</span><br><span class="line">let copyArray &#x3D; testArray</span><br><span class="line">testArray.append(&quot;seven&quot;) &#x2F;&#x2F; [&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;, &quot;five&quot;, &quot;six&quot;, &quot;seven&quot;]</span><br><span class="line">print(copyArray) &#x2F;&#x2F; [&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;, &quot;five&quot;, &quot;six&quot;]</span><br></pre></td></tr></table></figure>
+<p> (2) 、 <code>NSArray</code>的<code>copy</code></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let mutArray &#x3D; NSMutableArray(array: [&quot;one&quot;,&quot;two&quot;,&quot;three&quot;,&quot;four&quot;,&quot;five&quot;,&quot;six&quot;])</span><br><span class="line">let copyArray: NSArray &#x3D; mutArray</span><br><span class="line">mutArray.insert(&quot;seven&quot;, at: 6) &#x2F;&#x2F; [&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;, &quot;five&quot;, &quot;six&quot;, &quot;seven&quot;]</span><br><span class="line">print(copyArray) &#x2F;&#x2F; [&quot;one&quot;, &quot;two&quot;, &quot;three&quot;, &quot;four&quot;, &quot;five&quot;, &quot;six&quot;, &quot;seven&quot;]</span><br></pre></td></tr></table></figure>
+
+<p>第一段代码中：复制<code>testArray</code>数组后并向<code>testArray</code>中添加元素，<code>copyArray</code>的内容并不会改变，因为在复制<code>testArray</code>数组时，并不是内容复制，而是内存地址复制，两个数组仍旧共用同一个内存地址，只有当修改了其中一个<code>Array</code>的内容时，才会生成一个新的内存。</p>
+<p>第二段代码：复制<code>mutArray</code>数组，尽管<code>copyArray</code>为<code>NSArray</code>,此时我希望<code>copyArray</code>的值是不会改变的，但实际上当我修改了<code>mutArray</code>的值后<code>copyArray</code>的值也随之改变了。由于这个赋值执行的是引用拷贝，这两个数组指向的是同一个内存地址，所以当我们修改<code>mutArray</code>的内容时，<code>copyArray</code>也就间接受到了影响。</p>
+<ul>
+<li>当我门使用<code>NSArray</code>和<code>NSMutableArray</code>时，<code>Swift</code>种的<code>var</code>和<code>let</code>关键字就不起作用了。</li>
+</ul>
+<p>本文主要介绍了<code>Swift</code>中最常用的集合<code>Array</code>的一些基本用法，和<code>Objective-C</code>的<code>NSArray</code>的区别。</p>
+<p>友情链接：</p>
+<p><a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/swift/array">Apple developer Array</a></p>
+<p><a target="_blank" rel="noopener" href="https://boxueio.com/series/collection-types">泊学：Swift 3 Collections</a></p>
+<p><a target="_blank" rel="noopener" href="https://time.geekbang.org/course/detail/100034001-134747?utm_campaign=guanwang&utm_source=baidu-ad&utm_medium=ppzq-pc&utm_content=title&utm_term=baidu-ad-ppzq-title">极客时间：集合类</a></p>
+</li>
+</ul>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

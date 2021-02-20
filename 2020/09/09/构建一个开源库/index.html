@@ -1,0 +1,345 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>基于MVVM构建聊天App （四）构建自己的开源库 - Hexo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="坦白来说我们所使用的任何一个功能在github等一些开源网站上都能找到示例代码或相关开源库，我个人认为在使用一个开源代码加入到自己的工程之前应该慎重：
+
+有些开源项目的由于各种原因最终作者不再维护，,"> 
+    <meta name="author" content="John Doe"> 
+    <link rel="alternative" href="atom.xml" title="Hexo" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">Hexo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://example.com"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">基于MVVM构建聊天App （四）构建自己的开源库</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">基于MVVM构建聊天App （四）构建自己的开源库</h1>
+        <div class="stuff">
+            <span>九月 09, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <p>坦白来说我们所使用的任何一个功能在github等一些开源网站上都能找到示例代码或相关开源库，我个人认为在使用一个开源代码加入到自己的工程之前应该慎重：</p>
+<ul>
+<li>有些开源项目的由于各种原因最终作者不再维护，出现bug了我们只能自己维护或者寻找新的替代库；</li>
+<li>我们的需求和开源库有区别，即使使用了开源代码也需要在其基础上再次修改；</li>
+<li>iOS 系统升级后，一些开源库的作者不能及时发布新的兼容版本，可能会导致出现兼容问题；</li>
+<li>考虑到工程包的问题，虽然苹果已将非Wi-Fi下载APP的大小升至150M，但在工程中大量引入第三方库，必然也会导致APP包比预期要大；</li>
+</ul>
+<p>在工程中部分功能，如LoadingView，网络请求，JSON转Model等，虽然有很多开源库，但我还是建议尽量使用系统的方法，或者封装一个组件并将其开源。这样既可以避免上面的几个问题，同时如果开发新项目了也可以更方便的集成到新项目中。</p>
+<p>一般来说，构建一个开源库应该做以下几步操作：</p>
+<ul>
+<li>编写开源代码</li>
+<li>测试和修改</li>
+<li>发布到开源平台，如Github等</li>
+<li>后期维护，包括及时升级，修改bug,处理<strong>Issues和Pull requests</strong>等</li>
+</ul>
+<h3>1、创建工程编写代码</h3>
+
+<p>1、登录GitHub,新建一个仓库，命名为<code>RPBannerView-Swift</code>,此处我选的是MIT开源协议。</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A1.png?raw=true" alt="A1"></p>
+<p>2、在本地新建一个<code>RPBannerView-Swift</code>文件夹,并将刚创建的代码clone到该文件中</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A2.png?raw=true" alt="A2"></p>
+<p>3、在该文件夹中新建一个工程，命名为<code>RPBannerView-Swift</code>,完成后上传代码到<code>GitHub</code>上。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd Desktop&#x2F;RPBannerView-Swift&#x2F;</span><br><span class="line">git clone https:&#x2F;&#x2F;github.com&#x2F;dengfeng520&#x2F;RPBannerView-Swift.git</span><br><span class="line">git add .&#x2F;</span><br><span class="line">git commit -a -m &quot;上传代码&quot;</span><br><span class="line">git push origin master</span><br><span class="line">git ll &#x2F;&#x2F; 查看上传记录</span><br></pre></td></tr></table></figure>
+<p>4、iOS 版本兼容</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A3.png?raw=true" alt="A3"></p>
+<p>打开<code>RPBannerView-Swift</code>工程，修改最低支持版本为iOS 11，此时build工程，会报错。在<code>AppDelegate</code>和<code>SceneDelegate</code>做兼容处理即可。</p>
+<ul>
+<li>in AppDelegate.swift</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@available(iOS 13.0, *)</span><br><span class="line">extension AppDelegate &#123;</span><br><span class="line">    &#x2F;&#x2F; MARK: UISceneSession Lifecycle</span><br><span class="line">    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -&gt; UISceneConfiguration &#123;</span><br><span class="line">        &#x2F;&#x2F; Called when a new scene session is being created.</span><br><span class="line">        &#x2F;&#x2F; Use this method to select a configuration to create the new scene with.</span><br><span class="line">        return UISceneConfiguration(name: &quot;Default Configuration&quot;, sessionRole: connectingSceneSession.role)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set&lt;UISceneSession&gt;) &#123;</span><br><span class="line">        &#x2F;&#x2F; Called when the user discards a scene session.</span><br><span class="line">        &#x2F;&#x2F; If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.</span><br><span class="line">        &#x2F;&#x2F; Use this method to release any resources that were specific to the discarded scenes, as they will not return.</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>in SceneDelegate.Swift</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@available(iOS 13.0, *)</span><br><span class="line">class SceneDelegate: UIResponder, UIWindowSceneDelegate &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3> 2、发布到Carthage </h3>
+
+<ul>
+<li>1、新建framework</li>
+</ul>
+<p>编译工程成功后新建一个<code>framework </code>,命名为<code>RPBannerView</code>,</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A4.png?raw=true" alt="A4"></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A5.png?raw=true" alt="A5"></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A6.png?raw=true" alt="A6"></p>
+<ul>
+<li><p>2、完成后修改<code>RPBannerView.framework</code>的最低版本为iOS 11，</p>
+<p>选中新建的<code>RPBannerView.framework</code> –&gt; <code>Build Settings</code> –&gt; <code>iOS deployment Target</code> –&gt; <code>iOS 11</code></p>
+</li>
+</ul>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A7.png?raw=true" alt="A7"></p>
+<ul>
+<li><p>3、添加<code>RPBannerView.framework</code>要编译的文件，</p>
+<p>  选中<code>RPBannerView.framework</code> –&gt; <code>Build Phases</code><br>  把需要编译的文件导入即可。</p>
+</li>
+</ul>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A8.png?raw=true" alt="A8"></p>
+<ul>
+<li>4、新建Xcode schemes</li>
+</ul>
+<p>选择 Manager Schemes –&gt; 勾选shared</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A9.png?raw=true" alt="A9"></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A10.png?raw=true" alt="A10"></p>
+<ul>
+<li>5、编译FrameWork</li>
+</ul>
+<p>切换到<code>RPBannerView.framework</code>,<strong>此处要注意，不要选择模拟器！！</strong></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A11.png?raw=true" alt="A11"></p>
+<p>在Terminal中cd到工程文件，执行build命令，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd Desktop&#x2F;RPBannerView-Swift&#x2F;</span><br><span class="line">carthage build --no-skip-current</span><br></pre></td></tr></table></figure>
+<p>一般情况下第一次build可能会报错，目前不知道是什么原因造成的。</p>
+<p><code>Skipped building RPBannerView-Swift due to the error: Dependency &quot;RPBannerView-Swift&quot; has no shared framework schemes</code></p>
+<p>解决报错方法：打开<strong>Manage Schemes</strong>，取消勾选<strong>RPBannerView</strong>,点击Close,然后再次打开重新勾选即可。<br>重新build成功。</p>
+<p><code>Building scheme &quot;RPBannerView&quot; in RPBannerView-Swift.xcodeproj</code></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A13.png?raw=true" alt="A13"></p>
+<p>编译成功后打开工程文件可以看到多了一个<code>Carthage</code>文件，逐步点开：<code>Carthage</code> –&gt; <code>Build</code> –&gt; <code>iOS</code> –&gt; <code>RPBannerView.framework</code>是编译成功后的文件。</p>
+<ul>
+<li>6、上传<code>RPBannerView-FrameWork</code>到GitHub</li>
+</ul>
+<p>编译成功后需要把代码上传到GitHub并开源才可以让其他人通过<code>Carthage</code>来使用这个开源库。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">cd Desktop&#x2F;RPBannerView-Swift&#x2F;</span><br><span class="line">git add .&#x2F;</span><br><span class="line">git commit -a -m &quot;update code&quot;</span><br><span class="line">git push origin master</span><br></pre></td></tr></table></figure>
+<ul>
+<li>7、创建tag</li>
+</ul>
+<p>在上传到GitHub后需要创建一个tag，以此来确定这个库的版本。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd Desktop&#x2F;RPBannerView-Swift&#x2F;</span><br><span class="line">git tag 1.0</span><br><span class="line">git push --tags</span><br></pre></td></tr></table></figure>
+<ul>
+<li>8、验证是否成功</li>
+</ul>
+<p>新建一个工程，命名为<code>RPBannerViewDemo</code>,在<code>Cartfile</code>文件中导入上传的库，然后更新carthage，如果成功说明</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cd RPBannerViewDemo</span><br><span class="line">touch Cartfile</span><br><span class="line">Vim Cartfile</span><br><span class="line">github &quot;dengfeng520&#x2F;RPBannerView-Swift&quot;</span><br><span class="line">Esc -&gt; :wq</span><br><span class="line">carthage update --platform iOS --no-use-binaries</span><br></pre></td></tr></table></figure>
+<p><code>--platform</code> iOS是指定平台默认是全平台架构的，<code>--no-use-binaries</code>是不用预编译的二进制，用源码重新编译二进制，如果不指定，网络不好的情况下会报错。</p>
+<p>如果工程中已经使用了<code>Carthage</code>,只需要更新<code>RPBannerView-Swift</code>即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">carthage update RPBannerView-Swift --platform iOS</span><br></pre></td></tr></table></figure>
+<p>更新完成后,打开工程，选择TARGETS –&gt;Build Phases–&gt; Link Binary With Libries 点击加号，选择 Add File –&gt; Carthage –&gt; Build –&gt; iOS 添加RPBannerView.FrameWork.</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A14.png?raw=true" alt="A14"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;usr&#x2F;local&#x2F;bin&#x2F;Carthage copy-frameworks</span><br></pre></td></tr></table></figure>
+<p>接下来，点击+，选择New Run Script Phase，此时新建了Run Script,在执行命令中添加:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$(SRCROOT)&#x2F;Carthage&#x2F;Build&#x2F;iOS&#x2F;RPBannerView.framework</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A15.png?raw=true" alt="A15"></p>
+<p>然后就可以在工程中愉快的使用自己的开源库了。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">import RPBannerView</span><br><span class="line"></span><br><span class="line">RPBanner.showBanner(BannerDisplay(title: &quot;test loading...&quot; ,backColor: UIColor.red, addView: view))</span><br></pre></td></tr></table></figure>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A16.png?raw=true" alt="A16"></p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/A17.png?raw=true" alt="A17"></p>
+<h3> 3、发布到CocoaPods </h3>
+
+<ul>
+<li>1、创建RPBannerView-Swift.podspec</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd Desktop&#x2F;RPBannerView-Swift&#x2F;</span><br><span class="line">pod spec create RPBannerView-Swift</span><br><span class="line">vim RPBannerView-Swift.podspec</span><br></pre></td></tr></table></figure>
+<ul>
+<li>2、编辑RPBannerView-Swift.podspec</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Pod::Spec.new do |spec|</span><br><span class="line">spec.name         &#x3D; &quot;RPBannerView-Swift&quot;</span><br><span class="line">spec.version      &#x3D; &quot;1.0&quot;</span><br><span class="line">spec.summary      &#x3D; &quot;A short description of RPBannerView.&quot;</span><br><span class="line">spec.description  &#x3D; &quot;RPBannerView-Swift&quot;</span><br><span class="line">spec.homepage     &#x3D; &quot;https:&#x2F;&#x2F;github.com&#x2F;dengfeng520&#x2F;RPBannerView-Swift&quot;</span><br><span class="line">spec.license      &#x3D; &#123; :type &#x3D;&gt; &quot;MIT&quot;, :file &#x3D;&gt; &quot;LICENSE&quot; &#125;</span><br><span class="line">spec.author             &#x3D; &#123; &quot;dengfeng520&quot; &#x3D;&gt; &quot;deng_feng520@163.com&quot; &#125;</span><br><span class="line">spec.platform     &#x3D; :ios</span><br><span class="line">spec.ios.deployment_target &#x3D; &quot;11.0&quot;</span><br><span class="line">spec.source       &#x3D; &#123; :git &#x3D;&gt; &quot;https:&#x2F;&#x2F;github.com&#x2F;dengfeng520&#x2F;RPBannerView-Swift&quot;, :tag &#x3D;&gt; &quot;#&#123;spec.version&#125;&quot; &#125;</span><br><span class="line">spec.source_files  &#x3D; &quot;RPBannerView-Swift&#x2F;RPBannerView&#x2F;*.swift&quot;</span><br><span class="line">spec.framework  &#x3D; &quot;Foundation&quot;, &quot;UIKit&quot;</span><br><span class="line">end</span><br></pre></td></tr></table></figure>
+<ul>
+<li>3、保存podspec文件，然后验证</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod spec lint RPBannerView-Swift.podspec --allow-warnings</span><br></pre></td></tr></table></figure>
+<p>验证成功提交到CocoaPods/Specs代码库中，让其他人也可以通过<code>pod install</code>命令安装开源库。</p>
+<p>验证成功提示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RPBannerView-Swift.podspec passed validation. </span><br></pre></td></tr></table></figure>
+<p>如果没有注册CocoaPods帐号，可以通过以下命令注册CocoaPods帐号，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">pod trunk register deng_feng520@163.com &#39;dengfeng520&#39; --description&#x3D;&#39;dengfeng520&#39;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>查看CocoaPods帐号信息：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod trunk me</span><br></pre></td></tr></table></figure>
+<ul>
+<li>4、发布到CocoaPods</li>
+</ul>
+<p>如果已经注册了，直接发布到CocoaPods服务器：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod trunk push RPBannerView-Swift.podspec --allow-warnings</span><br></pre></td></tr></table></figure>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/B1.png?raw=true" alt="B1"></p>
+<p>发布成功后更新CocoaPods本地库:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod setup</span><br></pre></td></tr></table></figure>
+<p>然后搜索</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pod search RPBannerView-Swift</span><br></pre></td></tr></table></figure>
+<ul>
+<li>5、在项目中验证是否可以使用</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">cd RPBannerViewDemo</span><br><span class="line">pod init</span><br><span class="line">Vim Podfile</span><br><span class="line">pod &#39;RPBannerView-Swift&#39;, :git &#x3D;&gt; &#39;https:&#x2F;&#x2F;github.com&#x2F;dengfeng520&#x2F;RPBannerView-Swift&#39;</span><br><span class="line">Esc -&gt; :wq</span><br><span class="line">pod install</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>pod 下载成功后，即可在项目中使用这个库。</p>
+<h3> 4、编写README.md文件 </h3>
+
+<p>如图所示一般一个开源的README.md由三部分组成：</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/RPBanner.png?raw=true" alt="README.md结构"></p>
+<ul>
+<li>（1）、顶部的Banner</li>
+</ul>
+<p>此处借鉴其他开源项目添加一张Logo图片和项目名称就可以，让图片和文字全部居中即可。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;div align&#x3D;center&gt;</span><br><span class="line"> &lt;img src&#x3D;&quot;https:&#x2F;&#x2F;github.com&#x2F;dengfeng520&#x2F;RPBannerView-Swift&#x2F;blob&#x2F;master&#x2F;Banner.png?raw&#x3D;true&quot; width &#x3D; 314 height &#x3D; 200&#x2F;&gt;</span><br><span class="line">&lt;&#x2F;div&gt;</span><br><span class="line">&lt;h2 align&#x3D;&quot;center&quot;&gt;RPBannerView&lt;&#x2F;h2&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>（2）、 添加的Badge</p>
+<ul>
+<li>关于这个库的一些标签</li>
+<li>代码测试覆盖率</li>
+</ul>
+<p>标签的设置可参考博客： <a target="_blank" rel="noopener" href="http://www.cocoachina.com/articles/19256">GitHub 项目徽章的添加和设置</a></p>
+</li>
+</ul>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/Issues.png?raw=true" alt="Issues"></p>
+<p>  代码覆盖率是一个开源项目代码质量的重要指标，对于同样功能的开源代码人们一般会优先选择覆盖率高的代码。此处推荐使用 <a target="_blank" rel="noopener" href="https://codecov.io/">codecov</a>的在线服务生成代码测试的覆盖率的Badge。</p>
+<ul>
+<li>（3）、项目说明</li>
+</ul>
+<p>对于说明部分，应该解决的问题让别人在最短的时间内选择你的使用你的代码，一般来说首先要快速的解决开发者的疑惑。<br>这是什么样的库？相对其他同类库有哪些优点？如何快速上手？</p>
+<p>在后面我们也可以加上一些其他内容，如版本发布历史，项目改善计划，详细使用攻略等。</p>
+<h3> 5、后期的维护 </h3>
+
+<p>把自己的代码发布到Github上之后，我们还应该经常维护,如及时修改bug，版本更新，经常关注Issues和Pull requests，解决未发现的问题和bug等。</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/RPChat/Images/Issues.png?raw=true" alt="Issues"></p>
+<hr>
+<p>相关链接： <a target="_blank" rel="noopener" href="https://github.com/dengfeng520/RPBannerView-Swift">Github RPBannerView-Swift</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>

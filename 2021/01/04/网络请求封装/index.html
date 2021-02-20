@@ -1,0 +1,277 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>基于MVVM构建聊天App （三）网络请求封装 - Hexo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="小时光
+本文主要处理2个问题：
+
+
+请求Loading扩展处理
+封装URLSession返回Observable序列
+
+
+1、请求Loading扩展处理
+
+关于Loading组件，我已经封装好，并发,"> 
+    <meta name="author" content="John Doe"> 
+    <link rel="alternative" href="atom.xml" title="Hexo" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">Hexo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://example.com"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">基于MVVM构建聊天App （三）网络请求封装</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">基于MVVM构建聊天App （三）网络请求封装</h1>
+        <div class="stuff">
+            <span>一月 04, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h6 align='right'>小时光</h6>
+本文主要处理2个问题：
+
+<ul>
+<li>请求Loading扩展处理</li>
+<li>封装URLSession返回Observable序列</li>
+</ul>
+<blockquote>
+<h3>1、请求Loading扩展处理</h3>
+</blockquote>
+<p>关于Loading组件，我已经封装好，并发布在Github上，<a target="_blank" rel="noopener" href="https://github.com/dengfeng520/RPToastView">RPToastView</a>，使用方法可参考<strong>README.md</strong>。<br>此处只需对UIViewController做一个extension，用一个属性来控制Loading组件的显示和隐藏即可，核心代码如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">extension Reactive where Base: UIViewController &#123;</span><br><span class="line">    public var isAnimating: Binder&lt;Bool&gt; &#123;</span><br><span class="line">        return Binder(self.base, binding: &#123; (vc, active) in</span><br><span class="line">            if active &#x3D;&#x3D; true &#123;</span><br><span class="line">                &#x2F;&#x2F; 显示Loading View</span><br><span class="line">            &#125; else &#123;</span><br><span class="line">                &#x2F;&#x2F; 隐藏Loading View</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>此处给<strong>isAnimating</strong>传入<strong>true</strong>表示显示<strong>LoadingView</strong>,传入<strong>false</strong>表示隐藏<strong>LoadingView</strong>，</p>
+<blockquote>
+<h3>2、为什么不使用Moya</h3>
+</blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/Moya/Moya">Github Moya</a></p>
+<p><strong>Moya</strong>是在常用的<strong>Alamofire</strong>的基础上又封装了一层，但是我在工程中并没有使用<strong>Moya</strong>,主要是基于以下3点考虑：</p>
+<ul>
+<li>（1）、<strong>Moya</strong>自身原因：<strong>Moya</strong>封装的很完美，这虽然为开发者带来了很大的方便，但是过多封装的必然会导致可扩展性下降</li>
+<li>（2）、内部原因：由于我公司的后台接口没有一个统一的标准，所以不同模块后台返回的数据结构不同，所以我不得不分开处理</li>
+<li>（3）、基于App包大小考虑：导入过多的第三方开源库必然会使App包也同步变大，这并不是我所期望的</li>
+</ul>
+<p>所以我最终的选择是<strong>RxSwift+URLSession+SwiftyJSON</strong>。</p>
+<blockquote>
+<h3>3、RxSwift的使用</h3>
+</blockquote>
+<p>关于网络请求，OC中常用的开源库是<a target="_blank" rel="noopener" href="https://github.com/AFNetworking/AFNetworking">AFNetworking</a>,在Swift中我们常用<a target="_blank" rel="noopener" href="https://github.com/Alamofire/Alamofire">Alamofire</a>。截止2020年12月<strong>AFNetworking</strong>的star数量是<strong>33.1K</strong>,<strong>Alamofire</strong>的star数量是<strong>35K</strong>。从这个数据来说，Swift虽然是一门新的语言，但更受开发者青睐。</p>
+<p>网络请求最简单的方法个人觉得用 <strong>Alamofire</strong>通过<strong>Closures</strong>返回是否成功或失败:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">func post(with body: [String : AnyObject], _ path: String, with closures: @escaping ((_ json: [String : AnyObject],_ failure : String?) -&gt; Void))</span><br></pre></td></tr></table></figure>
+<p>如果我们在用户登录成功后需要再调一次接口查询该用户<strong>Socket</strong>服务器相关数据，那么请求的代码就会<strong>Closures</strong>里嵌套<strong>Closures</strong>，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"> RPAuthRemoteAPI().signIn(with: [&quot;username&quot;:&quot;&quot;,&quot;password&quot;:&quot;&quot;], signInAPI) &#123; (siginInfo, errorMsg) in</span><br><span class="line">   if let errorMsg &#x3D; errorMsg &#123;</span><br><span class="line">                </span><br><span class="line">   &#125; else &#123;</span><br><span class="line">       RPAuthRemoteAPI().socketInfo(with: [&quot;username&quot;:&quot;&quot;], userInfoAPI) &#123; (userInfo, userInfoErrorMsg) in</span><br><span class="line">          if let userInfoErrorMsg &#x3D; userInfoErrorMsg &#123;</span><br><span class="line">                        </span><br><span class="line">          &#125; else &#123;</span><br><span class="line">                        </span><br><span class="line">         &#125;</span><br><span class="line">      &#125;</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>使用RxSwift可以将多个请求合并处理，参考<a target="_blank" rel="noopener" href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/why_rxswift.html">RxSwift:等待多个并发任务完成后处理结果</a></p>
+<ul>
+<li>1、更直观简洁的RxSwift</li>
+</ul>
+<p>同时，使用RxSwift，返回一个<a target="_blank" rel="noopener" href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/rxswift_core.html">Observable</a>,还可以避免嵌套回调的问题。</p>
+<p>上面的代码用RxSwift来写，就更符合逻辑了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">let _ &#x3D; RPAuthRemoteAPI().signIn(with: [&quot;username&quot;:&quot;&quot;,&quot;password&quot;:&quot;&quot;], signInAPI)</span><br><span class="line">            .flatMap(&#123; (returnJson) in</span><br><span class="line">     return RPAuthRemoteAPI().userInfo(with: [&quot;username&quot;:&quot;&quot;], userInfoAPI)</span><br><span class="line">&#125;).subscribe &#123; (json) in</span><br><span class="line">     print(&quot;用户信息-----------: \(json)&quot;)</span><br><span class="line">&#125; onError: &#123; (error) in</span><br><span class="line"></span><br><span class="line">&#125; onCompleted: &#123;</span><br><span class="line"></span><br><span class="line">&#125; onDisposed: &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>2、处理服务器返回的数据</li>
+</ul>
+<p>一般一个请求无非是三种情况：</p>
+<ul>
+<li><p>请求成功时服务器返回的数据结构</p>
+</li>
+<li><p>请求服务器成功，但返回数据异常，如参数错误，加密处理异常，登录超时等</p>
+</li>
+<li><p>请求没有成功，根据返回的错误码做处理</p>
+<p>创建一个协议来管理请求，此处需要知道请求的API，HTTP方式，所需参数等，代码如下：</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;&#x2F; 请求服务器相关</span><br><span class="line">public protocol Request &#123;</span><br><span class="line">    var path: String &#123;get&#125;</span><br><span class="line">    var method: HTTPMethod &#123;get&#125;</span><br><span class="line">    var parameter: [String: AnyObject]? &#123;get&#125;</span><br><span class="line">    var host: String &#123;get&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在发起一个请求时可能不需要任何参数，此处做一个<strong>extension</strong>处理将<strong>parameter</strong>作为可选参数即可：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">extension Request &#123;</span><br><span class="line">    var parameter: [String: AnyObject] &#123;</span><br><span class="line">        return [:]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>此处要分别对以上三种情况做出处理，首先来看看服务器给的接口文档，请求成功时服务器返回的数据结构：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;access_token&quot; : &quot;b6298027-a985-441c-a36c-d0a362520896&quot;,</span><br><span class="line">  &quot;user_id&quot; : &quot;1268805326995996673&quot;,</span><br><span class="line">  &quot;dept_id&quot; : 1,</span><br><span class="line">  &quot;license&quot; : &quot;made by tsn&quot;,</span><br><span class="line">  &quot;scope&quot; : &quot;server&quot;,</span><br><span class="line">  &quot;token_type&quot; : &quot;bearer&quot;,</span><br><span class="line">  &quot;username&quot; : &quot;198031&quot;,</span><br><span class="line">  &quot;expires_in&quot; : 19432,</span><br><span class="line">  &quot;refresh_token&quot; : &quot;692a1b6e-051f-424d-bd2e-3a9ccec8d4f2&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>请求成功，但出现异常时返回的数据结构：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  &quot;returnCode&quot; : &quot;601&quot;,</span><br><span class="line">  &quot;returnMsg&quot; : &quot;登录失效&quot;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>新建一个<strong>SignInModel.Swift</strong>来作为模型</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">public struct SignInModel &#123;</span><br><span class="line">    public let username,dept_id,access_token,token_type,user_id,scope,refresh_token,expires_in,license: String   </span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>将返回的<strong>SwiftyJSON</strong>对象转为Model对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">extension SignInModel &#123;</span><br><span class="line">    public init?(json: JSON) &#123;</span><br><span class="line">        username &#x3D; json[&quot;username&quot;].stringValue</span><br><span class="line">        dept_id &#x3D; json[&quot;dept_id&quot;].stringValue</span><br><span class="line">        access_token &#x3D; json[&quot;access_token&quot;].stringValue</span><br><span class="line">        token_type &#x3D; json[&quot;token_type&quot;].stringValue</span><br><span class="line">        user_id &#x3D; json[&quot;user_id&quot;].stringValue</span><br><span class="line">        scope &#x3D; json[&quot;scope&quot;].stringValue</span><br><span class="line">        refresh_token &#x3D; json[&quot;refresh_token&quot;].stringValue</span><br><span class="line">        expires_in &#x3D; json[&quot;expires_in&quot;].stringValue</span><br><span class="line">        license &#x3D; json[&quot;license&quot;].stringValue</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当请求成功后，将服务器获取的Data数据转成SwiftyJSON实例，然后在ViewModel中转成SignInModel。</p>
+<p>对于请求成功时，但返回数据异常时，可根据后台返回的code码和message信息，给用户一个友好提示。</p>
+<p>对于请求服务器失败时情况，可以定义一个<strong>enum</strong>来处理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;&#x2F; 请求服务器失败时 错误码</span><br><span class="line">public enum RequestError: Error &#123;</span><br><span class="line">   case unknownError</span><br><span class="line">   case connectionError</span><br><span class="line">   case timeoutError</span><br><span class="line">   case authorizationError(JSON)</span><br><span class="line">   case notFound</span><br><span class="line">   case serverError</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<h3>4、发起请求并返回一个Observable对象</h3>
+</blockquote>
+<p><code>RxSwift</code>对系统提供的<code>URLSession</code>也做了扩展，可以让开发者直接使用：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">URLSession.shared.rx.response(request: urlRequest).subscribe(onNext: &#123; (response, data) in</span><br><span class="line">            </span><br><span class="line">&#125;).disposed(by: disposeBag)</span><br></pre></td></tr></table></figure>
+<p>首先定一个可以发送请求的协议, 无论请求成功还是失败都需要返回一个<strong>Observable队列</strong>，此处使用了一个**&lt;T: Request&gt;<strong>泛型，任何一个遵循</strong>AuthRemoteProtocol**的类型都可以实现网络请求。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public protocol AuthRemoteProtocol &#123;</span><br><span class="line">  func post&lt;T: Request&gt;(_ r: T) -&gt; Observable&lt;JSON&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当发起一个请求时，我们需要对<strong>URLSession</strong>做一些请求配置，如设置<strong>header、body、url、timeout、请求方式等</strong>，才能顺利的完成一个请求。<strong>header、timeout</strong>这几个参数一般都固定的。而<strong>body、url</strong>这两个参数必须是一个遵循<strong>Request</strong>协议的对象。核心代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">public func post&lt;T: Request&gt;(_ r: T) -&gt; Observable&lt;JSON&gt; &#123;</span><br><span class="line">    &#x2F;&#x2F; 设置请求API</span><br><span class="line">    guard let path &#x3D; URL(string: r.host.appending(r.path)) else &#123;         </span><br><span class="line">        return .error(RequestError.unknownError)</span><br><span class="line">    &#125;</span><br><span class="line">    var headers: [String : String]?</span><br><span class="line">    &#x2F;&#x2F; 设置超时时间</span><br><span class="line">    var urlRequest &#x3D; URLRequest(url: path, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 30)</span><br><span class="line">    &#x2F;&#x2F; 设置header</span><br><span class="line">    urlRequest.allHTTPHeaderFields &#x3D; headers</span><br><span class="line">    &#x2F;&#x2F; 设置请求方式</span><br><span class="line">    urlRequest.httpMethod &#x3D; r.method.rawValue</span><br><span class="line">    return Observable.create &#123; (observer) -&gt; Disposable in</span><br><span class="line">       URLSession.shared.dataTask(with: urlRequest) &#123; (data, response, error) in</span><br><span class="line">          &#x2F;&#x2F; 根据服务器返回的code处理并传递给ViewModel </span><br><span class="line">       &#125;.resume()</span><br><span class="line">       return Disposables.create &#123; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一般跟服务器约定，当服务器返回的<strong>code</strong>为200时我们认为服务器请求成功并正常返回数据，当返回其他<strong>code</strong><br>时根据返回的<strong>code</strong>做出处理。最终的代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;&#x2F; 登录Request</span><br><span class="line">struct SigninRequest: Request &#123;</span><br><span class="line">    typealias Response &#x3D; SigninRequest</span><br><span class="line">    var parameter: [String : AnyObject]?</span><br><span class="line">    var path: String</span><br><span class="line">    var method: HTTPMethod &#x3D; .post</span><br><span class="line">    var host: String &#123;</span><br><span class="line">        return __serverTestURL</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public enum RequestError: Error &#123;</span><br><span class="line">   case unknownError</span><br><span class="line">   case connectionError</span><br><span class="line">   case timeoutError</span><br><span class="line">   case authorizationError(JSON)</span><br><span class="line">   case notFound</span><br><span class="line">   case serverError</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public protocol AuthRemoteProtocol &#123;</span><br><span class="line">    &#x2F;&#x2F;&#x2F; 协议方式，成功返回JSON -----&gt; RxSwift</span><br><span class="line">    func requestData&lt;T: Request&gt;(_ r: T) -&gt; Observable&lt;JSON&gt;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">public struct RPAuthRemoteAPI: AuthRemoteProtocol &#123;</span><br><span class="line">    &#x2F;&#x2F;&#x2F; 协议方式，成功返回JSON -----&gt; RxSwift</span><br><span class="line">    public func post&lt;T: Request&gt;(_ r: T) -&gt; Observable&lt;JSON&gt; &#123;</span><br><span class="line">        let path &#x3D; URL(string: r.host.appending(r.path))!</span><br><span class="line">        var urlRequest &#x3D; URLRequest(url: path, cachePolicy: .useProtocolCachePolicy, timeoutInterval: 30)</span><br><span class="line">        urlRequest.allHTTPHeaderFields  &#x3D; [&quot;Content-Type&quot; : &quot;application&#x2F;x-www-form-urlencoded; application&#x2F;json; charset&#x3D;utf-8;&quot;]</span><br><span class="line">        urlRequest.httpMethod &#x3D; r.method.rawValue</span><br><span class="line">        if let parameter &#x3D; r.parameter &#123;</span><br><span class="line">            &#x2F;&#x2F; --&gt; Data</span><br><span class="line">            let parameterData &#x3D; parameter.reduce(&quot;&quot;) &#123; (result, param) -&gt; String in</span><br><span class="line">                return result + &quot;&amp;\(param.key)&#x3D;\(param.value as! String)&quot;</span><br><span class="line">            &#125;.data(using: .utf8)</span><br><span class="line">            urlRequest.httpBody &#x3D; parameterData</span><br><span class="line">        &#125;</span><br><span class="line">     return Observable.create &#123; (observer) -&gt; Disposable in</span><br><span class="line">            URLSession.shared.dataTask(with: urlRequest) &#123; (data, response, error) in</span><br><span class="line">                if let error &#x3D; error &#123;</span><br><span class="line">                    print(error)</span><br><span class="line">                    observer.onError(RequestError.connectionError)</span><br><span class="line">                &#125; else if let data &#x3D; data ,let responseCode &#x3D; response as? HTTPURLResponse &#123;</span><br><span class="line">                    do &#123;</span><br><span class="line">                        let json &#x3D; try JSON(data: data)</span><br><span class="line">                        switch responseCode.statusCode &#123;</span><br><span class="line">                        case 200:</span><br><span class="line">                            print(&quot;json-------------\(json)&quot;)</span><br><span class="line">                            observer.onNext(json)</span><br><span class="line">                            observer.onCompleted()</span><br><span class="line">                            break</span><br><span class="line">                        case 201...299:</span><br><span class="line">                            observer.onError(RequestError.authorizationError(json))</span><br><span class="line">                            break</span><br><span class="line">                        case 400...499:</span><br><span class="line">                            observer.onError(RequestError.authorizationError(json))</span><br><span class="line">                            break</span><br><span class="line">                        case 500...599:</span><br><span class="line">                            observer.onError(RequestError.serverError)</span><br><span class="line">                            break</span><br><span class="line">                        case 600...699:</span><br><span class="line">                            observer.onError(RequestError.authorizationError(json))</span><br><span class="line">                            break</span><br><span class="line">                        default:</span><br><span class="line">                            observer.onError(RequestError.unknownError)</span><br><span class="line">                            break</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                    catch let parseJSONError &#123;</span><br><span class="line">                        observer.onError(parseJSONError)</span><br><span class="line">                        print(&quot;error on parsing request to JSON : \(parseJSONError)&quot;)</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;.resume()</span><br><span class="line">            return Disposables.create &#123; &#125;</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在ViewModel中调用，并根据服务器返回的code做处理：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 显示LoadingView</span><br><span class="line">self.loading.onNext(true)</span><br><span class="line">RPAuthRemoteAPI().post(SigninRequest(parameter: [:], path: path))</span><br><span class="line"> .subscribe(onNext: &#123; returnJson in</span><br><span class="line">  &#x2F;&#x2F; JSON对象转成Model，同时本地缓存Token</span><br><span class="line">    self.loading.onNext(true)</span><br><span class="line"> &#125;, onError: &#123; errorJson in</span><br><span class="line">  &#x2F;&#x2F; 失败</span><br><span class="line">  self.loading.onNext(true)</span><br><span class="line">&#125;, onCompleted: &#123;</span><br><span class="line">  &#x2F;&#x2F; 调用完成时</span><br><span class="line">&#125;).disposed(by: disposeBag)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<blockquote>
+<h3>5、存在问题</h3>
+</blockquote>
+<p>虽然以上的方法基于POP的实现，利于代码的扩展和维护。但是我觉得也存在问题： </p>
+<ul>
+<li>过分依赖<strong>RxSwift、SwiftyJSON</strong>第三方库，如果说出现系统版本升级，或者这些第三方库的作者不再维护等问题，会给我们后期的开发和维护带来很大的麻烦；</li>
+</ul>
+<p>–</p>
+<p>友情链接：</p>
+<p><a target="_blank" rel="noopener" href="https://onevcat.com/2016/11/pop-cocoa-1/">面向协议编程与 Cocoa 的邂逅</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/mohammadZ74/MVVMRx_SampleProject">Sample Music list app</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ReactiveX/RxSwift">Github RxSwift</a></p>
+<p><a target="_blank" rel="noopener" href="https://beeth0ven.github.io/RxSwift-Chinese-Documentation/content/rxswift_core.html">RxSwift 中文网</a></p>
+<p><a target="_blank" rel="noopener" href="https://boxueio.com/">泊学网</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
