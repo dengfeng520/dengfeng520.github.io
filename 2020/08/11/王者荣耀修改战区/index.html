@@ -61,9 +61,8 @@
         </div>
         <div class="content markdown">
             <p>来说说王者荣耀战区机制，王者荣耀每周一5点到6点这段时间会对上一周所有玩家的所有英雄战力做一个统计，然后根据会刷新出上周的英雄排行。所以每周一6点之后上号，如果玩家有上榜英雄，王者荣耀会给玩家想对应的牌子（就是省50强，100强，国服最强这些）。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-4539f0db429c999e.jpg"></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-02ce443f5d116c13.jpg"></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-c81d3671c40d6ce6.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="IMG_3937.PNG"></p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/eb71852c97e74f00ba3da743679113d1~tplv-k3u1fbpfcp-zoom-1.image" alt="A1"></p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e2f2ddc42085435881153cb25ed8a8f1~tplv-k3u1fbpfcp-watermark.image" alt="镜师傅"></p>
 <p>那么就有一个很明显的问题，玩家多的城市，玩家就需要很高的英雄积分才能上榜但是玩家少的城市可能就随便打打就能上榜了。如广东的马超，玩家即使把分数肝到10000分以上也只能拿个省100强，但是东北或者内蒙等地区就能轻松拿到省前几名的牌子。</p>
 <p>综上所述我们可以通过修改定位的方式来修改王者着荣耀的战区。Android手机由于其源码开源的原因，在网上有很多模拟定位的工具。本文主要介绍苹果手机如何通过模拟定位的方式来修改战区。</p>
 <h3 id="1、准备工作"><a href="#1、准备工作" class="headerlink" title="1、准备工作"></a>1、准备工作</h3><ul>
@@ -75,23 +74,23 @@
 <li>1、打开浏览器百度搜索 <a target="_blank" rel="noopener" href="https://lbs.amap.com/console/show/picker">高德地图坐标获取</a></li>
 <li>2、输入<strong>墨脱县</strong>，定位成功后可以看到经纬度为 <strong>95.332241,29.325734</strong></li>
 </ul>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-62ecc438a7c61d88.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="motuo.png"></p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/13427b36db0f46009e1545b37e7340c5~tplv-k3u1fbpfcp-zoom-1.image" alt="A2"></p>
 <h3 id="3、新建工程"><a href="#3、新建工程" class="headerlink" title="3、新建工程"></a>3、新建工程</h3><ul>
 <li>1、打开电脑上的工具<strong>Xcode</strong>，如果没有去<strong>App Store</strong>上下载一个，新建一个工程，命名为<strong>LocationDemo</strong></li>
 </ul>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-ed4bd755b08d661c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="新建工程1"></p>
-<p> <img src="https://upload-images.jianshu.io/upload_images/1214383-afedc32e7419577f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="新建工程2"></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-962fe73184785547.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="新建工程3"></p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d185c29b3f9b4152a4cb5db699f217ba~tplv-k3u1fbpfcp-zoom-1.image" alt="A3"></p>
+<p> <img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4885db0d62d34be2a2764b564dfac79d~tplv-k3u1fbpfcp-zoom-1.image" alt="A4"></p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2b661c8b1ef245868cacd7cbe48d3953~tplv-k3u1fbpfcp-zoom-1.image" alt="A5"></p>
 <ul>
 <li>2、新建工程完成后，工程整体结构如下图，</li>
 </ul>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-b20ed8f912e02199.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="整体结构"></p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/78d99e102a324a09a1f890409db7e68c~tplv-k3u1fbpfcp-zoom-1.image" alt="A6"></p>
 <ul>
 <li>3、新建一个GPX文件，右键点击LocationDemo文件夹，选择<strong>New File –&gt; 搜索gpx –&gt; 选择默认命名“Location”</strong></li>
 </ul>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-d6ff021b83bb5c15.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="B1.png"></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-461c3791b16babf8.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="B2.png"></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-6fcbcaeea43e374e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="B3.png"></p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d5918e65009c478998d6ba8f11e0389e~tplv-k3u1fbpfcp-zoom-1.image" alt="A7"></p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9e4d0442fb964850bbde8bf6b86615b7~tplv-k3u1fbpfcp-zoom-1.image" alt="A8"></p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9a332512294c476f871fd7a50c46f16a~tplv-k3u1fbpfcp-zoom-1.image" alt="A9"></p>
 <ul>
 <li>4、打开<strong>Location.gpx文件，修改前面搜到的经纬度</strong></li>
 </ul>
@@ -100,24 +99,24 @@
 <ul>
 <li>1、同时摁住 Command + R 键盘在手机上运行工程，看到<strong>Build Succeeded</strong>提示后表示运行成功。</li>
 </ul>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-4de0e77bab92b63f.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="键盘.jpg"></p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/79e65ffa0d994a5599bedb8218fac7b9~tplv-k3u1fbpfcp-zoom-1.image" alt="A10"></p>
 <p>运行成功后，发现手机桌面上多了一个名为<strong>LocationDemo</strong>的App,打开就一个白色界面什么都没有，</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-37bb95e553c33534.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="IMG_5DC9BB12D1E4-1.jpeg"></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-e297feb282b47c30.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="IMG_5DC9BB12D1E4-2.jpeg"></p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9f9a09b084a440bcb335edfc6fa19258~tplv-k3u1fbpfcp-zoom-1.image" alt="A11"></p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5a7a74edf5784bff9c93189783638e20~tplv-k3u1fbpfcp-zoom-1.image" alt="A12"></p>
 <ul>
 <li>2、模拟定位</li>
 </ul>
 <p>选择<strong>Debug –&gt; Simulate Location –&gt; Location</strong></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-f2e1358f2688f5ef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="C4.png"></p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bd0c297c9cb54add858bac1b8b6a3883~tplv-k3u1fbpfcp-zoom-1.image" alt="A13"></p>
 <p>打开手机上的地图，此时如果定位是<strong>墨脱县</strong>说明模拟定位成功了，如果没有请按前面的教程再仔细的走一遍。</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-d613b9e67c974cc1.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="模拟定位成功"></p>
-<p>既然定位成功了</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e941e06646ae43e29707b549395f5ef5~tplv-k3u1fbpfcp-zoom-1.image" alt="A14"></p>
+<p>既然定位成功了,那就继续下一步：</p>
 <ul>
 <li>3、修改战区</li>
 </ul>
-<p>前面已经说了，玩家可以在每周一6点之后当天第一次上线时通过模拟定位的方式修改战区，所以我们可在周一时通过上述方法把战区修改到荣耀战力较低的地方。我们已经成功模拟了位置，打开王者荣耀修改战区即可。此处要注意，要保持上面所建的工程在运行的状态下打开王者荣耀，不能断开手机和电脑连接，不能关闭LocationDemo App。修改战区方法如下：<br> （1）、进入游戏后点击排位赛<br> （2）、点击荣耀战区<br> （3）、点击右上角齿轮按钮<br><img src="https://upload-images.jianshu.io/upload_images/1214383-733370d7e44097b0.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="修改位置"><br>（4）、退出查询修改后的战区情况</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-2e690d4fae82213d.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="荣耀榜"></p>
-<p><img src="https://upload-images.jianshu.io/upload_images/1214383-7d84da6873a6670f.PNG?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="查询战力"></p>
+<p>前面已经说了，玩家可以在每周一6点之后当天第一次上线时通过模拟定位的方式修改战区，所以我们可在周一时通过上述方法把战区修改到荣耀战力较低的地方。我们已经成功模拟了位置，打开王者荣耀修改战区即可。此处要注意，要保持上面所建的工程在运行的状态下打开王者荣耀，不能断开手机和电脑连接，不能关闭LocationDemo App。修改战区方法如下：<br> （1）、进入游戏后点击排位赛<br> （2）、点击荣耀战区<br> （3）、点击右上角齿轮按钮<br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2782080942dd41d18c9de59092acded3~tplv-k3u1fbpfcp-zoom-1.image" alt="A15"><br>（4）、退出查询修改后的战区情况</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ca8f4e5b3d2c44c081bef328d79d1acf~tplv-k3u1fbpfcp-zoom-1.image" alt="A16"></p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fd5a3e061d2042018a7f7b7b0039572f~tplv-k3u1fbpfcp-zoom-1.image" alt="A17"></p>
 <p>完成这一切，只用等下周就可以看到切换后战区牌子了，就这样，希望能帮到你。</p>
 
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
