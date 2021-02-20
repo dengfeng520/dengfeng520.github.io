@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Runtime之指针和结构体 - Hexo</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="Fechin,"> 
+    <meta name="description" content="小时光
+
+
+1、C语言指针
+
+#####（1.1）、什么是指针
+一般的，在定义数据对象时，需要说明对象的名称和数据类型，如
+1int test &amp;#x3D; 0;
+申明数据类型的作用时告诉IDE要为,"> 
+    <meta name="author" content="John Doe"> 
+    <link rel="alternative" href="atom.xml" title="Hexo" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+	<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    <script>
+         (adsbygoogle = window.adsbygoogle || []).push({
+              google_ad_client: "ca-pub-8691406134231910",
+              enable_page_level_ads: true
+         });
+    </script>
+    <script async custom-element="amp-auto-ads"
+        src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js">
+    </script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">Hexo</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://example.com"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Runtime之指针和结构体</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Runtime之指针和结构体</h1>
+        <div class="stuff">
+            <span>四月 28, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h6 align='right'>小时光</h6>
+
+<blockquote>
+<h3>1、C语言指针</h3>
+</blockquote>
+<p>#####（1.1）、什么是指针</p>
+<p>一般的，在定义数据对象时，需要说明对象的名称和数据类型，如</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">int test &#x3D; 0;</span><br></pre></td></tr></table></figure>
+<p>申明数据类型的作用时告诉IDE要为多想分配多大的存储空间（字节），以及对象中要存储什么类型的值。</p>
+<p>对象名称的作用是对应分配到的内存单元，允许按照名称来访问，如我定义<code>test</code>这个变量，在程序中需要使用时，就可以通过<code>tes</code>来访问这个变量。但是在一些特殊情况下如由于作用域问题无法直接访问这个变量，那么可以通过访问这个变量的内存地址来访问这个变量。</p>
+<p>因此C语言中形象的将变量的内存地址称为<strong>指针</strong>，即一个对象的地址就是该对象的指针。</p>
+<p>举个例子：我申请的int类型的<code>test</code>的指针为40001，但并不表示地址40001指的是<code>test</code>.</p>
+<p>此处需要注意，<strong>40001只是这个变量的首地址</strong>，我申请的int类型的<code>test</code>在内存中占四个字节，所以40001，40002，40003，40004这四个内存地址才是<code>test</code>的内存。</p>
+<p>所以我们常说的，<strong>变量(对象)的指针实际上是这个变量(对象)在内存中的首地址</strong>。</p>
+<p>使用指针有哪些好处呢？</p>
+<ul>
+<li>提高存储效率</li>
+<li>间接访问由于作用域不可见的变量</li>
+<li>访问动态的内存空间</li>
+</ul>
+<p>#####（1.2）、指针和指针变量的区别</p>
+<p>指针是地址值，指针变量是存储指针的变量，我们可以通过指针变量间接访问（或者存取）一个对象。</p>
+<p>#####（1.3）、指针的分类</p>
+<ul>
+<li>（1.3.1）、普通的指针</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int a &#x3D; 111;</span><br><span class="line">int *pa &#x3D; &amp;a;</span><br><span class="line">char p &#x3D; &#39;C&#39;;</span><br><span class="line">char *pb &#x3D; &amp;p;</span><br></pre></td></tr></table></figure>
+<p>代码<code>int *pa = &amp;a;</code>的作用是指针赋值，那么该如何验证是否赋值成功并如何使用这个值呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int *pdd &#x3D; pa;</span><br><span class="line">printf(&quot;取值&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;%d,%d\n&quot;,*pa,*pdd);</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>定义一个pdd指针，然后打印指针pdd所指向的值。最终看到的结果是：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">取值&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;111,111</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>上面的代码已经完成了指针的赋值和取值操作。</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Runtime/C_Pointer.png?raw=true" alt="指针"></p>
+<p>上图演示了指针和变量在内存中的关系，111是int型，<code>C</code>是char型。<code>pa</code>是111的指针，指向111在内存中的首地址。同理pb也指向了<code>C</code>的首地址。</p>
+<p>实际上，在内存中一个类型表示的是这变量在内存中所占的大小，因为int类型在内存中占用了4个字节的内存大小,<code>C</code>占用了一个字节的空间。</p>
+<p>此时已经知道变量的类型是int类型、内存中的指针首地址以及该变量所占内存大小，就可以从首地址取四个字节的长度就代表着这个变量在内存中的值。</p>
+<ul>
+<li>（1.3.2）、指针的指针</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 指针的指针 赋值</span><br><span class="line">int **ppa  &#x3D; &amp;pa; </span><br><span class="line">&#x2F;&#x2F; 取值</span><br><span class="line">printf(&quot;\n**ppa&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;%d&quot;,**ppa);</span><br></pre></td></tr></table></figure>
+<p>此处<code>ppa</code>指向的是<code>pa</code>的地址，<code>pa</code>指向的是int型a的地址，所以打印出来就是a的值。</p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Runtime/C_Point_Point.png?raw=true" alt="指针"></p>
+<p>如上图所示：<code>ppa</code>指向的存放<code>&amp;a</code>的首地址，即是<code>pa</code>,<code>ppb</code>指向存放<code>&amp;b</code>的首地址。</p>
+<p>既然普通的类型需要占用内存空间，那么指针也是需要占用内存空间的。<br>我们通过指针的指针拿到这个指针，再通过这个指针拿到这个指针所指向的内容。</p>
+<ul>
+<li>（1.3.3）、数组指针</li>
+</ul>
+<p>指针指向的是一个对象在内存中的首地址，那么数组指针指向的是什么呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">char array[] &#x3D; &quot;hello&quot;;</span><br><span class="line">char *arrayPointer &#x3D; array;</span><br></pre></td></tr></table></figure>
+<p>此处定义了一个char类型数组，然后取数组指针。此处我通过数组遍历对数组中的每个元素的内存地址，然后和数组指针做一次比较：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">printf(&quot;\narrayPointer&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;%p\n&quot;,arrayPointer);</span><br><span class="line">for (int i &#x3D; 0;i&lt;sizeof(array);i++) &#123;</span><br><span class="line">    printf(&quot;\ni,everyone&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;%d,%p\n&quot;,i,&amp;array[i]);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">arrayPointer&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;0x7ffee815584a</span><br><span class="line"></span><br><span class="line">i,everyone&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;0,0x7ffee815584a</span><br><span class="line"></span><br><span class="line">i,everyone&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;1,0x7ffee815584b</span><br><span class="line"></span><br><span class="line">i,everyone&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;2,0x7ffee815584c</span><br><span class="line"></span><br><span class="line">i,everyone&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;3,0x7ffee815584d</span><br><span class="line"></span><br><span class="line">i,everyone&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;4,0x7ffee815584e</span><br><span class="line"></span><br><span class="line">i,everyone&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;5,0x7ffee815584f</span><br></pre></td></tr></table></figure>
+<p>可以看到数组的指针和这个数组第一个元素的指针是一样的，所以可以得出结论：__数组的指针并不是这个数组的指针，而是数组第一个元素的首地址指针__。<br><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Runtime/C_Pointer_Array.png?raw=true" alt="数组的指针"></p>
+<p>在获取数组元素的时候可以通过第一个元素的首地址+元素在内存中的字节长度，从而获取到第二个元素的内存地址，同理可以得到不同元素的指针.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">for (int i &#x3D; 0;i&lt;sizeof(array);i++) &#123;</span><br><span class="line">   printf(&quot;\neveryone&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;%c\n&quot;,*(array + i));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">everyone&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;h</span><br><span class="line"></span><br><span class="line">everyone&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;e</span><br><span class="line"></span><br><span class="line">everyone&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;l</span><br><span class="line"></span><br><span class="line">everyone&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;l</span><br><span class="line"></span><br><span class="line">everyone&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;o</span><br></pre></td></tr></table></figure>
+<p>那么从数组中取值就有2种方法，第一传统的下标取值，第二通过元素指针取值。</p>
+<ul>
+<li>（1.3.4）、函数指针</li>
+</ul>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Runtime/function_Pointer.png?raw=true" alt="函数的指针"></p>
+<p>函数的指针和函数非常类似，在函数前面加上一个指针括号，我们拿到函数的指针之后，就可以调用这个指针来执行函数。此处定义2个函数，一个返回int类型，一个返回int类型的指针,此处需要注意，函数指针和返回指针的函数是两个不同概念。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">int getMax(int i,int j) &#123;</span><br><span class="line">    return i&gt;j?i:j;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">int *getMin(int i,int j) &#123;</span><br><span class="line">    int result &#x3D; i&lt;j?i:j;</span><br><span class="line">    int *pointer &#x3D; &amp;result;</span><br><span class="line">    return pointer;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>那么，该如何通过指针调用函数呢？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">int (*funcOne)(int,int);</span><br><span class="line">funcOne &#x3D; getMax;</span><br><span class="line">int result &#x3D; funcOne(10001,10086);</span><br><span class="line">printf(&quot;\nresult&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;%d\n&quot;,result);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>定义一个函数指针并赋值，通过调用指针来调用这个函数。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int *funcTwo &#x3D; getMin(10001, 10086);</span><br><span class="line">printf(&quot;funcTwo&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;%d&quot;,*funcTwo);</span><br></pre></td></tr></table></figure>
+<p>调用返回指针的函数时先定义指针来接收函数的返回值。这个指针类型应为函数返回指针所指向的类型。</p>
+<blockquote>
+<h3>2、结构体</h3>
+</blockquote>
+<p>结构体是由一系列的相同或者不同的类型构成的数据集合，Swift中的元组和结构体非常类似。</p>
+<p>#####（2.1）结构体的组成</p>
+<p>结构体一般由结构体名、结构体变量、结构体成员组成.</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 结构体名 + 结构体成员 + 变量名</span><br><span class="line">struct personAbout &#123;</span><br><span class="line">    char name;</span><br><span class="line">    int age;</span><br><span class="line">&#125;person;</span><br></pre></td></tr></table></figure>
+<p>如代码所示，我定义了一个结构体，结构体名personAbout，变量名person，成员有2个，name和age; </p>
+<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Runtime/Struct.png?raw=true" alt="Struct.png"></p>
+<p>一般情况下，结构体的名和变量名可省略其中一个，但不能全部省去不写，也就是说下面这两种写法也可以定义一个结构体。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 结构体名 + 结构体成员</span><br><span class="line">struct personFrist &#123;</span><br><span class="line">    char name[20];</span><br><span class="line">    int *age;</span><br><span class="line">&#125;;</span><br><span class="line">&#x2F;&#x2F; 结构体变量 + 成员</span><br><span class="line">struct &#123;</span><br><span class="line">    char name[20];</span><br><span class="line">    int *age;</span><br><span class="line">&#125;personSecond;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>#####（2.2）结构体的使用</p>
+<ul>
+<li>继承</li>
+</ul>
+<p>例如在前面我定义了一个<code>person</code>的结构体，现在我又有一个对象，也包含name和age属性，此时可以采用结构体继承的方式。结构体继承和类的继承一样，直接冒号，继承的父类。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">struct student: personAbout &#123;</span><br><span class="line">    int number;</span><br><span class="line">&#125;student;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>设置别名</li>
+</ul>
+<p>一般情况下通过<code>typedef</code>关键字为结构体设置别名，</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 结构体的别名</span><br><span class="line">typedef struct studentFrist: personAbout &#123;</span><br><span class="line">    int number;</span><br><span class="line">    studentFrist() &#123;</span><br><span class="line">        number &#x3D; 10001;</span><br><span class="line">        age &#x3D; new int(17);</span><br><span class="line">        strcpy(name, &quot;韩梅梅&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;studentFrist;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>结构体赋值 </li>
+</ul>
+<p>方法一：直接赋值：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 结构体赋值 方法一</span><br><span class="line">int age &#x3D; 17;</span><br><span class="line">struct personAbout person &#x3D; &#123;&quot;李雷&quot;,&amp;age&#125;;</span><br></pre></td></tr></table></figure>
+<p>方法二：可通过结构体的变量名赋值：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">student.number &#x3D; 1000;</span><br><span class="line">strcpy(student.name,&quot;李雷&quot;);</span><br><span class="line">student.age &#x3D; new int(17);</span><br></pre></td></tr></table></figure>
+<p>方法三:在定义的时候就给结构体赋值:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 结构体的继承</span><br><span class="line">struct student: personAbout &#123;</span><br><span class="line">    int number;</span><br><span class="line">    student() &#123;</span><br><span class="line">        number &#x3D; 10000;</span><br><span class="line">        age &#x3D; new int(16);</span><br><span class="line">        strcpy(name, &quot;李雷&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;student;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>结构体取值</li>
+</ul>
+<p>1、直接取值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">struct studentZero stu;</span><br><span class="line">int number &#x3D; stu.number;</span><br></pre></td></tr></table></figure>
+<p>2、别名取值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">studentFrist stuFrist;</span><br><span class="line">int stuNumber &#x3D; stuFrist.number;</span><br></pre></td></tr></table></figure>
+<p>3、指针取值</p>
+<p>先拿到结构体的指针，然后通过-&gt;得到结构体中的某个变量值。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">studentFrist *stuPoiner &#x3D; &amp;stuFrist;</span><br><span class="line">int studentNumber &#x3D; stuPoiner-&gt;number;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>结构体的位域</li>
+</ul>
+<p>部分属性在存储时，并不需要占用一个完整的字节， 而只需占几个或一个二进制位。为了节省存储空间，并使处理简便，Ｃ语言又提供了一种数据结构，称为__位域__。所谓称为__位域__是把一个字节中的二进位划分为几个不同的区域，并说明每个区域的位数。每个域有一个域名，允许在程序中按域名进行操作。 这样就可以把几个不同的对象用一个字节的二进制位域来表示。在结构体中8位域等于一子节。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struct teacher &#123;</span><br><span class="line">      unsigned int a: 1;</span><br><span class="line">      unsigned int b: 2;</span><br><span class="line">      unsigned int c: 3;</span><br><span class="line">  &#125;tc,*ptc;</span><br></pre></td></tr></table></figure>
+<p>位域的赋值不能超过该域所能表示的最大值，如:</p>
+<p>b只有2位，能表示的最大数为3，如超过3就会报黄点，Xcode会默认赋值为0，并显示警告:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Implicit truncation from &#39;int&#39; to bit-field changes value from 4 to 0</span><br></pre></td></tr></table></figure>
+<p>所以在使用结构体位域时，我们应计算好位域的位数，避免出错。</p>
+<p>–</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/dengfeng520/Clangdemo.git">本文demo</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
