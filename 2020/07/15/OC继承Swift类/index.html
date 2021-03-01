@@ -5,7 +5,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Inherit from a Swift class in Objective C OC继承Swift类) - Hexo</title>
+    <title>Inherit from a Swift class in Objective C OC继承Swift类) - 小时光のホームページ</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
@@ -14,8 +14,8 @@
 
 搜到的相关资料基本来自这个帖子**Inherit from a Swift class in Objective C
 **。事实上一楼回复已经说的很明确了，Objective-C不能继承S,"> 
-    <meta name="author" content="John Doe"> 
-    <link rel="alternative" href="atom.xml" title="Hexo" type="application/atom+xml"> 
+    <meta name="author" content="小时光"> 
+    <link rel="alternative" href="atom.xml" title="小时光のホームページ" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
     
     
@@ -34,12 +34,12 @@
 <meta name="generator" content="Hexo 5.3.0"></head>
 
 <body class="loading">
-    <span id="config-title" style="display:none">Hexo</span>
+    <span id="config-title" style="display:none">小时光のホームページ</span>
     <div id="loader"></div>
     <div id="single">
     <div id="top" style="display: block;">
     <div class="bar" style="width: 0;"></div>
-    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="http://example.com"></a>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://dengfeng520.github.io"></a>
     <div title="播放/暂停" class="iconfont icon-play"></div>
     <h3 class="subtitle">Inherit from a Swift class in Objective C OC继承Swift类)</h3>
     <div class="social">
@@ -70,7 +70,7 @@
 <p><strong>Unfortunately, it’s not possible to subclass a Swift class in Objective-C. Straight from the docs:</strong></p>
 <p>那么换个思路，为什么一定要用继承呢？用<code>category</code>可以吗？经过我的测试是可以的，代码如下： </p>
 <p><strong>Swift文件</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import UIKit</span><br><span class="line"></span><br><span class="line">@objc open class TestModel: NSObject &#123;</span><br><span class="line">    @objc var testName: String &#x3D; String()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import UIKit</span><br><span class="line"></span><br><span class="line">@objcMembers open class TestModel: NSObject &#123;</span><br><span class="line">    var testName: String &#x3D; String()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p><strong>OC的.h文件</strong></p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">&#x2F;&#x2F; 桥接文件</span><br><span class="line">#import &quot;****-Swift.h&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@interface TestModel (Add)</span><br><span class="line">- (void)configTestName;</span><br><span class="line">@end</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <p><strong>OC的.m文件</strong></p>
