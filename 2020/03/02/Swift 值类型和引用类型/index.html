@@ -5,15 +5,24 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
     <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Inherit from a Swift class in Objective C OC继承Swift类) - 小时光のホームページ</title>
+    <title>Swift 值类型和引用类型 - 小时光のホームページ</title>
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="google" content="notranslate" />
     <meta name="keywords" content="xiaoshiguang,"> 
     <meta name="description" content="小时光
 
-搜到的相关资料基本来自这个帖子**Inherit from a Swift class in Objective C
-**。事实上一楼回复已经说的很明确了，Objective-C不能继承S,"> 
+
+
+1、值类型和引用类型的定义
+
+1、值类型2、引用类型
+2、值类型和引用类型的区别
+
+1、值类型2、值类型
+3、值类型和引用类型的选择
+
+参考Apple Developer: Value,"> 
     <meta name="author" content="小时光"> 
     <link rel="alternative" href="atom.xml" title="小时光のホームページ" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -41,7 +50,7 @@
     <div class="bar" style="width: 0;"></div>
     <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://dengfeng520.github.io"></a>
     <div title="播放/暂停" class="iconfont icon-play"></div>
-    <h3 class="subtitle">Inherit from a Swift class in Objective C OC继承Swift类)</h3>
+    <h3 class="subtitle">Swift 值类型和引用类型</h3>
     <div class="social">
         <div>
             <div class="share">
@@ -56,25 +65,27 @@
     <div class="section">
         <div class="article">
     <div class='main'>
-        <h1 class="title">Inherit from a Swift class in Objective C OC继承Swift类)</h1>
+        <h1 class="title">Swift 值类型和引用类型</h1>
         <div class="stuff">
-            <span>七月 15, 2020</span>
+            <span>三月 02, 2020</span>
             
 
         </div>
         <div class="content markdown">
             <h6 align='right'>小时光</h6>
 
-<p>搜到的相关资料基本来自这个帖子**<a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/35244592/inherit-from-a-swift-class-in-objective-c">Inherit from a Swift class in Objective C
-</a>**。事实上一楼回复已经说的很明确了，<code>Objective-C</code>不能继承<code>Swift</code>类。</p>
-<p><strong>Unfortunately, it’s not possible to subclass a Swift class in Objective-C. Straight from the docs:</strong></p>
-<p>那么换个思路，为什么一定要用继承呢？用<code>category</code>可以吗？经过我的测试是可以的，代码如下： </p>
-<p><strong>Swift文件</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">import UIKit</span><br><span class="line"></span><br><span class="line">@objcMembers open class TestModel: NSObject &#123;</span><br><span class="line">    var testName: String &#x3D; String()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p><strong>OC的.h文件</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;Foundation&#x2F;Foundation.h&gt;</span><br><span class="line">&#x2F;&#x2F; 桥接文件</span><br><span class="line">#import &quot;****-Swift.h&quot;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">@interface TestModel (Add)</span><br><span class="line">- (void)configTestName;</span><br><span class="line">@end</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-<p><strong>OC的.m文件</strong></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;TestModel+Add.h&quot;</span><br><span class="line"></span><br><span class="line">@implementation TestModel (Add)</span><br><span class="line"></span><br><span class="line">- (void)configTestName &#123;</span><br><span class="line">    self.testName &#x3D; @&quot;12323&quot;;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<h3>1、值类型和引用类型的定义</h3>
+</blockquote>
+<h4 id="1、值类型"><a href="#1、值类型" class="headerlink" title="1、值类型"></a>1、值类型</h4><h4 id="2、引用类型"><a href="#2、引用类型" class="headerlink" title="2、引用类型"></a>2、引用类型</h4><blockquote>
+<h3>2、值类型和引用类型的区别</h3>
+</blockquote>
+<h4 id="1、值类型-1"><a href="#1、值类型-1" class="headerlink" title="1、值类型"></a>1、值类型</h4><h4 id="2、值类型"><a href="#2、值类型" class="headerlink" title="2、值类型"></a>2、值类型</h4><blockquote>
+<h3>3、值类型和引用类型的选择</h3>
+</blockquote>
+<p><strong>参考<a target="_blank" rel="noopener" href="https://developer.apple.com/swift/blog/?id=10">Apple Developer: Value and Reference Types</a></strong></p>
+
             <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
             <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
                 <source type="audio/mpeg" src="">
