@@ -1,0 +1,281 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Swift ARC(自动引用计数器) - 小时光のホームページ</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="xiaoshiguang,"> 
+    <meta name="description" content="小时光
+
+
+Swift 采用ARC的方式来管理和追踪程序中的内存使用情况。ARC的全称（Automatic Reference Counting），一般叫做自动引用计数。在大多数情况下，开发者无需考,"> 
+    <meta name="author" content="小时光"> 
+    <link rel="alternative" href="atom.xml" title="小时光のホームページ" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">小时光のホームページ</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://dengfeng520.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Swift ARC(自动引用计数器)</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Swift ARC(自动引用计数器)</h1>
+        <div class="stuff">
+            <span>三月 05, 2021</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h6 align='right'>小时光</h6>
+
+
+<p>Swift 采用ARC的方式来管理和追踪程序中的内存使用情况。ARC的全称（Automatic Reference Counting），一般叫做<strong>自动引用计数</strong>。在大多数情况下，开发者无需考虑内存管理问题，当不再需要使用实例对象时，ARC会自动释放这些内存。</p>
+<p>ARC的引用计数一般应用于类的实例或闭包，而数组(Array)、字典(Dictionary)、字符串(String)、结构体(Structure)、枚举(enum)都是值类型，不是引用的方式来存储和传递的。官方文档的原文是：<code>Reference counting applies only to instances of classes. Structures and enumerations are value types, not reference types, and aren’t stored and passed by reference.</code></p>
+<p>关于值类型和引用类型的区别，可参考官方博客：<a target="_blank" rel="noopener" href="https://developer.apple.com/swift/blog/?id=10">Swift: Value and Reference Types</a></p>
+<blockquote>
+<h3 id="1、Swift中ARC是如何工作的"><a href="#1、Swift中ARC是如何工作的" class="headerlink" title="1、Swift中ARC是如何工作的"></a>1、Swift中ARC是如何工作的</h3></blockquote>
+<h4 id="1-1、How-ARC-Works"><a href="#1-1、How-ARC-Works" class="headerlink" title="1.1、How ARC Works"></a>1.1、How ARC Works</h4><ul>
+<li>每次创建一个类的实例，ARC就会自动为其分配内存，用来存储这个实例及其相关的属性</li>
+<li>当该实例不再被使用时，ARC会释放这个实例所占用的内存</li>
+<li>继续访问已释放的实例，如调用其方法或属性，那么可能会造成程序crash</li>
+<li>为了解决访问已释放实例造成的crash问题，ARC会追踪每个引用当前实例累的属性、常量、和变量的数量。只要有一个有效的引用，ARC就不会释放这部分内存。</li>
+<li>为此每次将一个类的实例赋值给一个属性（也可以是常量或变量）。这个属性就是这个实例的强引用。之所以称为强引用，是因为该属性强持有这个实例，并且只要这个强引用还存在，就不能销毁这个实例。</li>
+</ul>
+<p>用代码来说明，我有一个学生类，为其设置一个<code>name</code>属性用来保存这个学生的姓名，当我创建这类时，ARC会自动为这个类创建一部分空间用来保存<code>Student</code>实例及其属性。</p>
+<p>为了更好的监听这个类的创建和销毁，我分别在<code>init</code>和<code>deinit</code>方法中通过打印来监听。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>: <span class="title">NSObject</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> name: <span class="type">String</span></span><br><span class="line">    <span class="function"><span class="keyword">init</span>(<span class="params">name</span>: <span class="type">String</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.name <span class="operator">=</span> name</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;init------------------Student&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">deinit</span> &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;deinit------------------Student&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> studentTom: <span class="type">Student</span>? <span class="operator">=</span> <span class="type">Student</span>(name: <span class="string">&quot;Tom&quot;</span>) <span class="comment">// 引用计数为1</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">print</span>(<span class="string">&quot;init------------------Student&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>运行上面的代码，此时可以打看打印结果,说明此时的引用计数为1。此时没有释放这部分内存,如果我将这个实例直接置为nil呢</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">studentTom <span class="operator">=</span> <span class="literal">nil</span> <span class="comment">// 此时引用计数为0</span></span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;deinit------------------Student&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>当调用了<code>deinit</code>方法说明引用计数为0，ARC会自动释放该实例的内存。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> studentName <span class="operator">=</span> studentTom<span class="operator">!</span>.name</span><br></pre></td></tr></table></figure>
+<p>当我把<code>studentTom</code>置为<code>nil</code>后，再次调用<code>studentTom</code>就会crash。Xcode同时会抛出一段异常:</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">error: Execution was interrupted, reason: EXC_BAD_INSTRUCTION (code=EXC_I386_INVOP, subcode=<span class="number">0x0</span>).</span><br></pre></td></tr></table></figure>
+<p>为了防止出现这种情况，一般在使用可选类型(Optionals)时，应该优先做解析处理。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 可选绑定解包</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">let</span> studentTom <span class="operator">=</span> studentTom &#123;</span><br><span class="line">    <span class="keyword">let</span> studentName <span class="operator">=</span> studentTom.name</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// guard 语法解包</span></span><br><span class="line"><span class="keyword">guard</span> <span class="keyword">let</span> studentTom <span class="operator">=</span> studentTom <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</span><br><span class="line"><span class="keyword">let</span> studentName <span class="operator">=</span> studentTom.name</span><br></pre></td></tr></table></figure>
+<p>如果因为需要我将该学生信息进行<code>copy</code>操作呢，此时引用计数就变成了2，为了验证我的猜想，修改代码如下：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> studentCopy: <span class="type">Student</span>? <span class="operator">=</span> studentTom <span class="comment">// 引用计数为2</span></span><br><span class="line">studentTom <span class="operator">=</span> <span class="literal">nil</span> <span class="comment">// 引用计数为1</span></span><br></pre></td></tr></table></figure>
+<p>再次运行代码，发现并没有调用<code>deinit</code>方法，当我进行<code>copy</code>操作的时候，其引用计数就变成了2，这时候再置为<code>nil</code>其引用计数是1，ARC并没有释放其内存。此时需要将<code>studentCopy</code>的值置空，将其引用计数清空，ARC就会自动清理这部分内存。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">studentCopy <span class="operator">=</span> <span class="literal">nil</span> <span class="comment">// 引用计数为0</span></span><br><span class="line"><span class="keyword">deinit</span><span class="operator">------------------</span><span class="type">Student</span></span><br></pre></td></tr></table></figure>
+<blockquote>
+<h3 id="2、循环引用"><a href="#2、循环引用" class="headerlink" title="2、循环引用"></a>2、循环引用</h3></blockquote>
+<p>前面说ARC为了保证被使用实例对象不被提前释放，而采用了强引用的方式。那么针对这种情况，对开发者而言是否就一劳永逸了呢，答案是否定的，当两个实例之前形成强持有环时，这两个实例的内存就永远不会得到释放，这就需要开发者来做一些处理保证这部分内存能够在不需要时得到释放。</p>
+<h4 id="2-1、循环引用是如何产生的"><a href="#2-1、循环引用是如何产生的" class="headerlink" title="2.1、循环引用是如何产生的"></a>2.1、循环引用是如何产生的</h4><ul>
+<li><p>两个实例彼此保持对方的强引用，使得每个实例都使对方的保持有效时会发生循环引用。</p>
+<p>举例，现在我有一个老师类，对于老师和学生而言，老师要知道学生的信息，学生也要知道老师的信息，如老师的姓氏，所教授的课程等。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 表示老师所教授的课程 </span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Course</span> </span>&#123;</span><br><span class="line">    <span class="keyword">case</span> language <span class="comment">// 语文</span></span><br><span class="line">    <span class="keyword">case</span> english <span class="comment">// 英语</span></span><br><span class="line">    <span class="keyword">case</span> calculus <span class="comment">// 微积分</span></span><br><span class="line">    <span class="keyword">case</span> quantumMechanics <span class="comment">// 量子力学</span></span><br><span class="line">    <span class="keyword">case</span> geology <span class="comment">// 地质学</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Teacher</span>: <span class="title">NSObject</span> </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> lastName: <span class="type">String</span></span><br><span class="line">    <span class="keyword">let</span> course: <span class="type">Course</span></span><br><span class="line">    <span class="keyword">var</span> student: <span class="type">Student</span>?</span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">init</span>(<span class="params">lastName</span>: <span class="type">String</span>, <span class="params">course</span>: <span class="type">Course</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.lastName <span class="operator">=</span> lastName</span><br><span class="line">        <span class="keyword">self</span>.course <span class="operator">=</span> course</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;init------------------Teacher&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">     <span class="keyword">deinit</span> &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;deinit------------------Teacher&quot;</span>)</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Student</span>: <span class="title">NSObject</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> name: <span class="type">String</span></span><br><span class="line">    <span class="keyword">var</span> teacher: <span class="type">Teacher</span>?</span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">init</span>(<span class="params">name</span>: <span class="type">String</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.name <span class="operator">=</span> name</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;init------------------Student&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    <span class="keyword">deinit</span> &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;deinit------------------Student&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> studentTom: <span class="type">Student</span>? <span class="operator">=</span> <span class="type">Student</span>(name: <span class="string">&quot;Tom&quot;</span>)</span><br><span class="line"><span class="keyword">var</span> teacherMars: <span class="type">Teacher</span>? <span class="operator">=</span> <span class="type">Teacher</span>(lastName: <span class="string">&quot;Mars&quot;</span>, course: .calculus)</span><br><span class="line"></span><br><span class="line">teacherMars<span class="operator">?</span>.student <span class="operator">=</span> studentTom</span><br><span class="line">studentTom<span class="operator">?</span>.teacher <span class="operator">=</span> teacherMars</span><br><span class="line"></span><br><span class="line">teacherMars <span class="operator">=</span> <span class="literal">nil</span></span><br><span class="line">studentTom <span class="operator">=</span> <span class="literal">nil</span></span><br></pre></td></tr></table></figure>
+<p>运行上面的代码，发现无论如何都不会调用<code>deinit</code>方法。是因为他们各自引用这自己的对象，<code>studentTom</code>的<code>teacher</code>和<code>seacherMars</code>的<code>student</code>属性又相互引用了对方，此时在他们的引用计数都变成了2，于是就造成一个引用循环。他们之间的引用关系如下图所示：</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5088863b043b449e8aae6343b3f0042d~tplv-k3u1fbpfcp-watermark.image" alt="强引用环"></p>
+<h4 id="2-2、如何避免循环引用"><a href="#2-2、如何避免循环引用" class="headerlink" title="2.2、如何避免循环引用"></a>2.2、如何避免循环引用</h4><p>为了解决上面的引用循环问题，根据属性是否可选而采取不同的解决方案，当属性为可选时可以用<code>weak</code>关键字修饰，表示该属性为弱引用。当属性不可选时，可以用<code>unowned</code>关键字来修饰。无论是<code>weak</code>还是<code>unowned</code>,他们的思路都是一样的，不让某种形式的引用增加引用计数就好了。</p>
+<h5 id="2-2-1-弱引用"><a href="#2-2-1-弱引用" class="headerlink" title="2.2.1 弱引用"></a>2.2.1 弱引用</h5><p>在上面的例子中，只需对任意一个属性设置为弱引用即可，当然也可以把两个属性都设置为<code>weak</code>,不过没有这么做的必要。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">weak</span> <span class="keyword">var</span> student: <span class="type">Student</span>?</span><br></pre></td></tr></table></figure>
+<p>此时两个实例之间的关系图如下所示：</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/10cee926d7674210b00b14c5642830ae~tplv-k3u1fbpfcp-watermark.image" alt="弱引用"></p>
+<p>当我在弱引用下来释放<code>studentTom</code>的内存时，会是什么结果呢此时两个实例之间的关系如下所示：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">studentTom <span class="operator">=</span> <span class="literal">nil</span></span><br><span class="line">teacherMars<span class="operator">?</span>.student</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;------------------<span class="subst">\(String(describing: teacherMars<span class="operator">?</span>.student))</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">init</span><span class="operator">------------------</span><span class="type">Student</span></span><br><span class="line"><span class="keyword">init</span><span class="operator">------------------</span><span class="type">Teacher</span></span><br><span class="line"><span class="keyword">deinit</span><span class="operator">------------------</span><span class="type">Student</span></span><br><span class="line"><span class="operator">------------------</span><span class="literal">nil</span></span><br></pre></td></tr></table></figure>
+<p>通过上面打印的结果来看，<code>studentTom</code>实例的内存顺利释放了，那么当<code>studentTom</code>为<code>nil</code>时，ARC根据当前的情况进行了操作呢？</p>
+<ul>
+<li>首先<code>Student</code>对象就不再有任何<code>strong reference</code>了，<code>ARC</code>会立即回收这部分内存，同时<code>Teacher</code>对象的引用计数也会减一；</li>
+<li>其次当<code>Student</code>对象被回收调之后，<code>teacher</code>这个<code>strong reference</code>也就不存在了。<code>Teacher</code>的引用计数就会减一；</li>
+<li>由于<code>student</code>是一个<code>weak reference</code>,它的值会自动设置为<code>nil</code>，通过<code>teacherMars?.student</code>打印的结果为<code>nil</code>可以确认这一点。</li>
+</ul>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3c0565838b5241329594ef698da722f4~tplv-k3u1fbpfcp-watermark.image" alt="弱引用01"></p>
+<p>当我将其中任意一个属性设置为弱引用后，这时候把<code>teacherMars</code>和<code>studentTom</code>都设置为<code>nil</code>，<code>ARC</code>就能过顺利回收所有的内存，此时他们的关系如图所示：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">teacherMars <span class="operator">=</span> <span class="literal">nil</span></span><br><span class="line">studentTom <span class="operator">=</span> <span class="literal">nil</span></span><br></pre></td></tr></table></figure>
+<p>打印结果：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">init</span><span class="operator">------------------</span><span class="type">Student</span></span><br><span class="line"><span class="keyword">init</span><span class="operator">------------------</span><span class="type">Teacher</span></span><br><span class="line"><span class="keyword">deinit</span><span class="operator">------------------</span><span class="type">Student</span></span><br><span class="line"><span class="operator">------------------</span><span class="literal">nil</span></span><br><span class="line"><span class="keyword">deinit</span><span class="operator">------------------</span><span class="type">Teacher</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5e685f24e6354696a9f99c2e1707b08c~tplv-k3u1fbpfcp-watermark.image" alt="弱引用02"></p>
+<p>关于如何使用<code>weak</code>修饰的属性总结：</p>
+<ul>
+<li>弱引用不会增加实例的引用计数，因此不会阻止ARC销毁被引用的实例。所以使用弱引用后，即使两个实例互相持有也不会形成强引用环。</li>
+<li>弱引用只能申明为变量类型，因为运行时他的值可能会改变。弱引用绝对不能申明为常量。在Swift中，用var关键字申明的为变量，用let关键字申明的为常量。</li>
+<li>因为弱引用可以没有值，用弱引用来修饰的变量必须是<strong>可选类型</strong>。</li>
+</ul>
+<h5 id="2-2-3-无主引用"><a href="#2-2-3-无主引用" class="headerlink" title="2.2.3 无主引用"></a>2.2.3 无主引用</h5><p>虽然<code>weak</code>解决了循环引用的问题，但是不是所有的属性都是可选的，如果有一个不可以为<code>nil</code>的属性造成了循环引用，该怎么办呢？</p>
+<ul>
+<li>我可以把这个不可为<code>nil</code>的属性修改为可以为<code>nil</code></li>
+<li>采用Swift为开发者提供的另一种解决方案，使用无主引用</li>
+</ul>
+<p>和弱引用相似，无主引用也不强制有实例对象。<strong>和弱引用不同的是，无主引用默认始终有值</strong>。在属性和变量前添加<code>unowned</code>关键字，就可以申明一个无主引用。</p>
+<p>为了演示这个过程，我为每个学生添加了家庭作业<code>homeWork</code>属性，当然并不是所有的学生都会按时写作业，所以<code>homeWork</code>的类型是<code>optional</code>,然后来实现<code>HomeWork</code>类；</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 家庭作业</span></span><br><span class="line"><span class="keyword">var</span> homeWork: <span class="type">HomeWork</span>?</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HomeWork</span>: <span class="title">NSObject</span> </span>&#123;</span><br><span class="line">    <span class="keyword">let</span> student: <span class="type">Student</span></span><br><span class="line">    <span class="keyword">let</span> course: <span class="type">Course</span></span><br><span class="line">  </span><br><span class="line">    <span class="function"><span class="keyword">init</span>(<span class="params">student</span>: <span class="type">Student</span>, <span class="params">course</span>: <span class="type">Course</span>)</span> &#123;</span><br><span class="line">        <span class="keyword">self</span>.student <span class="operator">=</span> student</span><br><span class="line">        <span class="keyword">self</span>.course <span class="operator">=</span> course</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;init------------------HomeWork&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">deinit</span> &#123;</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;deinit------------------HomeWork&quot;</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里既然有了家庭作业，那么我就要知道是谁写的，是哪门课程的作业,这里<code>studentName</code>和<code>course</code>就不能是一个<code>optional</code>。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> david: <span class="type">Student</span>? <span class="operator">=</span> <span class="type">Student</span>(name: <span class="string">&quot;David Taylor&quot;</span>)</span><br><span class="line"><span class="keyword">var</span> homeWork: <span class="type">HomeWork</span>? <span class="operator">=</span> <span class="type">HomeWork</span>(student: david<span class="operator">!</span>, course: .quantumMechanics)</span><br></pre></td></tr></table></figure>
+<p>此处假设学生<code>david</code>完成了作业，那么可以用下面的代码来表示：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">david<span class="operator">?</span>.homeWork <span class="operator">=</span> homeWork </span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">init</span><span class="operator">------------------</span><span class="type">Student</span></span><br><span class="line"><span class="keyword">init</span><span class="operator">------------------</span><span class="type">HomeWork</span></span><br></pre></td></tr></table></figure>
+<p>运行代码，发现并没有调用<code>deinit</code>方法，此时学生<code>david</code>和<code>homeWork</code>就形成了一个引用循环，他们之间的持有的关系是<code>david</code>和<code>homeWork</code>各自引用着自己的对象，<code>david</code>和<code>homeWork</code>互相引用着彼此。</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/700cecb6aa074c93977d467e22d704d5~tplv-k3u1fbpfcp-watermark.image" alt="homeWork"></p>
+<p>那么此时，我将<code>david</code>置为<code>nil</code>呢？</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">david <span class="operator">=</span> <span class="literal">nil</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">init------------------Student</span><br><span class="line">init------------------HomeWork</span><br></pre></td></tr></table></figure>
+<p>运行代码，发现依旧没有调用<code>deinit</code>方法，此时虽然<code>david</code>实例为<code>nil</code>,实例<code>homeWork</code>也离开了自己的作用域。此时在内存中<code>david.homeWork</code>和<code>homeWork.student</code>之间的引用关系依旧会把这两个对象保持在内存中,他们关系如下图所示：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7524800de1b34c93b9cf7e791a32110b~tplv-k3u1fbpfcp-watermark.image" alt="homework002"></p>
+<p>当然此处可以使用<code>weak</code>关键字将其中任意一个强持有改成弱引用来解决这个问题。此处也可以使用系统提供的另一种解决方案：**非可选类型的属性前加<code>unowned</code>**，无主引用解决循环引用问题。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">unowned</span> <span class="keyword">let</span> student: <span class="type">Student</span></span><br></pre></td></tr></table></figure>
+<p>我们可以将任意一个强引用的属性前加<code>unowned</code>,就可以解决这个问题，唯一不同的是<code>Strong reference</code>变成了<code>unowned reference</code>,此时他们之间的引用关系是:</p>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a606dcd64e2048318a00a4bc076bb4dd~tplv-k3u1fbpfcp-watermark.image" alt="Homework003"></p>
+<p>这时候再次运行代码：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">david <span class="operator">=</span> <span class="literal">nil</span></span><br><span class="line">homeWork <span class="operator">=</span> <span class="literal">nil</span></span><br></pre></td></tr></table></figure>
+<p>打印结果如下：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">init</span><span class="operator">------------------</span><span class="type">Student</span></span><br><span class="line"><span class="keyword">init</span><span class="operator">------------------</span><span class="type">HomeWork</span></span><br><span class="line"><span class="keyword">deinit</span><span class="operator">------------------</span><span class="type">Student</span></span><br><span class="line"><span class="keyword">deinit</span><span class="operator">------------------</span><span class="type">HomeWork</span></span><br></pre></td></tr></table></figure>
+<p>可以看到<code>david</code>和<code>homeWork</code>都可以正常的被回收了，当<code>david</code>为<code>nil</code>时<code>Student</code>对象就会被ARC回收，而当<code>homeWork</code>为<code>nil</code>时，<code>homeWork</code>也就失去了他的作用也会被ARC回收其内存。</p>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a3075905820d4e6cb692f4fd2cea1f93~tplv-k3u1fbpfcp-watermark.image" alt="homewirkoo4"></p>
+<p>如果我调用被释放的内存之后会怎样呢？修改代码如下：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">homeWork &#x3D; nil</span><br><span class="line">homeWork!.student</span><br></pre></td></tr></table></figure>
+<p>程序执行时会crash并提示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Unexpectedly found nil while unwrapping an Optional value</span><br></pre></td></tr></table></figure>
+<p>所以使用<code>unowned</code>虽然能解决不可选属性循环引用问题，但在实际开发中也应该注意<strong>在使用无主引用时要确保引用始终指向一个未销毁的实例</strong>。</p>
+<p>虽然使用<code>weak</code>和<code>unowned</code>解决了<code>Class</code>中的强引用循环问题，但是<code>Class</code>并不是Swift中唯一的引用类型，Swift中<code>Closure</code>也是引用类型，至于<code>Closure</code>如何解决内存管理问题，可参考官方文档<a target="_blank" rel="noopener" href="https://docs.swift.org/swift-book/LanguageGuide/Closures.html">the swift programming language: Closures</a>。</p>
+<hr>
+<p>本文参考：</p>
+<p><a target="_blank" rel="noopener" href="https://docs.swift.org/swift-book/LanguageGuide/AutomaticReferenceCounting.html">《the swift programming language》Automatic Reference Counting</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.swiftbysundell.com/articles/handling-non-optional-optionals-in-swift/">Handling non-optional optionals in Swift</a></p>
+<p><a target="_blank" rel="noopener" href="https://time.geekbang.org/course/detail/100034001-165161">Swift中的自动引用计数</a></p>
+<p><a target="_blank" rel="noopener" href="https://boxueio.com/series/understand-ref-types">理解引用语义的自定义类型</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/dengfeng520/RPDemo/tree/main/ARC/">本文demo</a></p>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/28923659.mp3'></li>
+                        
+                    
+                        
+                            <li title='1' data-url='http://link.hhtjim.com/163/425570952.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
