@@ -415,7 +415,7 @@
   </entry>
   <entry>
     <title>基于MVVM构建聊天App （一）从新建工程开始</title>
-    <url>/2020/06/16/%E5%9F%BA%E4%BA%8EMVVM%E6%9E%84%E5%BB%BA%E8%81%8A%E5%A4%A9App(%E4%B8%80)%E4%BB%8E.../</url>
+    <url>/2021/01/05/%E5%9F%BA%E4%BA%8EMVVM%E6%9E%84%E5%BB%BA%E8%81%8A%E5%A4%A9App(%E4%B8%80)%E4%BB%8E.../</url>
     <content><![CDATA[<h6 align='right'>小时光</h6>
 <h6  align='right'>北京体适能体育科技有限公司</h6> 
 
@@ -737,8 +737,8 @@
 ]]></content>
   </entry>
   <entry>
-    <title>基于MVVM构建聊天App （四）构建自己的开源库</title>
-    <url>/2020/09/09/%E6%9E%84%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%BC%80%E6%BA%90%E5%BA%93/</url>
+    <title>基于MVVM构建聊天App（四）构建自己的开源库</title>
+    <url>/2021/01/05/%E6%9E%84%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%BC%80%E6%BA%90%E5%BA%93/</url>
     <content><![CDATA[<p>坦白来说我们所使用的任何一个功能在github等一些开源网站上都能找到示例代码或相关开源库，我个人认为在使用一个开源代码加入到自己的工程之前应该慎重：</p>
 <ul>
 <li>有些开源项目的由于各种原因最终作者不再维护，出现bug了我们只能自己维护或者寻找新的替代库；</li>
@@ -914,7 +914,7 @@
   </entry>
   <entry>
     <title>基于MVVM构建聊天App （三）网络请求封装</title>
-    <url>/2021/01/04/%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E5%B0%81%E8%A3%85/</url>
+    <url>/2021/01/05/%E7%BD%91%E7%BB%9C%E8%AF%B7%E6%B1%82%E5%B0%81%E8%A3%85/</url>
     <content><![CDATA[<h6 align='right'>小时光</h6>
 本文主要处理2个问题：
 
@@ -1186,7 +1186,7 @@
   </entry>
   <entry>
     <title>基于MVVM构建聊天App （二）登录UI实现</title>
-    <url>/2020/06/23/%E7%99%BB%E5%BD%95%E7%95%8C%E9%9D%A2UI%E5%AE%9E%E7%8E%B0/</url>
+    <url>/2021/01/05/%E7%99%BB%E5%BD%95%E7%95%8C%E9%9D%A2UI%E5%AE%9E%E7%8E%B0/</url>
     <content><![CDATA[<h6 align='right'>小时光</h6>
 
 <h3 id="1、一个完整的开发流程"><a href="#1、一个完整的开发流程" class="headerlink" title="1、一个完整的开发流程"></a>1、一个完整的开发流程</h3><p>一般的，一个正常的流程包括：</p>
@@ -1444,9 +1444,8 @@
   </entry>
   <entry>
     <title>地铁三号线</title>
-    <url>/2020/02/22/%E5%9C%B0%E9%93%81%E4%B8%89%E5%8F%B7%E7%BA%BF/</url>
+    <url>/2021/03/05/%E5%9C%B0%E9%93%81%E4%B8%89%E5%8F%B7%E7%BA%BF/</url>
     <content><![CDATA[<h6 align='right'>小时光</h6>
-
 
 <h4 align='center'>
 写一部小说需要三要素
@@ -1458,10 +1457,7 @@
 末班车、终点站、一个人
 </h4>
 
-
-
-
-<p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/girls/girl037.jpg?raw=true" alt="地铁三号线"></p>
+<p><img src="/img/girl045.jpg" alt="地铁三号线"></p>
 ]]></content>
   </entry>
   <entry>
