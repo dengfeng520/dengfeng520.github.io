@@ -127,6 +127,9 @@
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">brew install webp</span><br></pre></td></tr></table></figure>
 <p>如我要把<code>all_background.png</code>这张图片采用无损压缩方式转成<code>WebP</code>可使用命令:</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cwebp -lossless all_background.png -o all_background.webp</span><br></pre></td></tr></table></figure>
+<p>如果要控制压缩质量为50%：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">cwebp -q 50 girl006.jpg -o girl006.webp</span><br></pre></td></tr></table></figure>
+
 <p>压缩完成之后，只占了3K内存，优化效果非常明显。</p>
 <p><img src="https://github.com/dengfeng520/xiaoshiguangBlog/blob/master/Image/004.png?raw=true" alt="压缩后"></p>
 <h6 id="3-、WebP的使用"><a href="#3-、WebP的使用" class="headerlink" title="(3)、WebP的使用"></a>(3)、<code>WebP</code>的使用</h6><p><code>WebP</code>图片的加载可参考:<a href="%5Bhttps://www.jianshu.com/p/f33422951795%5D(https://www.jianshu.com/p/f33422951795)">WebP解码支持（Objc &amp; Swift）</a></p>
