@@ -82,6 +82,7 @@
 <li>（1）、<strong>Moya</strong>自身原因：<strong>Moya</strong>封装的很完美，这虽然为开发者带来了很大的方便，但是过多封装的必然会导致可扩展性下降</li>
 <li>（2）、内部原因：由于我公司的后台接口没有一个统一的标准，所以不同模块后台返回的数据结构不同，所以我不得不分开处理</li>
 <li>（3）、基于App包大小考虑：导入过多的第三方开源库必然会使App包也同步变大，这并不是我所期望的</li>
+<li>（4）、和RxSwift兼容问题，如RxSwift已经升级到6.0版本了，Moya却只支持5.*版本</li>
 </ul>
 <p>所以我最终的选择是<strong>RxSwift+URLSession+SwiftyJSON</strong>。</p>
 <blockquote>
