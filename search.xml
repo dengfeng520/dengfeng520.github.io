@@ -1420,7 +1420,7 @@
   </entry>
   <entry>
     <title>地铁三号线</title>
-    <url>/2021/03/05/%E5%9C%B0%E9%93%81%E4%B8%89%E5%8F%B7%E7%BA%BF/</url>
+    <url>/2021/03/17/%E5%9C%B0%E9%93%81%E4%B8%89%E5%8F%B7%E7%BA%BF/</url>
     <content><![CDATA[<h6 align='right'>小时光</h6>
 
 <h4 align='center'>
@@ -2006,6 +2006,48 @@
 <p><a href="https://time.geekbang.org/course/detail/100034001-165161">Swift中的自动引用计数</a></p>
 <p><a href="https://boxueio.com/series/understand-ref-types">理解引用语义的自定义类型</a></p>
 <p><a href="https://github.com/dengfeng520/RPDemo/tree/main/ARC/">本文demo</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>被误解的inout</title>
+    <url>/2021/03/17/%E8%A2%AB%E8%AF%AF%E8%A7%A3%E7%9A%84inout/</url>
+    <content><![CDATA[<h6 align='right'>小时光</h6>
+<h6 align='right'><a href='https://dengfeng520.github.io/'>我的博客</a></h6>
+
+<p>在Swift中，函数的参数默认都是常量是不可以修改的，如果我需要在函数内部修改函数的某个参数，或者通过参数返回内容，就需要用<code>input</code>关键字来修饰这个参数。</p>
+<p>如老师需要为学生的笔试成绩加上30分的平时成绩，就需要用到<code>input</code>参数：</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">configStudent</span>(<span class="keyword">_</span> <span class="params">fraction</span>: <span class="keyword">inout</span> <span class="type">Int</span>)</span> -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> fraction <span class="operator">+</span> <span class="number">30</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> num <span class="operator">=</span> <span class="number">53</span></span><br><span class="line">configStudent(<span class="operator">&amp;</span>num)</span><br></pre></td></tr></table></figure>
+<p>在其他C系列语言中，如<code>C/C++</code>和<code>Objective-C</code>中，一般会认为是在传递变量的指针。实际上我在此之前也是这么认为的，直到在读到<a href="https://docs.swift.org/swift-book/">官方文档</a>函数部分章节后才知道其实<code>inout</code>关键字的用途并非如此。</p>
+<h4 id="1、inout-只是-in-out"><a href="#1、inout-只是-in-out" class="headerlink" title="1、inout 只是 in - out"></a>1、inout 只是 in - out</h4><p>在官方文档中是这样说的：</p>
+<p><code>You write an in-out parameter by placing the inout keyword right before a parameter’s type. An in-out parameter has a value that’s passed in to the function, is modified by the function, and is passed back out of the function to replace the original value. </code></p>
+<p>这里说的很明确，<code>inout</code>就是把参数传递给函数，被函数修改之后再替换初始值。也就是说<code>inout</code>就只是简单的<code>in-out</code>而没有其他的意思。</p>
+<h4 id="2、inout的使用"><a href="#2、inout的使用" class="headerlink" title="2、inout的使用"></a>2、inout的使用</h4><h6 id="2-1、变量可以、常量不可以"><a href="#2-1、变量可以、常量不可以" class="headerlink" title="2.1、变量可以、常量不可以"></a>2.1、变量可以、常量不可以</h6><ul>
+<li> （1） 、使用<code>inout</code>只能修饰变量</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">configStudent</span>(<span class="keyword">_</span> <span class="params">fraction</span>: <span class="keyword">inout</span> <span class="type">Int</span>)</span> -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> fraction <span class="operator">+</span> <span class="number">30</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> num <span class="operator">=</span> <span class="number">53</span></span><br><span class="line">configStudent(<span class="operator">&amp;</span>num)</span><br></pre></td></tr></table></figure>
+<p>在编译的时候，系统会直接报错<code>Cannot pass immutable value as inout argument: &#39;num&#39; is a &#39;let&#39; constant</code></p>
+<p>修改代码<code>var num = 53</code>编译成功，</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> num <span class="operator">=</span> <span class="number">53</span></span><br><span class="line">configStudent(<span class="operator">&amp;</span>num)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>（2） 、可变数组中的常量也可以用<code>inout</code></li>
+</ul>
+<p>但是同样的，如果我修改一个可变数组中的参数吗？</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="keyword">var</span> testArray <span class="operator">=</span> [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>,<span class="number">6</span>]</span><br><span class="line">testArray[<span class="number">1</span>] <span class="operator">=</span> configStudent(<span class="operator">&amp;</span>testArray[<span class="number">1</span>]) <span class="comment">// [1, 32, 3, 4, 5, 6]</span></span><br></pre></td></tr></table></figure>
+<p>编译代码，正常运行，说明数组中的下标操作也可以使用<code>inout</code>来修饰参数。</p>
+<ul>
+<li>（3）、自定义类型属性使用<code>inout</code>关键字</li>
+</ul>
+<p>如我现在要记录学生在上课签到时的位置，在得到学生的位置信息后再做一次校正处理，使用自定义类型，代码如下：</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Location</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> lat: <span class="type">Double</span></span><br><span class="line">    <span class="keyword">var</span> lon: <span class="type">Double</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">configLocation</span>(<span class="keyword">_</span> <span class="params">num</span>: <span class="keyword">inout</span> <span class="type">Double</span>)</span> -&gt; <span class="type">String</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;<span class="subst">\(num <span class="operator">+</span> <span class="number">0.01</span>)</span>&quot;</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 调用</span></span><br><span class="line"><span class="keyword">var</span> location <span class="operator">=</span> <span class="type">Location</span>(lat: <span class="number">37.33020</span>, lon: <span class="operator">-</span><span class="number">122.024348</span>)</span><br><span class="line">configLocation(<span class="operator">&amp;</span>location.lat)</span><br></pre></td></tr></table></figure>
+<p>编译代码，正常运行。</p>
+<p>使用上面的代码，我在得到学生的位置不仅要知道经纬度,还想知道这个学生的平时成绩，一般默认情况下老师会给所有学生设置平时成绩为30分，新增<code>fraction</code>属性作为平时成绩，代码如下：</p>
+<figure class="highlight swift"><table><tr><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Location</span> </span>&#123;</span><br><span class="line">    <span class="keyword">var</span> lat: <span class="type">Double</span></span><br><span class="line">    <span class="keyword">var</span> lon: <span class="type">Double</span></span><br><span class="line">    </span><br><span class="line">    <span class="keyword">var</span> fraction: <span class="type">Int</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="number">30</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">configFraction</span>(<span class="keyword">_</span> <span class="params">fraction</span>: <span class="keyword">inout</span> <span class="type">Int</span>)</span> -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> fraction <span class="operator">+</span> <span class="number">30</span></span><br><span class="line">&#125;</span><br><span class="line">configFraction(<span class="operator">&amp;</span>location.fraction)</span><br></pre></td></tr></table></figure>
+<p>此时我再次运行代码，编译时直接报错: <code>Cannot pass immutable value as inout argument: &#39;fraction&#39; is a get-only property</code>,也就是说对于自定义类的只读属性，不能使用<code>inout</code>参数；</p>
+<p> 最终的结论是：<strong>自定义类型的属性同时有<code>get</code>和<code>set</code>方法，也可以作为<code>inout</code>参数。自定义类型中的只读属性不能使用<code>inout</code>参数</strong></p>
+<hr>
+<p>本文主要说了我曾经对<code>inout</code>修饰参数的一些误解，及<code>inout</code>修饰参数的使用，如果有不对的地方请指出。</p>
+<p>本文参考:<a href="https://docs.swift.org/swift-book/LanguageGuide/Functions.html">the swift programming language：Functions</a></p>
+<p><a href="https://github.com/dengfeng520/RPDemo/tree/main/Closures">本文代码</a></p>
 ]]></content>
   </entry>
 </search>
