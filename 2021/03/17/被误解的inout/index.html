@@ -13,8 +13,7 @@
     <meta name="description" content="小时光
 我的博客
 
-在Swift中，函数的参数默认都是常量是不可以修改的，如果我需要在函数内部修改函数的某个参数，或者通过参数返回内容，就需要用input关键字来修饰这个参数。
-如老师需要为学生的笔,"> 
+在Swift中，函数的参数默认都是常量是不可以修改的，如果我需要在函数内部修改函数的某个参数，或者通过参数返回内容，就需要用input关键字来修饰这个参数，在调用时在这个参数前加,"> 
     <meta name="author" content="小时光"> 
     <link rel="alternative" href="atom.xml" title="小时光のホームページ" type="application/atom+xml"> 
     <link rel="icon" href="/img/favicon.png"> 
@@ -57,10 +56,10 @@
             <h6 align='right'>小时光</h6>
 <h6 align='right'><a href='https://dengfeng520.github.io/'>我的博客</a></h6>
 
-<p>在Swift中，函数的参数默认都是常量是不可以修改的，如果我需要在函数内部修改函数的某个参数，或者通过参数返回内容，就需要用<code>input</code>关键字来修饰这个参数。</p>
+<p>在Swift中，函数的参数默认都是常量是不可以修改的，如果我需要在函数内部修改函数的某个参数，或者通过参数返回内容，就需要用<code>input</code>关键字来修饰这个参数，在调用时在这个参数前加上<code>&amp;</code>即可。</p>
 <p>如老师需要为学生的笔试成绩加上30分的平时成绩，就需要用到<code>input</code>参数：</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">configStudent</span>(<span class="keyword">_</span> <span class="params">fraction</span>: <span class="keyword">inout</span> <span class="type">Int</span>)</span> -&gt; <span class="type">Int</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> fraction <span class="operator">+</span> <span class="number">30</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">var</span> num <span class="operator">=</span> <span class="number">53</span></span><br><span class="line">configStudent(<span class="operator">&amp;</span>num)</span><br></pre></td></tr></table></figure>
-<p>在其他C系列语言中，如<code>C/C++</code>和<code>Objective-C</code>中，一般会认为是在传递变量的指针。实际上我在此之前也是这么认为的，直到在读到<a target="_blank" rel="noopener" href="https://docs.swift.org/swift-book/">官方文档</a>函数部分章节后才知道其实<code>inout</code>关键字的用途并非如此。</p>
+<p>这里的<code>&amp;num</code>写法，在其他C系列语言中，如<code>C/C++</code>和<code>Objective-C</code>中，一般会认为是在传递变量的指针。实际上我在此之前也是这么认为的，直到在读到<a target="_blank" rel="noopener" href="https://docs.swift.org/swift-book/">官方文档</a>函数部分章节后才知道其实<code>inout</code>关键字的用途并非如此。</p>
 <h4 id="1、inout-只是-in-out"><a href="#1、inout-只是-in-out" class="headerlink" title="1、inout 只是 in - out"></a>1、inout 只是 in - out</h4><p>在官方文档中是这样说的：</p>
 <p><code>You write an in-out parameter by placing the inout keyword right before a parameter’s type. An in-out parameter has a value that’s passed in to the function, is modified by the function, and is passed back out of the function to replace the original value. </code></p>
 <p>这里说的很明确，<code>inout</code>就是把参数传递给函数，被函数修改之后再替换初始值。也就是说<code>inout</code>就只是简单的<code>in-out</code>而没有其他的意思。</p>
