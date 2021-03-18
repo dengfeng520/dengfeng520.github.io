@@ -62,7 +62,7 @@
 <p>这里的<code>&amp;num</code>写法，在其他C系列语言中，如<code>C/C++</code>和<code>Objective-C</code>中，一般会认为是在传递变量的指针。实际上我在此之前也是这么认为的，直到在读到<a target="_blank" rel="noopener" href="https://docs.swift.org/swift-book/">官方文档</a>函数部分章节后才知道其实<code>inout</code>关键字的用途并非如此。</p>
 <h4 id="1、inout-只是-in-out"><a href="#1、inout-只是-in-out" class="headerlink" title="1、inout 只是 in - out"></a>1、inout 只是 in - out</h4><p>在官方文档中是这样说的：</p>
 <p><code>You write an in-out parameter by placing the inout keyword right before a parameter’s type. An in-out parameter has a value that’s passed in to the function, is modified by the function, and is passed back out of the function to replace the original value. </code></p>
-<p>这里说的很明确，<code>inout</code>就是把参数传递给函数，被函数修改之后再替换初始值。也就是说<code>inout</code>就只是简单的<code>in-out</code>而没有其他的意思。</p>
+<p>文档上这里说的很明确，<code>inout</code>就是把参数传递给函数，被函数修改之后再替换初始值。也就是说<code>inout</code>就只是简单的<code>in-out</code>而没有其他的意思。</p>
 <h4 id="2、inout的使用"><a href="#2、inout的使用" class="headerlink" title="2、inout的使用"></a>2、inout的使用</h4><h6 id="2-1、变量可以、常量不可以"><a href="#2-1、变量可以、常量不可以" class="headerlink" title="2.1、变量可以、常量不可以"></a>2.1、变量可以、常量不可以</h6><ul>
 <li> 使用<code>inout</code>只能修饰变量</li>
 </ul>
