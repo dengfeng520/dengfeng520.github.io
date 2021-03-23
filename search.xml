@@ -1998,10 +1998,10 @@
 <p>程序执行时会crash并提示：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">Unexpectedly found nil while unwrapping an Optional value</span><br></pre></td></tr></table></figure>
 <p>所以使用<code>unowned</code>虽然能解决不可选属性循环引用问题，但在实际开发中也应该注意<strong>在使用无主引用时要确保引用始终指向一个未销毁的实例</strong>。</p>
-<p>虽然使用<code>weak</code>和<code>unowned</code>解决了<code>Class</code>中的强引用循环问题，但是<code>Class</code>并不是Swift中唯一的引用类型，Swift中<code>Closures</code>也是引用类型，至于<code>Closures</code>如何解决内存管理问题，可参考官方文档<a href="https://docs.swift.org/swift-book/LanguageGuide/Closures.html">the swift programming language: Closures</a>。</p>
+<p>虽然使用<code>weak</code>和<code>unowned</code>解决了<code>Class</code>中的强引用循环问题，但是<code>Class</code>并不是Swift中唯一的引用类型，Swift中<code>func、Closures</code>也是引用类型，至于<code>Closures</code>如何解决内存管理问题，可参考官方文档<a href="https://docs.swift.org/swift-book/LanguageGuide/Closures.html">The Swift Programming Language: Closures</a>。</p>
 <hr>
 <p>本文参考：</p>
-<p><a href="https://docs.swift.org/swift-book/LanguageGuide/AutomaticReferenceCounting.html">《the swift programming language》Automatic Reference Counting</a></p>
+<p><a href="https://docs.swift.org/swift-book/LanguageGuide/AutomaticReferenceCounting.html">《The Swift Programming Language》Automatic Reference Counting</a></p>
 <p><a href="https://www.swiftbysundell.com/articles/handling-non-optional-optionals-in-swift/">Handling non-optional optionals in Swift</a></p>
 <p><a href="https://time.geekbang.org/course/detail/100034001-165161">Swift中的自动引用计数</a></p>
 <p><a href="https://boxueio.com/series/understand-ref-types">理解引用语义的自定义类型</a></p>
