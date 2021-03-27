@@ -2136,8 +2136,7 @@
 </ul>
 <p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6fcb9017fe6346f7a8cebba11d29c759~tplv-k3u1fbpfcp-watermark.image" alt="closure002.png"></p>
 <p>此时，只有<code>Closure</code>对象的引用计数变成了1。于是<code>Closure</code>继续引用了<code>student</code>，<code>student</code>继续引用了他的对象<code>replyClosure</code>，而这个对象继续引用着<code>judgeClosure</code>。这样就造成了一个引用循环，所以就会出现内存无法正常释放的情况。</p>
-<p>#####4.2、closure属性的内部实现捕获self产生的循环引用</p>
-<p>同样的这里我先利用<code>Objective-C</code>的代码来举例，修改<code>Student</code>类的代码如下：</p>
+<h5 id="4-2、closure属性的内部实现捕获self产生的循环引用"><a href="#4-2、closure属性的内部实现捕获self产生的循环引用" class="headerlink" title="4.2、closure属性的内部实现捕获self产生的循环引用"></a>4.2、closure属性的内部实现捕获self产生的循环引用</h5><p>同样的这里我先利用<code>Objective-C</code>的代码来举例，修改<code>Student</code>类的代码如下：</p>
 <figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">@implementation Student</span><br><span class="line">- (instancetype)init &#123;</span><br><span class="line">    self &#x3D; [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">       if (self.replyClosure) &#123;</span><br><span class="line">          self.replyClosure &#x3D; ^(AnswerEnum answer) &#123;</span><br><span class="line">             &#x2F;&#x2F; Capturing &#39;self&#39; strongly in this block is likely to lead to a retain cycle</span><br><span class="line">             NSLog(@&quot;%@&quot;,self);</span><br><span class="line">          &#125;;</span><br><span class="line">       &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
 <p>同样的在Build时编译器会警告，<code>Capturing &#39;self&#39; strongly in this block is likely to lead to a retain cycle</code>。</p>
 <p>在Swift中虽然编译器不会警告，但也会产生同样产生循环引用问题。修改<code>Student</code>中定义<code>replyClosure</code>代码如下：</p>
