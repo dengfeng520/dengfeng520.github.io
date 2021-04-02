@@ -2215,7 +2215,7 @@
 ]]></content>
   </entry>
   <entry>
-    <title>Swift 类和结构体</title>
+    <title>Swift 结构体和类</title>
     <url>/2021/03/31/Swift%E7%B1%BB%E5%92%8C%E7%BB%93%E6%9E%84%E4%BD%93/</url>
     <content><![CDATA[<h3 id="1、值类型和引用类型"><a href="#1、值类型和引用类型" class="headerlink" title="1、值类型和引用类型"></a>1、值类型和引用类型</h3><p>在iOS中虚拟内存分为五大内存分区：<strong>堆区、栈区、全局区、常量区、代码区</strong>。在Swift中根据对象在内存的存储位置不同分为值类型和引用类型。</p>
 <ul>
