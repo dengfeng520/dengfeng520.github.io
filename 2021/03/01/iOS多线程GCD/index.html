@@ -70,17 +70,10 @@
             <h6 align='right'>小时光</h6>
 
 <p>前一篇<a href="https://dengfeng520.github.io/2021/02/06/iOS%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%A6%82%E8%A7%88/">iOS 多线程概览</a>简单介绍了iOS 中<code>Operation</code>的基础用法。<br>由于GCD简单易用，任务更简单纯粹，执行效率高，本身性能高这些优点，使得GCD在实际开发的使用和面试中出现的频率非常高。掌握GCD及其多线程技术点并将其运用于开发中是开发一个良好易用App的基础之一。本文主要整理了GCD的一些知识点和基础用法。</p>
-<blockquote>
-<h3>1、GCD概览</h3>
-</blockquote>
-<p>GCD全称是<code>Grand Central Dispatch</code>，是Apple为开发者提供的一个多线程编程的方案，它是一个在线程池模式的基础上执行的并发任务，GCD充分利用硬件的多核性能，让开发者编写出更高效的代码。</p>
-<blockquote>
-<h3>2、GCD的队列和任务</h3>
-</blockquote>
-<h4 id="2-1、队列"><a href="#2-1、队列" class="headerlink" title="2.1、队列"></a>2.1、队列</h4><ul>
+<h3 id="1、GCD概览"><a href="#1、GCD概览" class="headerlink" title="1、GCD概览"></a>1、GCD概览</h3><p>GCD全称是<code>Grand Central Dispatch</code>，是Apple为开发者提供的一个多线程编程的方案，它是一个在线程池模式的基础上执行的并发任务，GCD充分利用硬件的多核性能，让开发者编写出更高效的代码。</p>
+<h3 id="2、GCD的队列和任务"><a href="#2、GCD的队列和任务" class="headerlink" title="2、GCD的队列和任务"></a>2、GCD的队列和任务</h3><h4 id="2-1、队列"><a href="#2-1、队列" class="headerlink" title="2.1、队列"></a>2.1、队列</h4><ul>
 <li><p>主队列(main Queue): 在主线程中执行的任务,主要用于处理UI相关的任务</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let main &#x3D; DispatchQueue.main</span><br></pre></td></tr></table></figure>
-</li>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let main &#x3D; DispatchQueue.main</span><br></pre></td></tr></table></figure></li>
 <li><p>串行队列（serial Queue）: 任务按照先后顺序执行，一般只分配一个线程，同一时刻只会执行一个任务，并严格按照任务顺序执行</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let serialQueue &#x3D; DispatchQueue(label: &quot;com.tsn.demo.serialQueue&quot;)</span><br></pre></td></tr></table></figure>
 <p>例如串行队列中有三个下载图片任务，系统会根据这三个任务加入到队列的顺序执行，下载完成第一张图片后才会下载第二张图片，第二张图片下载完成后才会下载第三张图片。</p>
@@ -96,16 +89,18 @@
 <ul>
 <li><p>全局并发队列 （global Queue）</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">let globalQueue &#x3D; DispatchQueue.global()</span><br><span class="line">let globalQueue &#x3D; DispatchQueue.global(qos: .background)</span><br></pre></td></tr></table></figure>
-
 <p>全局并发队列系统提供了6个不同的优先级别，分别是<code>background、utility、default、userInitiated、userInteractive、unspecified</code>。创建队列时，其中<code>qos</code>参数表示的是队列的优先级别,可以使用默认优先级，也可以单独指定。</p>
-<h4 id="2-2、任务"><a href="#2-2、任务" class="headerlink" title="2.2、任务"></a>2.2、任务</h4><p>GCD的任务一般我们认为是程序执行时做的事情，如一个API调用，一个方法、函数等。</p>
 </li>
-<li><p>同步任务</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">queue.sync &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
-<li><p>*同步任务一经提交会在当前线程执行立即执行，不会开启新线程，并且会阻塞当前线程，当前任务在执行完并返回结果后才能执行下一步。**</p>
-<p>如图所示，今天公司给我安排了一个开发任务A，当我正在开发时又出现了一个很紧急任务B此时我只能暂停做到一半的任务A来执行任务B，当B任务完成后才能继续开发任务A，这种执行方式为同步。</p>
-<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cbd50ceaae5c477e86e5bc76614bee27~tplv-k3u1fbpfcp-watermark.image" alt="同步任务">  </p>
-</li>
+</ul>
+<h4 id="2-2、任务"><a href="#2-2、任务" class="headerlink" title="2.2、任务"></a>2.2、任务</h4><p> GCD的任务一般我们认为是程序执行时做的事情，如一个API调用，一个方法、函数等。</p>
+<ul>
+<li>同步任务</li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">queue.sync &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p> <strong>同步任务一经提交会在当前线程执行立即执行，不会开启新线程，并且会阻塞当前线程，当前任务在执行完并返回结果后才能执行下一步。</strong></p>
+<p> 如图所示，今天公司给我安排了一个开发任务A，当我正在开发时又出现了一个很紧急任务B此时我只能暂停做到一半的任务A来执行任务B，当B任务完成后才能继续开发任务A，这种执行方式为同步。</p>
+<p>  <img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cbd50ceaae5c477e86e5bc76614bee27~tplv-k3u1fbpfcp-watermark.image" alt="同步任务">  </p>
+<ul>
 <li><p>异步任务</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">queue.async &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
 <li><p>*异步任务提交后不会阻塞当前线程，会新建另一个线程执行。**</p>
@@ -120,13 +115,13 @@
 </li>
 <li><p>迭代任务</p>
 <p>如果说使用并行队列是为了提高程序的执行效率，那么迭代任务就是为了更高效的更全面的利用手机性能来执行任务。<br>GCD使用<code>concurrentPerform</code>方法执行迭代任务，类似于<code>Objective-C</code>的<code>dispatch_apply</code>方法。</p>
+</li>
+</ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">let musicArray &#x3D; Array&lt;AnyObject?&gt;(repeating: nil, count: 10)</span><br><span class="line">DispatchQueue.concurrentPerform(iterations: musicArray.count) &#123; (index) in</span><br><span class="line">    print(&quot;-----------执行查找操作-----------&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-
-<h4 id="2-3、队列详细属性"><a href="#2-3、队列详细属性" class="headerlink" title="2.3、队列详细属性"></a>2.3、队列详细属性</h4><p>前面已经给出一般我们创建队列，系统提供的完成的创建方法:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let concurrentQueue &#x3D; DispatchQueue(label: &quot;com.tsn.demo.concurrentQueue&quot;, qos: .default, attributes: .concurrent, autoreleaseFrequency: .inherit, target: nil)</span><br></pre></td></tr></table></figure>
-
-<h6 id="2-3-1-常用API"><a href="#2-3-1-常用API" class="headerlink" title="2.3.1 常用API"></a>2.3.1 常用API</h6></li>
+<h4 id="2-3、队列详细属性"><a href="#2-3、队列详细属性" class="headerlink" title="2.3、队列详细属性"></a>2.3、队列详细属性</h4><p>  前面已经给出一般我们创建队列，系统提供的完成的创建方法:</p>
+   <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let concurrentQueue &#x3D; DispatchQueue(label: &quot;com.tsn.demo.concurrentQueue&quot;, qos: .default, attributes: .concurrent, autoreleaseFrequency: .inherit, target: nil)</span><br></pre></td></tr></table></figure>
+<h6 id="2-3-1-常用API"><a href="#2-3-1-常用API" class="headerlink" title="2.3.1 常用API"></a>2.3.1 常用API</h6><ul>
 <li><p>Dispatch.main 主线程队列</p>
 </li>
 <li><p>Dispatch.global 全局队列</p>
@@ -136,6 +131,7 @@
 <li><p>queue.label 设置线程名称，label为队列名称，一般采用**<code>com</code>+公司缩写+工程名+线程名**的命名方式。</p>
 </li>
 <li><p>setTarget(queue: DispatchQueue?) 设置指定队列 </p>
+<p>​    </p>
 <h6 id="2-3-2、QoS-队列在执行上是有优先级的，更高的优先级可以享受更多的计算资源，从高到低的顺序为："><a href="#2-3-2、QoS-队列在执行上是有优先级的，更高的优先级可以享受更多的计算资源，从高到低的顺序为：" class="headerlink" title="2.3.2、QoS: 队列在执行上是有优先级的，更高的优先级可以享受更多的计算资源，从高到低的顺序为："></a>2.3.2、QoS: 队列在执行上是有优先级的，更高的优先级可以享受更多的计算资源，从高到低的顺序为：</h6><ul>
 <li>userInteractive</li>
 <li>userInitiated</li>
@@ -143,30 +139,22 @@
 <li>utility</li>
 <li>background</li>
 </ul>
+</li>
+</ul>
 <h6 id="2-3-3、Attributes标识队列类型"><a href="#2-3-3、Attributes标识队列类型" class="headerlink" title="2.3.3、Attributes标识队列类型"></a>2.3.3、Attributes标识队列类型</h6><ul>
 <li>concurrent: 标识队列为并行队列</li>
 <li>initiallyInactive: 标识队列运行中的任务需要手动触发，不设置此属性，向队列中添加任务自动运行，通过<code>queue.activate()</code>方法触发任务</li>
 </ul>
-</li>
-</ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">let initiallyInactiveQueue &#x3D; DispatchQueue(label: &quot;com.tsn.demo.initiallyInactiveQueue&quot;, qos: .default, attributes: .initiallyInactive, autoreleaseFrequency: .inherit, target: nil)</span><br><span class="line">initiallyInactiveQueue.async &#123;</span><br><span class="line">    &#x2F;&#x2F; do something</span><br><span class="line">&#125;</span><br><span class="line">initiallyInactiveQueue.async &#123;</span><br><span class="line">    &#x2F;&#x2F; do something</span><br><span class="line">&#125;</span><br><span class="line">initiallyInactiveQueue.async &#123;</span><br><span class="line">    &#x2F;&#x2F; do something</span><br><span class="line">&#125;</span><br><span class="line">initiallyInactiveQueue.activate()</span><br></pre></td></tr></table></figure>
 <h6 id="2-3-4、AutoreleaseFrequency-表示autorelease-pool的自动释放频率，autorelease-pool用来处理任务对象的内存周期。系统提供了三个属性"><a href="#2-3-4、AutoreleaseFrequency-表示autorelease-pool的自动释放频率，autorelease-pool用来处理任务对象的内存周期。系统提供了三个属性" class="headerlink" title="2.3.4、AutoreleaseFrequency: 表示autorelease pool的自动释放频率，autorelease pool用来处理任务对象的内存周期。系统提供了三个属性:"></a>2.3.4、AutoreleaseFrequency: 表示<code>autorelease pool</code>的自动释放频率，<code>autorelease pool</code>用来处理任务对象的内存周期。系统提供了三个属性:</h6><ul>
-<li><p>inherit: 继承目标队列的该属性</p>
-</li>
-<li><p>workItem: 跟随每个任务的执行周期自动创建和释放</p>
-</li>
-<li><p>never: 需要手动管理内存</p>
-<h6 id="2-3-5、Target-一般创建的队列不设置，如果没有设置系统会自动设置，最终都指向系统主队列或全局并发队列。"><a href="#2-3-5、Target-一般创建的队列不设置，如果没有设置系统会自动设置，最终都指向系统主队列或全局并发队列。" class="headerlink" title="2.3.5、Target: 一般创建的队列不设置，如果没有设置系统会自动设置，最终都指向系统主队列或全局并发队列。"></a>2.3.5、Target: 一般创建的队列不设置，如果没有设置系统会自动设置，最终都指向系统<code>主队列</code>或<code>全局并发队列</code>。</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let queue &#x3D; DispatchQueue(label: &quot;com.tsn.demo.queue&quot;, qos: .default, attributes: .concurrent, autoreleaseFrequency: .inherit, target: nil)</span><br></pre></td></tr></table></figure>
-<p>即然最终都是指向<code>主队列</code>或<code>全局并发队列</code>，那为什么不直接将任务添加到<code>主队列</code>或<code>全局并发队列</code>中呢？通过自定义队列可以将任务分组管理，这样可以防止自定义队列阻塞主队列。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">  let queue &#x3D; DispatchQueue(label: &quot;com.tsn.demo.queue&quot;, qos: .default, attributes: .concurrent, autoreleaseFrequency: .inherit, target: .main)</span><br><span class="line">let queue &#x3D; DispatchQueue(label: &quot;com.tsn.demo.queue&quot;, qos: .default, attributes: .concurrent, autoreleaseFrequency: .inherit, target: .global())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<blockquote>
-<h3>3、任务和队列不同组合方式</h3>
-</blockquote>
-</li>
+<li>inherit: 继承目标队列的该属性</li>
+<li>workItem: 跟随每个任务的执行周期自动创建和释放</li>
+<li>never: 需要手动管理内存</li>
 </ul>
-<h4 id="3-1-同步-串行"><a href="#3-1-同步-串行" class="headerlink" title="3.1 同步 + 串行"></a>3.1 同步 + 串行</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">print(&quot;3.1-----------\(Thread.current)-----------start&quot;)</span><br><span class="line">serialQueue.sync &#123;</span><br><span class="line">    sleep(1)</span><br><span class="line">    print(&quot;3.1.1-----------\(Thread.current)-----------&quot;)</span><br><span class="line">&#125;</span><br><span class="line">serialQueue.sync &#123;</span><br><span class="line">    sleep(1)</span><br><span class="line">    print(&quot;3.1.2-----------\(Thread.current)-----------&quot;)</span><br><span class="line">&#125;</span><br><span class="line">serialQueue.sync &#123;</span><br><span class="line">    sleep(1)</span><br><span class="line">    print(&quot;3.1.3-----------\(Thread.current)-----------&quot;)</span><br><span class="line">&#125;</span><br><span class="line">serialQueue.sync &#123;</span><br><span class="line">    sleep(1)</span><br><span class="line">    print(&quot;3.1.4-----------\(Thread.current)-----------&quot;)</span><br><span class="line">&#125;</span><br><span class="line">print(&quot;3.1-----------\(Thread.current)-----------end&quot;)</span><br></pre></td></tr></table></figure>
+<h6 id="2-3-5、Target-一般创建的队列不设置，如果没有设置系统会自动设置，最终都指向系统主队列或全局并发队列。"><a href="#2-3-5、Target-一般创建的队列不设置，如果没有设置系统会自动设置，最终都指向系统主队列或全局并发队列。" class="headerlink" title="2.3.5、Target: 一般创建的队列不设置，如果没有设置系统会自动设置，最终都指向系统主队列或全局并发队列。"></a>2.3.5、Target: 一般创建的队列不设置，如果没有设置系统会自动设置，最终都指向系统<code>主队列</code>或<code>全局并发队列</code>。</h6> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let queue &#x3D; DispatchQueue(label: &quot;com.tsn.demo.queue&quot;, qos: .default, attributes: .concurrent, autoreleaseFrequency: .inherit, target: nil)</span><br></pre></td></tr></table></figure>
+<p>  即然最终都是指向<code>主队列</code>或<code>全局并发队列</code>，那为什么不直接将任务添加到<code>主队列</code>或<code>全局并发队列</code>中呢？通过自定义队列可以将任务分组管理，这样可以防止自定义队列阻塞主队列。</p>
+  <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">  let queue &#x3D; DispatchQueue(label: &quot;com.tsn.demo.queue&quot;, qos: .default, attributes: .concurrent, autoreleaseFrequency: .inherit, target: .main)</span><br><span class="line">let queue &#x3D; DispatchQueue(label: &quot;com.tsn.demo.queue&quot;, qos: .default, attributes: .concurrent, autoreleaseFrequency: .inherit, target: .global())</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h3 id="3、任务和队列不同组合方式"><a href="#3、任务和队列不同组合方式" class="headerlink" title="3、任务和队列不同组合方式"></a>3、任务和队列不同组合方式</h3><h4 id="3-1-同步-串行"><a href="#3-1-同步-串行" class="headerlink" title="3.1 同步 + 串行"></a>3.1 同步 + 串行</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">print(&quot;3.1-----------\(Thread.current)-----------start&quot;)</span><br><span class="line">serialQueue.sync &#123;</span><br><span class="line">    sleep(1)</span><br><span class="line">    print(&quot;3.1.1-----------\(Thread.current)-----------&quot;)</span><br><span class="line">&#125;</span><br><span class="line">serialQueue.sync &#123;</span><br><span class="line">    sleep(1)</span><br><span class="line">    print(&quot;3.1.2-----------\(Thread.current)-----------&quot;)</span><br><span class="line">&#125;</span><br><span class="line">serialQueue.sync &#123;</span><br><span class="line">    sleep(1)</span><br><span class="line">    print(&quot;3.1.3-----------\(Thread.current)-----------&quot;)</span><br><span class="line">&#125;</span><br><span class="line">serialQueue.sync &#123;</span><br><span class="line">    sleep(1)</span><br><span class="line">    print(&quot;3.1.4-----------\(Thread.current)-----------&quot;)</span><br><span class="line">&#125;</span><br><span class="line">print(&quot;3.1-----------\(Thread.current)-----------end&quot;)</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">3.1-----------&lt;NSThread: 0x600000f58700&gt;&#123;number &#x3D; 1, name &#x3D; main&#125;-----------start</span><br><span class="line">3.1.1-----------&lt;NSThread: 0x600000f58700&gt;&#123;number &#x3D; 1, name &#x3D; main&#125;-----------</span><br><span class="line">3.1.2-----------&lt;NSThread: 0x600000f58700&gt;&#123;number &#x3D; 1, name &#x3D; main&#125;-----------</span><br><span class="line">3.1.3-----------&lt;NSThread: 0x600000f58700&gt;&#123;number &#x3D; 1, name &#x3D; main&#125;-----------</span><br><span class="line">3.1.4-----------&lt;NSThread: 0x600000f58700&gt;&#123;number &#x3D; 1, name &#x3D; main&#125;-----------</span><br><span class="line">3.1-----------&lt;NSThread: 0x600000f58700&gt;&#123;number &#x3D; 1, name &#x3D; main&#125;-----------end</span><br></pre></td></tr></table></figure>
 <p>可以得出结论： </p>
 <ul>
@@ -236,23 +224,8 @@
 <td align="center">开启多个新线程，并行执行</td>
 <td align="center">没有开启新线程，串行执行</td>
 </tr>
-<tr>
-<td align="left"></td>
-<td align="right"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
-<tr>
-<td align="left"></td>
-<td align="right"></td>
-<td align="center"></td>
-<td align="center"></td>
-</tr>
 </tbody></table>
-<blockquote>
-<h3>4、GCD队列和任务详解</h3>
-</blockquote>
-<p>前面简单介绍了GCD的任务和队列，此处结合例子和示例代码来进一步说明GCD实际开发中的使用。</p>
+<h3 id="4、GCD队列和任务详解"><a href="#4、GCD队列和任务详解" class="headerlink" title="4、GCD队列和任务详解"></a>4、GCD队列和任务详解</h3><p>前面简单介绍了GCD的任务和队列，此处结合例子和示例代码来进一步说明GCD实际开发中的使用。</p>
 <p> (1)、串行队列和并行队列: 拿平时下载电影来举例说明，默认情况下视频资源的下载按照从上到下的顺序来下载（这就是串行队列）。但此时我的的目标是下载所有的电影，我并不关心电影下载的顺序，所以此时可以让多个下载任务同时执行。（这就是并行队列）。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 串行队列</span><br><span class="line">let serialQueue &#x3D; DispatchQueue(label: &quot;com.tsn.demo.serialQueue&quot;)</span><br><span class="line">&#x2F;&#x2F; 并行队列 </span><br><span class="line">let concurrentQueue &#x3D; DispatchQueue(label: &quot;com.tsn.demo.concurrentQueue&quot;, attributes: .concurrent)</span><br></pre></td></tr></table></figure>
 <p> (2)、对于多个下载任务而言，可以多个下载任务同时下载各个下载任务之间互不影响（这是异步执行）。但是在播放视频时只能等前一个视频播放完了才能播放第二个视频(这是同步执行)。</p>
@@ -266,7 +239,6 @@
 <p>在实际的开发中，视频的播放、下载、缓存要比上面的举例要复杂的多。如在传输过程中可能会出现丢包、掉帧等情况。</p>
 <p>(4)、如果在下载途中，因为其他操作如我点击了暂停，或来了个电话（这是挂起队列），过了一会又点击继续开始下载（唤醒队列），同时这些操作还要用到下载任务的暂停和继续。</p>
 <p>GCD可以把尚未执行的任务挂起，但是不影响正在执行和已执行的任务，挂起的任务后续可手动在其唤醒。<br><code>suspend()</code>方法挂起任务，<code>resume()</code>方法唤醒任务，此处要注意的是<strong>调用唤醒的次数必须等于挂起的次数，否则就会出现不可预测的错误。</strong></p>
-<p>下面的代码简单</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line">class SuspendAndResum &#123;</span><br><span class="line">    let queue &#x3D; DispatchQueue(label: &quot;com.tsn.demo.concurrentQueue&quot;, attributes: .concurrent)</span><br><span class="line">    &#x2F;&#x2F; 记录队列挂起的次数</span><br><span class="line">    var index &#x3D; 0</span><br><span class="line">    </span><br><span class="line">    init() &#123;</span><br><span class="line">        &#x2F;&#x2F; 模拟任务挂起</span><br><span class="line">        configQueue()</span><br><span class="line">        DispatchQueue.main.asyncAfter(deadline: .now() + 5) &#123;</span><br><span class="line">            &#x2F;&#x2F; 模拟任务唤醒</span><br><span class="line">            self.testResume()</span><br><span class="line">            &#x2F;&#x2F; 唤醒任务后继续下载 下载完成后播放视频</span><br><span class="line">            self.goOnQueue()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    func configQueue() &#123;</span><br><span class="line">        queue.async &#123;</span><br><span class="line">            print(&quot;-----------模拟下载视频-----------&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">        queue.async &#123;</span><br><span class="line">            print(&quot;-----------模拟下载音频-----------&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">        queue.async &#123;</span><br><span class="line">            print(&quot;-----------模拟下载弹幕-----------&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">        &#x2F;&#x2F; 通过栅栏挂起任务</span><br><span class="line">        queue.async(execute: DispatchWorkItem(flags: .barrier) &#123;</span><br><span class="line">            self.testSuspend()</span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    func goOnQueue() &#123;</span><br><span class="line">        queue.async &#123;</span><br><span class="line">            print(&quot;-----------继续下载视频-----------&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">        queue.async &#123;</span><br><span class="line">            print(&quot;-----------继续下载音频-----------&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">        queue.async &#123;</span><br><span class="line">            print(&quot;-----------继续下载弹幕-----------&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">        let barrierTask &#x3D; DispatchWorkItem(qos: .default, flags: .barrier) &#123;</span><br><span class="line">            print(&quot;-----------下载完成，开始播放------------&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">        queue.async(execute: barrierTask)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    &#x2F;&#x2F; 挂起</span><br><span class="line">    func testSuspend() &#123;</span><br><span class="line">        index &#x3D; index + 1</span><br><span class="line">        queue.suspend()</span><br><span class="line">        print(&quot;-----------任务挂起-----------&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">    &#x2F;&#x2F; 唤醒</span><br><span class="line">    func testResume() &#123;</span><br><span class="line">        if index &#x3D;&#x3D; 1 &#123;</span><br><span class="line">            queue.resume()</span><br><span class="line">            index &#x3D;&#x3D; 0</span><br><span class="line">            print(&quot;-----------任务唤醒-----------&quot;)</span><br><span class="line">        &#125; else if index &lt; 1 &#123;</span><br><span class="line">            print(&quot;-----------唤醒次数超过挂起次数-----------&quot;)</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            queue.resume()</span><br><span class="line">            index &#x3D; index - 1</span><br><span class="line">            print(&quot;-----------还需要\(index)才可以唤醒-----------&quot;)</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">let test &#x3D; SuspendAndResum()</span><br></pre></td></tr></table></figure>
 <p>运行代码，最终打印的结果为： </p>
@@ -283,10 +255,7 @@
 <li>(7)、我要查找出2020年所有新歌歌名里含有<code>爱</code>字的歌曲，由于要查找的数据源数据太多，采用遍历的方式效率并不是很好，此时就可以用到迭代任务（concurrentPerform）。</li>
 </ul>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 迭代任务</span><br><span class="line">let musicArray &#x3D; Array&lt;AnyObject?&gt;(repeating: nil, count: 1008611)</span><br><span class="line">DispatchQueue.concurrentPerform(iterations: 1008611) &#123; (index) in</span><br><span class="line">    print(&quot;-----------执行查找操作-----------&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<blockquote>
-<h3>5、任务组</h3>
-</blockquote>
-<p>任务组是将多个任务放到一个组里，<code>DispatchGroup</code>会等待组里面的任务都完成了之后通过<code>notify()</code>方法通知外部队列任务已全部完成。同时采用<code>enter()</code>和<code>leave()</code>配对方法，标识任务加入或离开任务组。</p>
+<h3 id="5、任务组"><a href="#5、任务组" class="headerlink" title="5、任务组"></a>5、任务组</h3><p>任务组是将多个任务放到一个组里，<code>DispatchGroup</code>会等待组里面的任务都完成了之后通过<code>notify()</code>方法通知外部队列任务已全部完成。同时采用<code>enter()</code>和<code>leave()</code>配对方法，标识任务加入或离开任务组。</p>
 <p>此处同样用下载视频来举例,将下载视频、音频、弹幕作为</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 创建任务组</span><br><span class="line">let group &#x3D; DispatchGroup()</span><br><span class="line">&#x2F;&#x2F; 下载视频</span><br><span class="line">let videoQueue &#x3D; DispatchQueue(label: &quot;com.tsn.demo.video&quot;, attributes: .concurrent)</span><br><span class="line">videoQueue.async(group: group) &#123;</span><br><span class="line">    print(&quot;-----------开始下载视频-----------&quot;)</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; 下载音频</span><br><span class="line">let audioQueue &#x3D; DispatchQueue.init(label: &quot;com.tsn.demo.audio&quot;, attributes: .concurrent)</span><br><span class="line">audioQueue.async(group: group) &#123;</span><br><span class="line">    print(&quot;-----------开始下载音频-----------&quot;)</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F; 下载弹幕</span><br><span class="line">let bulletScreenQueue &#x3D; DispatchQueue.init(label: &quot;com.tsn.demo.audio&quot;, attributes: .concurrent)</span><br><span class="line">audioQueue.async(group: group) &#123;</span><br><span class="line">    print(&quot;-----------开始下载弹幕-----------&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
@@ -325,7 +294,7 @@
 <p>多个线程同时访问同一个数据源时很容易引发数据错乱和数据安全问题，这就是线程安全要解决的问题。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">for index in 0..&lt;123 &#123;</span><br><span class="line">    queue.async &#123;</span><br><span class="line">        array.remove(at: index)</span><br><span class="line">        print(&quot;-----------\(index)-----------&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">for index in 0..&lt;123 &#123;</span><br><span class="line">    queue.async &#123;</span><br><span class="line">        lock.lock()</span><br><span class="line">        array.remove(at: index)</span><br><span class="line">        print(&quot;-----------\(index)-----------&quot;)</span><br><span class="line">        lock.unlock()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>如上面的代码，虽然两段代码打印的结果是一样的，但是第一段代码是线程不安全的，第二段代码是安全的。</p>
-<h4 id="1、线程死锁"><a href="#1、线程死锁" class="headerlink" title="1、线程死锁"></a>1、线程死锁</h4><p>一般指多个线程互相等待而造成的线程循环等待。常见的有线程死锁有：</p>
+<h4 id="7-1、线程死锁"><a href="#7-1、线程死锁" class="headerlink" title="7.1、线程死锁"></a>7.1、线程死锁</h4><p>一般指多个线程互相等待而造成的线程循环等待。常见的有线程死锁有：</p>
 <ul>
 <li>主队列同步</li>
 </ul>
@@ -341,7 +310,7 @@
 <p>在这种情况下，Xcode会抛出crash。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">error: Execution was interrupted, reason: EXC_BAD_INSTRUCTION (code&#x3D;EXC_I386_INVOP, subcode&#x3D;0x0).</span><br></pre></td></tr></table></figure>
 <p>得出结论：<strong>不要在串行或主队列中嵌套执行同步任务，才能有效避免线程死锁。</strong></p>
-<h4 id="2、线程安全的一些概念"><a href="#2、线程安全的一些概念" class="headerlink" title="2、线程安全的一些概念"></a>2、线程安全的一些概念</h4><ul>
+<h4 id="7-2、线程安全的一些概念"><a href="#7-2、线程安全的一些概念" class="headerlink" title="7.2、线程安全的一些概念"></a>7.2、线程安全的一些概念</h4><ul>
 <li>临界区：就是一段代码不能被并发执行，也就是说两个线程不能同时执行同一段代码。</li>
 <li>竞态条件：两个或多个线程读写某些共享数据，而最后的结果取决于额线程运行的精确时序。</li>
 <li>优先级反转： </li>
@@ -352,13 +321,13 @@
 <li>并发与并行</li>
 </ul>
 <p>这两个概念和手机内核有关，并发是指多个线程同时执行。<br>并发是指通过内部的算法，把多个线程的执行做切换，看起来像多个线程是同时执行的。</p>
-<h4 id="3、各种不同的线程锁"><a href="#3、各种不同的线程锁" class="headerlink" title="3、各种不同的线程锁"></a>3、各种不同的线程锁</h4><p> <a target="_blank" rel="noopener" href="https://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/">不再安全的 OSSpinLock</a>这篇文中列举了iOS中各种不同的锁及其性能比较。</p>
+<h4 id="7-3、各种不同的线程锁"><a href="#7-3、各种不同的线程锁" class="headerlink" title="7.3、各种不同的线程锁"></a>7.3、各种不同的线程锁</h4><p> <a target="_blank" rel="noopener" href="https://blog.ibireme.com/2016/01/16/spinlock_is_unsafe_in_ios/">不再安全的 OSSpinLock</a>这篇文中列举了iOS中各种不同的锁及其性能比较。</p>
 <ul>
-<li>1、自旋锁 (Spin Lock）</li>
+<li>7.3.1、自旋锁 (Spin Lock）</li>
 </ul>
 <p>自旋锁，任意时刻只有一个线程能够获得锁，其他线程忙等待直到获得锁。SpinLock会一直检测是否获取某个锁，虽然效率很好，但是非常消耗系统内存。所以应该慎重使用。</p>
 <ul>
-<li>2、互斥锁（Mutex Lock）</li>
+<li>7.3.2、互斥锁（Mutex Lock）</li>
 </ul>
 <p>在<code>Objective-C</code>中可以用<code>@synchronized</code>来实现互斥锁。其本质是调用<code>objc_sync_enter</code>和<code>objc_sync_exit</code>方法。因此在Swift中互斥锁的实现方式是:</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">- (void)configMutex(id)lockData &#123;</span><br><span class="line">    @synchronized(lockData)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func synchronized(lockData: AnyObject, ) &#123;</span><br><span class="line">   objc_sync_enter(lockData)</span><br><span class="line">   objc_sync_exit(lockData)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
