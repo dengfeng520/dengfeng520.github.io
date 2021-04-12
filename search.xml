@@ -2327,7 +2327,7 @@
 ]]></content>
   </entry>
   <entry>
-    <title>Swift Timer循环引用问题</title>
+    <title>iOS 面试总结</title>
     <url>/2020/04/10/iOS%E9%9D%A2%E8%AF%95%E6%80%BB%E7%BB%93/</url>
     <content><![CDATA[<h3 id="1、UITableView重用机制"><a href="#1、UITableView重用机制" class="headerlink" title="1、UITableView重用机制"></a>1、UITableView重用机制</h3><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0b90aca35e5c4e7a8f773621d9ec0ac4~tplv-k3u1fbpfcp-watermark.image" alt="UITableView.png"></p>
 <h3 id="2、事件传递"><a href="#2、事件传递" class="headerlink" title="2、事件传递"></a>2、事件传递</h3><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;&#x2F; 返回最终哪个UIView相应点击事件</span><br><span class="line">open func hitTest(_ point: CGPoint, with event: UIEvent?) -&gt; UIView?</span><br><span class="line">&#x2F;&#x2F; 返回某一个点击的位置是否在视图范围内</span><br><span class="line">open func point(inside point: CGPoint, with event: UIEvent?) -&gt; Bool</span><br></pre></td></tr></table></figure>
