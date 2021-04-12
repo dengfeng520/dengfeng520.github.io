@@ -1,0 +1,628 @@
+
+<!DOCTYPE html>
+<html lang="en" class="loading">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="baidu-site-verification" content="code-o47qQmYL2s" />
+    <title>Swift Timer循环引用问题 - 小时光のホームページ</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="keywords" content="iOS,Swift,xiaoshiguang,"> 
+    <meta name="description" content="1、UITableView重用机制
+2、事件传递1234&amp;#x2F;&amp;#x2F; 返回最终哪个UIView相应点击事件open func hitTest(_ point: CGPoint, with,"> 
+    <meta name="author" content="小时光"> 
+    <link rel="alternative" href="atom.xml" title="小时光のホームページ" type="application/atom+xml"> 
+    <link rel="icon" href="/img/favicon.png"> 
+    
+    
+<link rel="stylesheet" href="/css/diaspora.css">
+
+    <script>
+        (function(){
+            var bp = document.createElement('script');
+            var curProtocol = window.location.protocol.split(':')[0];
+            if (curProtocol === 'https') {
+                bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+            }
+            else {
+                bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+            }
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(bp, s);
+        })();
+    </script>
+<meta name="generator" content="Hexo 5.3.0"></head>
+
+<body class="loading">
+    <span id="config-title" style="display:none">小时光のホームページ</span>
+    <div id="loader"></div>
+    <div id="single">
+    <div id="top" style="display: block;">
+    <div class="bar" style="width: 0;"></div>
+    <a class="iconfont icon-home image-icon" href="javascript:;" data-url="https://dengfeng520.github.io"></a>
+    <div title="播放/暂停" class="iconfont icon-play"></div>
+    <h3 class="subtitle">Swift Timer循环引用问题</h3>
+    <div class="social">
+        <div>
+            <div class="share">
+                <a title="获取二维码" class="iconfont icon-scan" href="javascript:;"></a>
+            </div>
+            <div id="qr"></div>
+        </div>
+    </div>
+    <div class="scrollbar"></div>
+</div>
+
+    <div class="section">
+        <div class="article">
+    <div class='main'>
+        <h1 class="title">Swift Timer循环引用问题</h1>
+        <div class="stuff">
+            <span>四月 10, 2020</span>
+            
+
+        </div>
+        <div class="content markdown">
+            <h3 id="1、UITableView重用机制"><a href="#1、UITableView重用机制" class="headerlink" title="1、UITableView重用机制"></a>1、UITableView重用机制</h3><p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0b90aca35e5c4e7a8f773621d9ec0ac4~tplv-k3u1fbpfcp-watermark.image" alt="UITableView.png"></p>
+<h3 id="2、事件传递"><a href="#2、事件传递" class="headerlink" title="2、事件传递"></a>2、事件传递</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 返回最终哪个UIView相应点击事件</span><br><span class="line">open func hitTest(_ point: CGPoint, with event: UIEvent?) -&gt; UIView?</span><br><span class="line">&#x2F;&#x2F; 返回某一个点击的位置是否在视图范围内</span><br><span class="line">open func point(inside point: CGPoint, with event: UIEvent?) -&gt; Bool</span><br></pre></td></tr></table></figure>
+<h3 id="3、UIView-和-CALayer"><a href="#3、UIView-和-CALayer" class="headerlink" title="3、UIView 和 CALayer"></a>3、UIView 和 CALayer</h3><ul>
+<li>UIView提供内容以及负责处理触摸等事件，参与事件响应链</li>
+<li>CALayer负责显示内容contents</li>
+<li>体现了系统设置上的单一性原则</li>
+</ul>
+<h3 id="4、图像绘制原理"><a href="#4、图像绘制原理" class="headerlink" title="4、图像绘制原理"></a>4、图像绘制原理</h3><h5 id="4-1、UIView绘制原理"><a href="#4-1、UIView绘制原理" class="headerlink" title="4.1、UIView绘制原理"></a>4.1、UIView绘制原理</h5><h5 id="4-2、离屏渲染"><a href="#4-2、离屏渲染" class="headerlink" title="4.2、离屏渲染"></a>4.2、离屏渲染</h5><h6 id="4-2-1-什么是离屏渲染"><a href="#4-2-1-什么是离屏渲染" class="headerlink" title="4.2.1 什么是离屏渲染"></a>4.2.1 什么是离屏渲染</h6><ul>
+<li>On- Screen Rendering 当前屏幕渲染，指的是GPU的渲染操作是在当前用于显示的屏幕缓冲区中进行</li>
+<li>Off-Screen Rendering 离屏渲染，指的是GPU在当前屏幕缓冲区以外新开辟一个缓冲区进行渲染操作</li>
+</ul>
+<h6 id="4-2-2-什么时候会出发离屏渲染"><a href="#4-2-2-什么时候会出发离屏渲染" class="headerlink" title="4.2.2 什么时候会出发离屏渲染"></a>4.2.2 什么时候会出发离屏渲染</h6><ul>
+<li>圆角和maskToBounds一起使用</li>
+<li>图层蒙版</li>
+<li>阴影</li>
+<li>光栅化</li>
+</ul>
+<h5 id="4-2-3-为什么要避免离屏渲染"><a href="#4-2-3-为什么要避免离屏渲染" class="headerlink" title="4.2.3 为什么要避免离屏渲染"></a>4.2.3 为什么要避免离屏渲染</h5><ul>
+<li><p>创建新的渲染缓冲区</p>
+</li>
+<li><p>在触发离屏渲染时会增加GPU的工作量，很可能造成掉帧和卡顿</p>
+</li>
+</ul>
+<h5 id="4-3-异步绘制"><a href="#4-3-异步绘制" class="headerlink" title="4.3 异步绘制"></a>4.3 异步绘制</h5><h5 id="4-4、滑动优化方案"><a href="#4-4、滑动优化方案" class="headerlink" title="4.4、滑动优化方案"></a>4.4、滑动优化方案</h5><ul>
+<li><p>GPU </p>
+<ul>
+<li>纹理渲染</li>
+<li>视图混合</li>
+</ul>
+</li>
+<li><p>CPU</p>
+<ul>
+<li>对象创建、调整、销毁</li>
+<li>预排版、（布局计算、文本计算）</li>
+<li>预渲染（文本异步绘制、图片编解码）</li>
+</ul>
+</li>
+</ul>
+<h3 id="5、分类"><a href="#5、分类" class="headerlink" title="5、分类"></a>5、分类</h3><h5 id="5-1、分类做了那些事？"><a href="#5-1、分类做了那些事？" class="headerlink" title="5.1、分类做了那些事？"></a>5.1、分类做了那些事？</h5><ul>
+<li>申明私有方法</li>
+<li>分解体积庞大的类文件</li>
+<li>把Framework的私有方法公开</li>
+<li>系统方法做一个扩展</li>
+</ul>
+<h5 id="5-2、分类的特点"><a href="#5-2、分类的特点" class="headerlink" title="5.2、分类的特点"></a>5.2、分类的特点</h5><ul>
+<li>运行时决议，在运行时添加到宿主类上</li>
+<li>可以为系统类添加分类</li>
+</ul>
+<h5 id="5-3、分类可以添加哪些内容"><a href="#5-3、分类可以添加哪些内容" class="headerlink" title="5.3、分类可以添加哪些内容"></a>5.3、分类可以添加哪些内容</h5><ul>
+<li>实例方法</li>
+<li>类方法</li>
+<li>协议</li>
+<li>属性（只添加了get方法，和set方法）</li>
+<li>分类可以通过runtime关联对象的方式添加实例变量</li>
+</ul>
+<h5 id="5-4、分类方法"><a href="#5-4、分类方法" class="headerlink" title="5.4、分类方法"></a>5.4、分类方法</h5><ul>
+<li>分类添加的方法可以覆盖原类方法</li>
+<li>同名分类方法谁能生效取决于编译顺序</li>
+<li>名字相同的分类会引起编译报错</li>
+</ul>
+<h5 id="5-5、怎样为分类添加成员变量"><a href="#5-5、怎样为分类添加成员变量" class="headerlink" title="5.5、怎样为分类添加成员变量"></a>5.5、怎样为分类添加成员变量</h5><ul>
+<li>不能在分类申明时添加成员变量，只能用关联对象的方法添加成员变量</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objc_getAssociatedObject(id _Nonnull object, const void * _Nonnull key)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">objc_setAssociatedObject(id _Nonnull object, const void * _Nonnull key,</span><br><span class="line">                         id _Nullable value, objc_AssociationPolicy policy)</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">objc_removeAssociatedObjects(id _Nonnull object)</span><br></pre></td></tr></table></figure>
+<h5 id="5-6、分类添加的对象被添加到哪了？"><a href="#5-6、分类添加的对象被添加到哪了？" class="headerlink" title="5.6、分类添加的对象被添加到哪了？"></a>5.6、分类添加的对象被添加到哪了？</h5><ul>
+<li>关联对象由<code>AssicucationsManager</code>管理并在<code>AssociationsHashMap</code>存储。</li>
+<li>所有对象的关联内容都在同一个全局容器中。</li>
+</ul>
+<h4 id="6、扩展"><a href="#6、扩展" class="headerlink" title="6、扩展"></a>6、扩展</h4><h6 id="6-1、一般用扩展做什么"><a href="#6-1、一般用扩展做什么" class="headerlink" title="6.1、一般用扩展做什么"></a>6.1、一般用扩展做什么</h6><ul>
+<li>申明私有属性</li>
+<li>申明私有方法</li>
+<li>申明私有成员变量</li>
+</ul>
+<h5 id="2、扩展的"><a href="#2、扩展的" class="headerlink" title=".2、扩展的"></a>.2、扩展的</h5><ul>
+<li>编译时决议</li>
+<li>只以申明的形式存在，多数情况下寄生于宿主类的.m中</li>
+<li>不能为系统类添加扩展</li>
+</ul>
+<h4 id="7、代理"><a href="#7、代理" class="headerlink" title="7、代理"></a>7、代理</h4><h5 id="7-1、什么是代理"><a href="#7-1、什么是代理" class="headerlink" title="7.1、什么是代理"></a>7.1、什么是代理</h5><ul>
+<li>代理是一种软件设计模式</li>
+<li>iOS中以@protocol形式体现</li>
+<li>代理是一对一的</li>
+</ul>
+<h5 id="7-2、通知"><a href="#7-2、通知" class="headerlink" title="7.2、通知"></a>7.2、通知</h5><ul>
+<li>是使用观察者模式来实现的用于跨层传递消息机制</li>
+<li>通知是一对多的</li>
+</ul>
+<h5 id="7-3、KVO"><a href="#7-3、KVO" class="headerlink" title="7.3、KVO"></a>7.3、KVO</h5><ul>
+<li>KVO 是观察者模式的一种实现方式</li>
+<li>Apple使用了isa混写（isa-swizzling）来实现KVO</li>
+<li>使用setter方法改变值KVO才会生效</li>
+<li>使用setValue:forKey:改变值KVO才会生效</li>
+<li>成员变量直接修改需手动添加KVO才会生效</li>
+</ul>
+<h4 id="8、关键字"><a href="#8、关键字" class="headerlink" title="8、关键字"></a>8、关键字</h4><ul>
+<li>读写权限 （readonly,）</li>
+</ul>
+<h5 id="8-1、weak"><a href="#8-1、weak" class="headerlink" title="8.1、weak"></a>8.1、weak</h5><ul>
+<li>不改变被修饰对象的引用计数</li>
+<li>所指对象在被释放之后会自动置为nil</li>
+<li>多数用于解决循环引用计数</li>
+</ul>
+<h5 id="8-2-原子性"><a href="#8-2-原子性" class="headerlink" title="8.2 原子性"></a>8.2 原子性</h5><ul>
+<li>atomic 对赋值和获取保证线程安全，</li>
+<li>nonatomic 不保证线程安全</li>
+</ul>
+<h5 id="8-3-引用计数"><a href="#8-3-引用计数" class="headerlink" title="8.3 引用计数"></a>8.3 引用计数</h5><ul>
+<li><p>retain 在MRC中使用</p>
+</li>
+<li><p>strong 在ARC中使用</p>
+</li>
+<li><p>assign 修饰基本数据类型，如Int</p>
+<ul>
+<li> 修饰基本数据类型，</li>
+<li>修饰对象类型是，不改变其引用计数</li>
+<li>会产生垂直指针</li>
+</ul>
+</li>
+<li><p>unsafe_unretained 在MRC中使用</p>
+<h5 id="8-4-weak-和-assign的区别和相同"><a href="#8-4-weak-和-assign的区别和相同" class="headerlink" title="8.4 weak 和 assign的区别和相同"></a>8.4 weak 和 assign的区别和相同</h5></li>
+</ul>
+<p>区别：</p>
+<ul>
+<li>weak只能修饰对象类型，assign既能修饰对象类型又能修饰基本数据类型</li>
+<li>weak修饰的对象被释放后自动置为nil, assign所修饰的对象在被释放后assign指针依旧指向这个对象的地址</li>
+</ul>
+<p>相同： </p>
+<ul>
+<li>在修饰对象时，weak 和 assign 都不改变对象的引用计数</li>
+</ul>
+<h5 id="8-5-copy"><a href="#8-5-copy" class="headerlink" title="8.5 copy"></a>8.5 copy</h5><table>
+<thead>
+<tr>
+<th align="center">源对象类型</th>
+<th align="center">拷贝方式</th>
+<th align="center">目标对象类型</th>
+<th align="center">拷贝类型（深/浅）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">mutable对象</td>
+<td align="center">copy</td>
+<td align="center">不可变</td>
+<td align="center">深copy</td>
+</tr>
+<tr>
+<td align="center">mutable对象</td>
+<td align="center">mutableCopy</td>
+<td align="center">可变</td>
+<td align="center">深copy</td>
+</tr>
+<tr>
+<td align="center">immutable对象</td>
+<td align="center">copy</td>
+<td align="center">不可变</td>
+<td align="center">浅copy</td>
+</tr>
+<tr>
+<td align="center">immutable对象</td>
+<td align="center">mutableCopy</td>
+<td align="center">可变</td>
+<td align="center">深copy</td>
+</tr>
+</tbody></table>
+<ul>
+<li>可变对象的copy和mutableCopy都是深copy</li>
+<li>不可变对象的copy是浅copy，mutableCopy是深copy</li>
+<li>copy方法返回的都是不可变对象</li>
+</ul>
+<h4 id="9、RunTime"><a href="#9、RunTime" class="headerlink" title="9、RunTime"></a>9、RunTime</h4><h5 id="9-1、objc-object"><a href="#9-1、objc-object" class="headerlink" title="9.1、objc_object"></a>9.1、objc_object</h5><p>iOS中所有的对象都是的最终父类都是id类型，在RunTime中最终都转换成了<code>objc_object</code>结构体，该结构体主要包含四个部分</p>
+<ul>
+<li><code>isa_t</code>共用体</li>
+<li>关于<code>isa</code>操作相关</li>
+<li>弱引用相关，如该对象是否被弱引用过</li>
+<li>关联对象相关，如是否关联属性</li>
+<li>内存管理相关方法的实现</li>
+</ul>
+<h5 id="9-2、objc-class"><a href="#9-2、objc-class" class="headerlink" title="9.2、objc_class"></a>9.2、objc_class</h5><p>iOS中所有的<code>Class</code>对象在<code>RunTime</code>中最终都转换成了<code>objc-class</code>结构体，<code>objc_class</code>继承自<code>objc_object</code>，<code>objc_class</code>包含以下内容：</p>
+<ul>
+<li><code>Class superClass</code>,是一个Class类型的类对象，指向其父类对象</li>
+<li><code>cache_t cache</code>方法缓存</li>
+<li><code>class_data_bits_t bits</code>定义的属性</li>
+</ul>
+<h5 id="9-2、isa指针"><a href="#9-2、isa指针" class="headerlink" title="9.2、isa指针"></a>9.2、isa指针</h5><ul>
+<li><code>isa_t</code>分为指针型isa和非指针型isa</li>
+<li>对象的isa指针指向其类对象</li>
+<li>类对象的isa指针指向其元类对象</li>
+</ul>
+<h5 id="9-3、cache-t"><a href="#9-3、cache-t" class="headerlink" title="9.3、cache_t"></a>9.3、cache_t</h5><ul>
+<li>用于快速查找方法执行函数</li>
+<li>是可增量扩展的哈希表结构</li>
+<li>是局部性原理的最佳应用</li>
+<li><code>cache_t</code>数组中存储的数据是<code>key</code>和<code>IMP</code>,我们可以通过查找<code>key</code>的方法实现来查找<code>IMP</code>的方法实现</li>
+</ul>
+<h5 id="9-4、class-data-bits-t-bits"><a href="#9-4、class-data-bits-t-bits" class="headerlink" title="9.4、class_data_bits_t bits"></a>9.4、class_data_bits_t bits</h5><ul>
+<li> <code>class_data_bits_t</code>主要是对<code>class_rw_t</code>的封装</li>
+<li><code>class_rw_t</code>代表了类相关的<strong>读写</strong>信息，对<code>class_ro_t</code>的封装</li>
+<li><code>class_ro_t</code>代表了类相关的只读信息</li>
+</ul>
+<h3 id="10、多线程相关"><a href="#10、多线程相关" class="headerlink" title="10、多线程相关"></a>10、多线程相关</h3><h5 id="10-1、iOS系统提供了几种多线程技术各自的特点是怎样的"><a href="#10-1、iOS系统提供了几种多线程技术各自的特点是怎样的" class="headerlink" title="10.1、iOS系统提供了几种多线程技术各自的特点是怎样的"></a>10.1、iOS系统提供了几种多线程技术各自的特点是怎样的</h5><ul>
+<li>GCD 实现一些简单的线程同步</li>
+<li>Thread + RunLoop = 常驻线程</li>
+</ul>
+<p>一般常用于线程保活，分为三步：</p>
+<p>1、在线程的Block中取当前RunLoop</p>
+<p>2、为RunLoop添加NSMachPort或者 Source</p>
+<p>3、启动这个RunLoop</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> thread <span class="operator">=</span> <span class="type">Thread</span> &#123; [<span class="keyword">weak</span> <span class="keyword">self</span>] <span class="keyword">in</span></span><br><span class="line">     <span class="keyword">guard</span> <span class="keyword">let</span> <span class="keyword">self</span> <span class="operator">=</span> `self` <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</span><br><span class="line">     <span class="keyword">self</span>.configThread()</span><br><span class="line">&#125;</span><br><span class="line">thread.start()</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">configThread</span>()</span> &#123;</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;--------------1&quot;</span>)</span><br><span class="line">    <span class="keyword">let</span> runLoop <span class="operator">=</span> <span class="type">RunLoop</span>.current</span><br><span class="line">    runLoop.add(<span class="type">NSMachPort</span>(), forMode: .common)</span><br><span class="line">    runLoop.run()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>Operation和OperationQueue,可以方便对任务的状态的控制，所以一些常见的第三方框架，<code>SDWebImage,AFNetworking</code>等</li>
+</ul>
+<h5 id="10-2-、怎样用GCD实现多读单写"><a href="#10-2-、怎样用GCD实现多读单写" class="headerlink" title="10.2 、怎样用GCD实现多读单写"></a>10.2 、怎样用GCD实现多读单写</h5><ul>
+<li>写： 开启多个任务去修改数据，保证资源部被抢占，比如卖票系统，此处使用<strong>异步栅栏任务</strong></li>
+<li>读： 允许多个任务同时加入队列，但要保证一个一个执行，此处使用<strong>同步并行</strong></li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 并发队列</span></span><br><span class="line"><span class="keyword">let</span> queue <span class="operator">=</span> <span class="type">DispatchQueue</span>.<span class="keyword">init</span>(label: <span class="string">&quot;com.tsn.readWriteQueue&quot;</span>, attributes: .concurrent)</span><br><span class="line"><span class="comment">// 数据源 一般是file</span></span><br><span class="line"><span class="keyword">lazy</span> <span class="keyword">var</span> dataArray: [<span class="type">String</span>] <span class="operator">=</span> [<span class="type">String</span>]()</span><br><span class="line"> <span class="comment">// 读数据</span></span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">getData</span>(<span class="keyword">_</span> <span class="params">index</span>: <span class="type">Int</span>)</span> -&gt; <span class="type">String</span>? &#123;</span><br><span class="line">    <span class="keyword">var</span> result: <span class="type">String</span>? <span class="operator">=</span> <span class="literal">nil</span></span><br><span class="line">    <span class="comment">// 并发同步读取数据</span></span><br><span class="line">    queue.sync &#123;</span><br><span class="line">        result <span class="operator">=</span> dataArray[index]</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">func</span> <span class="title">addData</span>(<span class="keyword">_</span> <span class="params">data</span>: <span class="type">String</span>)</span> &#123;</span><br><span class="line">    queue.async(execute: <span class="type">DispatchWorkItem</span>(qos: .default, flags: .barrier, block: &#123;</span><br><span class="line">        <span class="keyword">self</span>.dataArray.append(data)</span><br><span class="line">        <span class="built_in">print</span>(<span class="string">&quot;======<span class="subst">\(<span class="keyword">self</span>.dataArray)</span>&quot;</span>)</span><br><span class="line">    &#125;))</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="10-3、Operation对象在Finished之后是怎样从queue当中移除的"><a href="#10-3、Operation对象在Finished之后是怎样从queue当中移除的" class="headerlink" title="10.3、Operation对象在Finished之后是怎样从queue当中移除的"></a>10.3、Operation对象在Finished之后是怎样从queue当中移除的</h5><p>通过KVO的方式达到对<code>Operation</code>移除的目的。</p>
+<h5 id="10-4、你都使用过哪些锁？结合实际谈谈你是怎样使用的"><a href="#10-4、你都使用过哪些锁？结合实际谈谈你是怎样使用的" class="headerlink" title="10.4、你都使用过哪些锁？结合实际谈谈你是怎样使用的"></a>10.4、你都使用过哪些锁？结合实际谈谈你是怎样使用的</h5><p>递归锁解决死锁问题</p>
+<h5 id="10-5、线程死锁"><a href="#10-5、线程死锁" class="headerlink" title="10.5、线程死锁"></a>10.5、线程死锁</h5><ul>
+<li>队列引起的循环等待</li>
+<li>主线程中+同步造成死锁</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">DispatchQueue</span>.main.sync &#123; </span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="10-6、ABC三个任务并发，完成后执行任务D"><a href="#10-6、ABC三个任务并发，完成后执行任务D" class="headerlink" title="10.6、ABC三个任务并发，完成后执行任务D"></a>10.6、ABC三个任务并发，完成后执行任务D</h5><figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> queue <span class="operator">=</span> <span class="type">DispatchQueue</span>.<span class="keyword">init</span>(label: <span class="string">&quot;com.tsn.groupQueue&quot;</span>)</span><br><span class="line">    </span><br><span class="line">   <span class="function"><span class="keyword">init</span>()</span> &#123;</span><br><span class="line">        <span class="keyword">let</span> group <span class="operator">=</span> <span class="type">DispatchGroup</span>()</span><br><span class="line">        <span class="keyword">let</span> array <span class="operator">=</span> [<span class="string">&quot;A&quot;</span>,<span class="string">&quot;B&quot;</span>,<span class="string">&quot;C&quot;</span>]</span><br><span class="line">        <span class="keyword">for</span> index <span class="keyword">in</span> <span class="number">0</span><span class="operator">..&lt;</span>array.count &#123;</span><br><span class="line">            queue.async(group: group) &#123;</span><br><span class="line">                <span class="built_in">print</span>(<span class="string">&quot;---------<span class="subst">\(array[index])</span>&quot;</span>)</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        group.notify(queue: .main) &#123;</span><br><span class="line">            <span class="built_in">print</span>(<span class="string">&quot;---------D&quot;</span>)</span><br><span class="line">      &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="10-7、Operation"><a href="#10-7、Operation" class="headerlink" title="10.7、Operation"></a>10.7、Operation</h5><p>需要和<code>OperationQueue</code>配合使用来实现多线程方案，</p>
+<ul>
+<li>添加任务依赖或移除依赖 这是GCD和Thread所不具备的</li>
+<li>任务执行状态控制<ul>
+<li><a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/operation/1412992-isready">isReady</a>是否可执行，一般用于异步的情况下</li>
+<li><a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/operation/1415621-isexecuting">isExexuting</a>标记<code>Operation</code>是否正在执行中</li>
+<li><a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/operation/1413540-isfinished">isFinished</a>标记<code>Operation</code>是否已经执行完成了，一般用于异步</li>
+<li><a target="_blank" rel="noopener" href="https://developer.apple.com/documentation/foundation/operation#1661262">isCancelled</a>标记<code>Operation</code>是否已经<code>cancel</code>了</li>
+</ul>
+</li>
+<li>可以控制最大并发量</li>
+<li>如果只重写<code>main</code>方法，底层控制变更任务执行完成状态，以及任务退出</li>
+<li>如果重写了<code>start</code>方法，自行控制任务状态</li>
+</ul>
+<h3 id="11、内存管理"><a href="#11、内存管理" class="headerlink" title="11、内存管理"></a>11、内存管理</h3><h5 id="11-1、内存布局"><a href="#11-1、内存布局" class="headerlink" title="11.1、内存布局"></a>11.1、内存布局</h5><ul>
+<li><strong>stack</strong>: 栈内存， 方法调用</li>
+<li><strong>heap</strong>: 堆内存，通过<code>alloc</code>等分配的对象</li>
+<li><strong>bss</strong>: 未初始化的全局变量</li>
+<li><strong>data</strong>：已初始化的全局变量等</li>
+<li><strong>txt</strong>: 程序代码</li>
+</ul>
+<h5 id="11-2、内存管理方案"><a href="#11-2、内存管理方案" class="headerlink" title="11.2、内存管理方案"></a>11.2、内存管理方案</h5><p>iOS系统会针对不同情况下使用不同的内存管理方法：</p>
+<ul>
+<li>对于一些小的对象，如<code>Number</code>,通过<code>TaggedPointer</code>来进行内存管理</li>
+<li>对于64位的<code>NONPOINTER_ISA </code>,非指针型的ISA</li>
+<li>散列表 是一种复杂的数据结构，其中包含了弱引用表 和 散列引用计数表</li>
+</ul>
+<h5 id="11-3-引用计数"><a href="#11-3-引用计数" class="headerlink" title="11.3 引用计数"></a>11.3 引用计数</h5><ul>
+<li>ARC是<code>LLVM</code>和<code>Runtime</code>协作的结果</li>
+<li>ARC中禁止手动调用<code>retain/release/retainCount/dealloc</code></li>
+<li>ARC中新增了<code>weak 、strong</code>属性关键字</li>
+</ul>
+<h5 id="11-4-weak"><a href="#11-4-weak" class="headerlink" title="11.4 weak"></a>11.4 weak</h5><ul>
+<li>添加<code>weak</code>时实现</li>
+</ul>
+<p>一个被申明为<code>__weak</code>的对象，经过编译器的编译之后回调用<code>objc_initWeak()</code>方法，然后经过一系列的函数调用栈，最终在<code>weak_reginster_no_lock()</code>函数中进行弱引用的添加，具体添加的位置通过<code>hash</code>算法来添加或查找的，如果查找位置中已经存在了一个弱引用数组，那么就把这个新的变量添加到这个弱引用数组中，如果没有弱引用数组那么就创建一个，并把第零个设置这个变量的weak指针,后面都添加为<code>nil</code>.</p>
+<ul>
+<li>清除<code>weak</code>变量，同时设置指向为<code>nil</code></li>
+</ul>
+<p>当一个对象调用<code>dealloc()</code>方法中，在<code>dealloc()</code>实现中会调用弱引用清除的相关函数。在这个函数的内部实现中会根据当前对象指针查找弱引用表，把当前对象相对应的弱引用数组取出，然后遍历数组中所有的弱引用指针，分别置为<code>nil</code>。</p>
+<h5 id="11-5、自动释放池（-autoreleasepool）"><a href="#11-5、自动释放池（-autoreleasepool）" class="headerlink" title="11.5、自动释放池（@autoreleasepool）"></a>11.5、自动释放池（@autoreleasepool）</h5><ul>
+<li><p><strong>@autoreleasepool</strong>的实现结构</p>
+<ul>
+<li>是以栈为节点通过双向链表的形式组合而成</li>
+<li>是和线程一一对应的</li>
+</ul>
+</li>
+<li><p><strong>@autoreleasepool</strong>的实现原理是怎样的？</p>
+</li>
+</ul>
+<p>以栈为节点通过双向链表的形式组成的数据结构</p>
+<ul>
+<li><p><strong>@autoreleasepool</strong>为何可以嵌套使用？</p>
+</li>
+<li><p>在for循环中alloc图片数据等内存消耗较大场景手动插入**@autoreleasepool**</p>
+</li>
+</ul>
+<h5 id="11-6、循环引用"><a href="#11-6、循环引用" class="headerlink" title="11.6、循环引用"></a>11.6、循环引用</h5><ul>
+<li>自循环引用</li>
+<li>相互循环引用</li>
+<li>多循环引用</li>
+</ul>
+<h6 id="11-6-1、产生循环引用的条件"><a href="#11-6-1、产生循环引用的条件" class="headerlink" title="11.6.1、产生循环引用的条件"></a>11.6.1、产生循环引用的条件</h6><ul>
+<li>代理</li>
+<li>NSTimer</li>
+<li>Block</li>
+<li>大环引用</li>
+</ul>
+<h6 id="11-6-2、如破除循环引用"><a href="#11-6-2、如破除循环引用" class="headerlink" title="11.6.2、如破除循环引用"></a>11.6.2、如破除循环引用</h6><ul>
+<li>避免产生循环引用</li>
+<li>在合适的时机解除循环引用</li>
+</ul>
+<h6 id="11-6-3、具体的方案有哪些？"><a href="#11-6-3、具体的方案有哪些？" class="headerlink" title="11.6.3、具体的方案有哪些？"></a>11.6.3、具体的方案有哪些？</h6><ul>
+<li>__weak </li>
+<li>__block </li>
+<li>__unsafe_unretained 由这个关键字修饰的关键字也没有增加引用计数<ul>
+<li>修饰对象不会增加其引用计数，避免了循环引用</li>
+<li>如果被修饰对象在某一时机被释放会产生垂直指针</li>
+</ul>
+</li>
+</ul>
+<h6 id="11-6-4、NSTimer-产生循环引用问题"><a href="#11-6-4、NSTimer-产生循环引用问题" class="headerlink" title="11.6.4、NSTimer 产生循环引用问题"></a>11.6.4、NSTimer 产生循环引用问题</h6><p> iOS 10以后通过<code>Block</code>方式，这时要注意的是和<code>Block</code>产生的循环引用；</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">@property (strong, nonatomic) NSTimer *timer;</span><br><span class="line">if (@available(iOS 10.0, *)) &#123;</span><br><span class="line">    __weak typeof(self) weakSelf &#x3D; self;</span><br><span class="line">    self.timer &#x3D; [NSTimer scheduledTimerWithTimeInterval:2 repeats:true block:^(NSTimer * _Nonnull timer) &#123;</span><br><span class="line">        [weakSelf timePrint];</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)timePrint &#123;</span><br><span class="line">    NSLog(@&quot;-------------------&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)dealloc &#123;</span><br><span class="line">    NSLog(@&quot;------------------dealloc&quot;);</span><br><span class="line">    [self.timer invalidate];</span><br><span class="line">    _timer &#x3D; nil;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>一般要处理的是iOS 10之前的系统，方法有多种，可以</p>
+<ul>
+<li><p>模仿系统的采用Block方式</p>
+<p>新建<code>NSTimer</code>分类</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">#import &quot;NSTimer+Category.h&quot;</span><br><span class="line"></span><br><span class="line">@interface NSTimer (Category)</span><br><span class="line">+ (NSTimer *)RP_ScheduledTimerWithTimeInterval:(NSTimeInterval)timeInterval repeats:(BOOL)repeats block:(void(^)(void))timerBlock;</span><br><span class="line">@end</span><br><span class="line"></span><br><span class="line">@implementation NSTimer (Category)</span><br><span class="line">+ (NSTimer *)RP_ScheduledTimerWithTimeInterval:(NSTimeInterval)timeInterval repeats:(BOOL)repeats block:(void(^)(void))timerBlock &#123;</span><br><span class="line">    return [self scheduledTimerWithTimeInterval:timeInterval</span><br><span class="line">                                             target:self</span><br><span class="line">                                           selector:@selector(RP_TimerHandle:)</span><br><span class="line">                                           userInfo:[timerBlock copy] &#x2F;&#x2F;注意copy</span><br><span class="line">                                            repeats:repeats];</span><br><span class="line">&#125;</span><br><span class="line">+ (void)RP_TimerHandle:(NSTimer *)timer &#123;</span><br><span class="line">    void(^block)(void) &#x3D; timer.userInfo;</span><br><span class="line">    if (block) &#123;</span><br><span class="line">        block();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>调用方式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">__weak typeof(self) weakSelf &#x3D; self;</span><br><span class="line">self.timer &#x3D; [NSTimer RP_ScheduledTimerWithTimeInterval:2 repeats:true block:^&#123;</span><br><span class="line">     [weakSelf timePrint];</span><br><span class="line">&#125;];</span><br><span class="line"></span><br><span class="line">- (void)timePrint &#123;</span><br><span class="line">    NSLog(@&quot;-------------------&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>Swift代码：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">Timer</span> </span>&#123;</span><br><span class="line">    <span class="class"><span class="keyword">class</span> <span class="title">func</span> <span class="title">rp_scheduledTimer</span>(<span class="title">timeInterval</span> <span class="title">ti</span>: <span class="title">TimeInterval</span>, <span class="title">repeats</span> <span class="title">yesOrNo</span>: <span class="title">Bool</span>, <span class="title">closure</span>: @<span class="title">escaping</span> (<span class="title">Timer</span>) -&gt; <span class="title">Void</span>) -&gt; <span class="title">Timer</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">self</span>.scheduledTimer(timeInterval: ti, target: <span class="keyword">self</span>, selector: #selector(<span class="type">RP_TimerHandle</span>(timer:)), userInfo: closure, repeats: yesOrNo)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"><span class="keyword">@objc</span> <span class="class"><span class="keyword">class</span> <span class="title">func</span> <span class="title">RP_TimerHandle</span>(<span class="title">timer</span>: <span class="title">Timer</span>) </span>&#123;</span><br><span class="line">        <span class="keyword">var</span> handleClosure <span class="operator">=</span> &#123; &#125;</span><br><span class="line">        handleClosure <span class="operator">=</span> timer.userInfo <span class="keyword">as!</span> () -&gt; ()</span><br><span class="line">        handleClosure()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="keyword">#available</span>(<span class="keyword">iOS</span> <span class="number">10.0</span>, <span class="operator">*</span>) &#123;</span><br><span class="line">     time <span class="operator">=</span> <span class="type">Timer</span>.scheduledTimer(withTimeInterval: <span class="number">2</span>, repeats: <span class="literal">true</span>, block: &#123; [<span class="keyword">weak</span> <span class="keyword">self</span>] (timer) <span class="keyword">in</span></span><br><span class="line">          <span class="keyword">guard</span> <span class="keyword">let</span> `self` <span class="operator">=</span> <span class="keyword">self</span> <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</span><br><span class="line">          <span class="keyword">self</span>.timePrint()</span><br><span class="line">      &#125;)</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">     time <span class="operator">=</span> <span class="type">Timer</span>.rp_scheduledTimer(timeInterval: <span class="number">2</span>, repeats: <span class="literal">true</span>, closure: &#123; [<span class="keyword">weak</span> <span class="keyword">self</span>] (timer) <span class="keyword">in</span></span><br><span class="line">          <span class="keyword">guard</span> <span class="keyword">let</span> `self` <span class="operator">=</span> <span class="keyword">self</span> <span class="keyword">else</span> &#123; <span class="keyword">return</span> &#125;</span><br><span class="line">          <span class="keyword">self</span>.timePrint()</span><br><span class="line">     &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>采用中间件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">#import &lt;objc&#x2F;runtime.h&gt;</span><br><span class="line"></span><br><span class="line">@property (nonatomic, strong) id target;</span><br><span class="line"></span><br><span class="line">_target &#x3D; [NSObject new];</span><br><span class="line">class_addMethod([_target class], @selector(timePrint), (IMP)timerIMP, &quot;v@:&quot;);</span><br><span class="line">&#x2F;&#x2F; self换成_target就没有了循环引用了</span><br><span class="line">self.timer &#x3D; [NSTimer scheduledTimerWithTimeInterval:2 target:_target selector:@selector(timePrint) userInfo:nil repeats:true];</span><br><span class="line"></span><br><span class="line">void timerIMP(id self, SEL _cmd) &#123;</span><br><span class="line">    NSLog(@&quot;-------------------&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)timePrint &#123;</span><br><span class="line">    NSLog(@&quot;-------------------&quot;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="12、Block"><a href="#12、Block" class="headerlink" title="12、Block"></a>12、Block</h3><h5 id="12-0、常见面试问题"><a href="#12-0、常见面试问题" class="headerlink" title="12.0、常见面试问题"></a>12.0、常见面试问题</h5><ul>
+<li>什么是Block</li>
+<li>为什么Block会产生循环引用</li>
+<li>怎样理解Block截获变量的特性<ul>
+<li>截获基本数据类型的变量，是截获其值</li>
+<li>截获对象类型是截获其修饰符和变量</li>
+<li>截获静态变量是截获其指针</li>
+</ul>
+</li>
+<li>你都遇到过哪些循环引用？你是怎么解决的？<ul>
+<li>Block本身是对象的变量，Block又捕获了这个对象的变量，会产生循环引用</li>
+</ul>
+</li>
+</ul>
+<h5 id="12-1、什么是Block"><a href="#12-1、什么是Block" class="headerlink" title="12.1、什么是Block"></a>12.1、什么是Block</h5><ul>
+<li><p>Block是将函数及其执行上下文封装起来的对象</p>
+</li>
+<li><p>Block调用即是函数调用</p>
+</li>
+<li><p>Block的底层结构：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> &#123;</span></span><br><span class="line">   <span class="keyword">void</span> *isa;<span class="comment">// isa指针，Block是对象的标志</span></span><br><span class="line">   <span class="keyword">int</span> Flags;</span><br><span class="line">   <span class="keyword">int</span> Reserved;</span><br><span class="line">   <span class="keyword">void</span> *FuncPtr;<span class="comment">// 函数指针</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="12-2、Block如何截获变量"><a href="#12-2、Block如何截获变量" class="headerlink" title="12.2、Block如何截获变量"></a>12.2、Block如何截获变量</h5></li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">int multiplier &#x3D; 6;</span><br><span class="line">int (^ Block)(int) &#x3D; ^ int(int num) &#123;</span><br><span class="line">    return num * multiplier;</span><br><span class="line">&#125;;</span><br><span class="line">multiplier &#x3D; 4;</span><br><span class="line">NSLog(@&quot;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;%d&quot;,Block(2));</span><br><span class="line">&#x2F;&#x2F; 打印结果</span><br><span class="line">&#x2F;&#x2F; &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;12</span><br></pre></td></tr></table></figure>
+<h6 id="12-2-2、被截获变量的类型分类："><a href="#12-2-2、被截获变量的类型分类：" class="headerlink" title="12.2.2、被截获变量的类型分类："></a>12.2.2、被截获变量的类型分类：</h6><ul>
+<li>局部变量<ul>
+<li>基本数据类型</li>
+<li>对象类型</li>
+</ul>
+</li>
+<li>静态局部变量</li>
+<li>全局变量</li>
+<li>静态全局变量</li>
+</ul>
+<p>12.2.3、截获变量</p>
+<ul>
+<li>对于基本数据类型的局部变量截获其值</li>
+<li>对于对象类型的局部变量连同所有权修饰符一起截获</li>
+<li>以指针形式截获局部静态变量</li>
+<li>不截获全局变量、静态全局变量</li>
+</ul>
+<h6 id="12-2-4、Block截获变量源码"><a href="#12-2-4、Block截获变量源码" class="headerlink" title="12.2.4、Block截获变量源码"></a>12.2.4、Block截获变量源码</h6><p>使用命令将OC代码转成C++代码：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">clang -rewrite-objc -fobjc-arc ***.m</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F; 全局变量</span><br><span class="line">int gloabal_var &#x3D; 4;</span><br><span class="line">&#x2F;&#x2F; 全局静态变量</span><br><span class="line">static int static_global_var &#x3D; 5;</span><br><span class="line"></span><br><span class="line">@implementation BlockTest</span><br><span class="line"></span><br><span class="line">- (instancetype)init &#123;</span><br><span class="line">    self &#x3D; [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        [self testMethod];</span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (void)testMethod &#123;</span><br><span class="line">    &#x2F;&#x2F; 基本数据类型的局部变量</span><br><span class="line">    int var_num &#x3D; 10086;</span><br><span class="line">    &#x2F;&#x2F; 对象类型的局部变量</span><br><span class="line">    __unsafe_unretained id unsafa_obj &#x3D; nil;</span><br><span class="line">    __strong id strong_obj &#x3D; nil;</span><br><span class="line">    &#x2F;&#x2F; 局部静态变量</span><br><span class="line">    static int static_var_num &#x3D; 1008611;</span><br><span class="line">    </span><br><span class="line">    void (^Block)(void) &#x3D; ^&#123;</span><br><span class="line">        NSLog(@&quot;局部变量&lt;基本数据类型&gt; %d&quot;,var_num);</span><br><span class="line">        NSLog(@&quot;对象类型的局部变量:%@,%@&quot;,unsafa_obj,strong_obj);</span><br><span class="line">        NSLog(@&quot;局部静态变量:%d&quot;,static_var_num);</span><br><span class="line">        NSLog(@&quot;全局变量:%d&quot;,gloabal_var);</span><br><span class="line">        NSLog(@&quot;全局静态变量:%d&quot;,static_global_var);</span><br><span class="line">    &#125;;</span><br><span class="line">    Block();</span><br><span class="line">&#125;</span><br><span class="line">@end</span><br></pre></td></tr></table></figure>
+<p>编译结果：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">BlockTest__testMethod_block_impl_0</span> &#123;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> <span class="title">impl</span>;</span></span><br><span class="line">  <span class="class"><span class="keyword">struct</span> __<span class="title">BlockTest__testMethod_block_desc_0</span>* <span class="title">Desc</span>;</span></span><br><span class="line">  <span class="keyword">int</span> var_num;</span><br><span class="line">  __unsafe_unretained id unsafa_obj;</span><br><span class="line">  __strong id strong_obj;</span><br><span class="line">  <span class="keyword">int</span> *static_var_num;</span><br><span class="line">  __BlockTest__testMethod_block_impl_0(<span class="keyword">void</span> *fp, struct __BlockTest__testMethod_block_desc_0 *desc, <span class="keyword">int</span> _var_num, __unsafe_unretained id _unsafa_obj, __strong id _strong_obj, <span class="keyword">int</span> *_static_var_num, <span class="keyword">int</span> flags=<span class="number">0</span>) : var_num(_var_num), unsafa_obj(_unsafa_obj), strong_obj(_strong_obj), static_var_num(_static_var_num) &#123;</span><br><span class="line">    impl.isa = &amp;_NSConcreteStackBlock;</span><br><span class="line">    impl.Flags = flags;</span><br><span class="line">    impl.FuncPtr = fp;</span><br><span class="line">    Desc = desc;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h6 id="12-2-5、-block修饰符"><a href="#12-2-5、-block修饰符" class="headerlink" title="12.2.5、__block修饰符"></a>12.2.5、__block修饰符</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">__block int multiplier &#x3D; 6;</span><br><span class="line">int (^ Block)(int) &#x3D; ^ int(int num) &#123;</span><br><span class="line">   return num * multiplier;</span><br><span class="line">&#125;;</span><br><span class="line">multiplier &#x3D; 4;</span><br><span class="line">NSLog(@&quot;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;%d&quot;,Block(2));</span><br><span class="line">&#x2F;&#x2F; 打印结果</span><br><span class="line">&#x2F;&#x2F; &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;8</span><br></pre></td></tr></table></figure>
+<ul>
+<li>__block修饰的变量变成了对象</li>
+</ul>
+<h5 id="12-3、Block内存管理"><a href="#12-3、Block内存管理" class="headerlink" title="12.3、Block内存管理"></a>12.3、Block内存管理</h5><h6 id="12-3-1、Block的分类"><a href="#12-3-1、Block的分类" class="headerlink" title="12.3.1、Block的分类"></a>12.3.1、Block的分类</h6><ul>
+<li>全局类型 _NSConcreteGloabalBlock  存储于已初始化内存区中</li>
+<li>堆类型 _NSConcreateStackBlock</li>
+<li>栈类型 _NSConcreateMallocBlock</li>
+</ul>
+<h6 id="12-3-2、Block的copy操作"><a href="#12-3-2、Block的copy操作" class="headerlink" title="12.3.2、Block的copy操作"></a>12.3.2、Block的copy操作</h6><table>
+<thead>
+<tr>
+<th align="center">Block类别</th>
+<th align="center">源</th>
+<th align="center">Copy结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">堆类型 _NSConcreateStackBlock</td>
+<td align="center">栈</td>
+<td align="center">堆</td>
+</tr>
+<tr>
+<td align="center">栈类型 _NSConcreateMallocBlock</td>
+<td align="center">数据区</td>
+<td align="center">什么也不做</td>
+</tr>
+<tr>
+<td align="center">全局类型 _NSConcreteGloabalBlock</td>
+<td align="center">堆</td>
+<td align="center">增加引用计数</td>
+</tr>
+</tbody></table>
+<h6 id="12-3-3-解决循环引用问题"><a href="#12-3-3-解决循环引用问题" class="headerlink" title="12.3.3 解决循环引用问题"></a>12.3.3 解决循环引用问题</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">@property (strong, nonatomic) NSArray &lt;NSString *&gt; *array;</span><br><span class="line">@property (copy, nonatomic)  NSString *(^strBlock)(NSString *);</span><br><span class="line"></span><br><span class="line">- (instancetype)init &#123;</span><br><span class="line">    self &#x3D; [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        </span><br><span class="line">        _array &#x3D; [NSMutableArray arrayWithObject:@&quot;block&quot;];</span><br><span class="line">        _strBlock &#x3D; ^NSString *(NSString *num) &#123;</span><br><span class="line">            return  _array[0]; &#x2F;&#x2F; Capturing &#39;self&#39; strongly in this block is likely to lead to a retain cycle</span><br><span class="line">        &#125;;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>解决方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">__weak NSArray &lt;NSString *&gt; *weakArray &#x3D; _array;</span><br><span class="line">_strBlock &#x3D; ^NSString *(NSString *num) &#123;</span><br><span class="line">     return  weakArray[0];</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h6 id="12-3-4、-block造成循环引用"><a href="#12-3-4、-block造成循环引用" class="headerlink" title="12.3.4、__block造成循环引用"></a>12.3.4、__block造成循环引用</h6><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">@property (copy, nonatomic) NSString *varNum;</span><br><span class="line">@property (copy, nonatomic) int(^numBlock)(int);</span><br><span class="line"></span><br><span class="line">- (instancetype)init &#123;</span><br><span class="line">    self &#x3D; [super init];</span><br><span class="line">    if (self) &#123;</span><br><span class="line">        [self testMethod];</span><br><span class="line">      </span><br><span class="line">        _varNum &#x3D; @&quot;3&quot;;</span><br><span class="line">        __block BlockTest *blockSelf &#x3D; self;</span><br><span class="line">        _numBlock &#x3D; ^int(int num) &#123;</span><br><span class="line">            return  num * [blockSelf.varNum intValue];</span><br><span class="line">        &#125;;</span><br><span class="line">        int blockNum &#x3D; _numBlock(10);</span><br><span class="line">        NSLog(@&quot;blockNum&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;%d&quot;,blockNum);</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    return self;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>在MRC下不会产生循环引用</p>
+</li>
+<li><p>在ARC下，会产生循环引用引起内存泄漏</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">_numBlock &#x3D; ^int(int num) &#123;</span><br><span class="line">     int result &#x3D; num * [blockSelf.varNum intValue];</span><br><span class="line">     blockSelf &#x3D; nil;</span><br><span class="line">     return result;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<h3 id="13、RunTime"><a href="#13、RunTime" class="headerlink" title="13、RunTime"></a>13、RunTime</h3><h3 id="14、RunLoop"><a href="#14、RunLoop" class="headerlink" title="14、RunLoop"></a>14、RunLoop</h3><h5 id="14-1、RunLoop的概念"><a href="#14-1、RunLoop的概念" class="headerlink" title="14.1、RunLoop的概念"></a>14.1、RunLoop的概念</h5><p>RunLoop是通过内部的事件循环来对事件/消息进行管理的一个对象。RunLoop可以不断的接收消息，如点击屏幕、滑动列表,接收到消息之后会对事件进行处理，处理完成之后会进入内核态等待。这里的等待并不是一个简单的等待或者循环，重点是状态的切换。</p>
+<h5 id="14-2、事件循环机制"><a href="#14-2、事件循环机制" class="headerlink" title="14.2、事件循环机制"></a>14.2、事件循环机制</h5><ul>
+<li>没有消息需要处理时，休眠以避免资源占用 （用户态 –&gt;转换时调用<code>mach_msg()</code>方法–&gt; 内核态）</li>
+<li>有消息需要处理时，立即被唤醒 （内核态 –&gt; 转换时调用<code>mach_msg()</code>方法–&gt; 用户态 ）</li>
+</ul>
+<h6 id="14-2-1、为什么main函数不会退出"><a href="#14-2-1、为什么main函数不会退出" class="headerlink" title="14.2.1、为什么main函数不会退出"></a>14.2.1、为什么main函数不会退出</h6><p>  在main函数中维护着一个RunLoop，</p>
+<h5 id="14-3、RunLoop与NSTimer"><a href="#14-3、RunLoop与NSTimer" class="headerlink" title="14.3、RunLoop与NSTimer"></a>14.3、RunLoop与NSTimer</h5><p>滑动TableView的时候我们的定时器还会生效吗？</p>
+<ul>
+<li>正常情况下，Timer是运行在RunLoopDefaultMode模式下，当UITableView滑动时会发生一个RunLoop的Mode的切换，会切换到UITrackingRunLoopMode</li>
+<li>可以使用<code>addTimer()</code>同步添加到多个Mode中</li>
+</ul>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> timer <span class="operator">=</span> <span class="type">Timer</span>.scheduledTimer(withTimeInterval: <span class="number">1</span>, repeats: <span class="literal">true</span>) &#123; (time) <span class="keyword">in</span></span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;------------time&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> runLoop <span class="operator">=</span> <span class="type">RunLoop</span>.current</span><br><span class="line">runLoop.add(timer, forMode: .common)</span><br></pre></td></tr></table></figure>
+<h5 id="14-4、RunLoop的Mode"><a href="#14-4、RunLoop的Mode" class="headerlink" title="14.4、RunLoop的Mode"></a>14.4、RunLoop的Mode</h5><p>RunLoop有多个Mode，运行到不同的Mode上时，只能接收到当前Mode上的事件，例如UI Mode下只能接收到屏幕点击，上下滑动的事件。一个Timer 要想加入到多个Mode当中呢，</p>
+<ul>
+<li>CommonMode是一个特殊的Mode，CommonMode不是实际存在的一种Mode，</li>
+<li>CommonMode是同步到Timer/Source/Observer到多个Mode的一种技术方案</li>
+</ul>
+<h5 id="14-5、RunLoop与多线程"><a href="#14-5、RunLoop与多线程" class="headerlink" title="14.5、RunLoop与多线程"></a>14.5、RunLoop与多线程</h5><ul>
+<li>线程和RunLoop是一一对应的关系。</li>
+<li>线程中的RunLoop并没有创建需要手动创建，此处引出常驻线程。<ul>
+<li>为当前线程开启一个RunLoop</li>
+<li>向当前RunLoop中添加一个Port/Source等位置RunLoop的事件循环</li>
+<li>启动该RunLoop</li>
+</ul>
+</li>
+</ul>
+<h5 id="14-6、RunLoop数据结构"><a href="#14-6、RunLoop数据结构" class="headerlink" title="14.6、RunLoop数据结构"></a>14.6、RunLoop数据结构</h5><ul>
+<li>RunLoop是CGRunLoop的封装，提供了面向对象的API。</li>
+<li>CFRunLoop<ul>
+<li>pthread 线程相关，RunLoop和线程是一一对应的关系</li>
+<li>currentMode </li>
+<li>modes</li>
+<li>commonModes</li>
+<li>commonModeItems</li>
+</ul>
+</li>
+<li>CGRunLoopMode</li>
+<li>Source/Timer/Observer</li>
+</ul>
+
+            <!--[if lt IE 9]><script>document.createElement('audio');</script><![endif]-->
+            <audio id="audio" loop="1" preload="auto" controls="controls" data-autoplay="false">
+                <source type="audio/mpeg" src="">
+            </audio>
+            
+                <ul id="audio-list" style="display:none">
+                    
+                        
+                            <li title='0' data-url='http://link.hhtjim.com/163/29307041.mp3'></li>
+                        
+                    
+                </ul>
+            
+        </div>
+        
+    <div id='gitalk-container' class="comment link"
+		data-enable='false'
+        data-ae='false'
+        data-ci=''
+        data-cs=''
+        data-r=''
+        data-o=''
+        data-a=''
+        data-d='false'
+    >查看评论</div>
+
+
+    </div>
+    
+</div>
+
+
+    </div>
+</div>
+</body>
+
+
+<script src="//lib.baomitu.com/jquery/1.8.3/jquery.min.js"></script>
+<script src="/js/plugin.js"></script>
+<script src="/js/typed.js"></script>
+<script src="/js/diaspora.js"></script>
+
+
+<link rel="stylesheet" href="/photoswipe/photoswipe.css">
+<link rel="stylesheet" href="/photoswipe/default-skin/default-skin.css">
+
+
+<script src="/photoswipe/photoswipe.min.js"></script>
+<script src="/photoswipe/photoswipe-ui-default.min.js"></script>
+
+
+<!-- Root element of PhotoSwipe. Must have class pswp. -->
+<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+    <!-- Background of PhotoSwipe. 
+         It's a separate element as animating opacity is faster than rgba(). -->
+    <div class="pswp__bg"></div>
+    <!-- Slides wrapper with overflow:hidden. -->
+    <div class="pswp__scroll-wrap">
+        <!-- Container that holds slides. 
+            PhotoSwipe keeps only 3 of them in the DOM to save memory.
+            Don't modify these 3 pswp__item elements, data is added later on. -->
+        <div class="pswp__container">
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+            <div class="pswp__item"></div>
+        </div>
+        <!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+        <div class="pswp__ui pswp__ui--hidden">
+            <div class="pswp__top-bar">
+                <!--  Controls are self-explanatory. Order can be changed. -->
+                <div class="pswp__counter"></div>
+                <button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+                <button class="pswp__button pswp__button--share" title="Share"></button>
+                <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+                <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button>
+                <!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+                <!-- element will get class pswp__preloader--active when preloader is running -->
+                <div class="pswp__preloader">
+                    <div class="pswp__preloader__icn">
+                      <div class="pswp__preloader__cut">
+                        <div class="pswp__preloader__donut"></div>
+                      </div>
+                    </div>
+                </div>
+            </div>
+            <div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+                <div class="pswp__share-tooltip"></div> 
+            </div>
+            <button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+            </button>
+            <button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)">
+            </button>
+            <div class="pswp__caption">
+                <div class="pswp__caption__center"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+</html>
