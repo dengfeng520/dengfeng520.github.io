@@ -262,7 +262,18 @@ UI绘制原理、异步绘制
 <li>不可变对象的copy是浅copy，mutableCopy是深copy</li>
 <li>copy方法返回的都是不可变对象</li>
 </ul>
-<h4 id="9、RunTime"><a href="#9、RunTime" class="headerlink" title="9、RunTime"></a>9、RunTime</h4><h5 id="9-1、objc-object"><a href="#9-1、objc-object" class="headerlink" title="9.1、objc_object"></a>9.1、objc_object</h5><p>iOS中所有的对象都是的最终父类都是id类型，在RunTime中最终都转换成了<code>objc_object</code>结构体，该结构体主要包含四个部分</p>
+<h4 id="9、RunTime"><a href="#9、RunTime" class="headerlink" title="9、RunTime"></a>9、RunTime</h4><p>常见面试问题：</p>
+<ul>
+<li>消息发送流程</li>
+<li>消息转发流程</li>
+<li>类方法和实例方法动态解析</li>
+<li>类的本质</li>
+<li>分类初始化</li>
+<li>分类方法覆盖原类方法</li>
+<li>KVO和KVC的原理</li>
+<li>Method Swizzling原理，解决Crash问题</li>
+</ul>
+<h5 id="9-1、objc-object"><a href="#9-1、objc-object" class="headerlink" title="9.1、objc_object"></a>9.1、objc_object</h5><p>iOS中所有的对象都是的最终父类都是id类型，在RunTime中最终都转换成了<code>objc_object</code>结构体，该结构体主要包含四个部分</p>
 <ul>
 <li><code>isa_t</code>共用体</li>
 <li>关于<code>isa</code>操作相关</li>
@@ -292,7 +303,7 @@ UI绘制原理、异步绘制
 <li><code>class_rw_t</code>代表了类相关的<strong>读写</strong>信息，对<code>class_ro_t</code>的封装</li>
 <li><code>class_ro_t</code>代表了类相关的只读信息</li>
 </ul>
-<h3 id="10、多线程相关"><a href="#10、多线程相关" class="headerlink" title="10、多线程相关"></a>10、多线程相关</h3><h5 id="10-0、常见面试问题"><a href="#10-0、常见面试问题" class="headerlink" title="10.0、常见面试问题"></a>10.0、常见面试问题</h5><ul>
+<h5 id="9-5-tage"><a href="#9-5-tage" class="headerlink" title="9.5 tage"></a>9.5 tage</h5><h3 id="10、多线程相关"><a href="#10、多线程相关" class="headerlink" title="10、多线程相关"></a>10、多线程相关</h3><h5 id="10-0、常见面试问题"><a href="#10-0、常见面试问题" class="headerlink" title="10.0、常见面试问题"></a>10.0、常见面试问题</h5><ul>
 <li>GCD</li>
 <li>NSOperation / NSOperationQueue</li>
 <li>Thred</li>
@@ -448,15 +459,12 @@ UI绘制原理、异步绘制
 </li>
 </ul>
 <h5 id="12-1、什么是Block"><a href="#12-1、什么是Block" class="headerlink" title="12.1、什么是Block"></a>12.1、什么是Block</h5><ul>
-<li><p>Block是将函数及其执行上下文封装起来的对象</p>
-</li>
-<li><p>Block调用即是函数调用</p>
-</li>
-<li><p>Block的底层结构：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> &#123;</span></span><br><span class="line">   <span class="keyword">void</span> *isa;<span class="comment">// isa指针，Block是对象的标志</span></span><br><span class="line">   <span class="keyword">int</span> Flags;</span><br><span class="line">   <span class="keyword">int</span> Reserved;</span><br><span class="line">   <span class="keyword">void</span> *FuncPtr;<span class="comment">// 函数指针</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h5 id="12-2、Block如何截获变量"><a href="#12-2、Block如何截获变量" class="headerlink" title="12.2、Block如何截获变量"></a>12.2、Block如何截获变量</h5></li>
+<li>Block是将函数及其执行上下文封装起来的对象</li>
+<li>Block调用即是函数调用</li>
+<li>Block的底层结构：</li>
 </ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">int multiplier &#x3D; 6;</span><br><span class="line">int (^ Block)(int) &#x3D; ^ int(int num) &#123;</span><br><span class="line">    return num * multiplier;</span><br><span class="line">&#125;;</span><br><span class="line">multiplier &#x3D; 4;</span><br><span class="line">NSLog(@&quot;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;%d&quot;,Block(2));</span><br><span class="line">&#x2F;&#x2F; 打印结果</span><br><span class="line">&#x2F;&#x2F; &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;12</span><br></pre></td></tr></table></figure>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> __<span class="title">block_impl</span> &#123;</span></span><br><span class="line">   <span class="keyword">void</span> *isa;<span class="comment">// isa指针，Block是对象的标志</span></span><br><span class="line">   <span class="keyword">int</span> Flags;</span><br><span class="line">   <span class="keyword">int</span> Reserved;</span><br><span class="line">   <span class="keyword">void</span> *FuncPtr;<span class="comment">// 函数指针</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h5 id="12-2、Block如何截获变量"><a href="#12-2、Block如何截获变量" class="headerlink" title="12.2、Block如何截获变量"></a>12.2、Block如何截获变量</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">int multiplier &#x3D; 6;</span><br><span class="line">int (^ Block)(int) &#x3D; ^ int(int num) &#123;</span><br><span class="line">    return num * multiplier;</span><br><span class="line">&#125;;</span><br><span class="line">multiplier &#x3D; 4;</span><br><span class="line">NSLog(@&quot;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;%d&quot;,Block(2));</span><br><span class="line">&#x2F;&#x2F; 打印结果</span><br><span class="line">&#x2F;&#x2F; &#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;12</span><br></pre></td></tr></table></figure>
 <h6 id="12-2-2、被截获变量的类型分类："><a href="#12-2-2、被截获变量的类型分类：" class="headerlink" title="12.2.2、被截获变量的类型分类："></a>12.2.2、被截获变量的类型分类：</h6><ul>
 <li>局部变量<ul>
 <li>基本数据类型</li>
