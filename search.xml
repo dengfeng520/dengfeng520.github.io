@@ -2465,6 +2465,9 @@
 <li>分类方法覆盖原类方法</li>
 <li>KVO和KVC的原理</li>
 <li>Method Swizzling原理，解决Crash问题</li>
+<li>如何使用RunTime动态创建类</li>
+<li>如何使用RunTime进行hook</li>
+<li>Method Swizzling使用</li>
 </ul>
 <h5 id="9-1、objc-object"><a href="#9-1、objc-object" class="headerlink" title="9.1、objc_object"></a>9.1、objc_object</h5><p>iOS中所有的对象都是的最终父类都是id类型，在RunTime中最终都转换成了<code>objc_object</code>结构体，该结构体主要包含四个部分</p>
 <ul>
